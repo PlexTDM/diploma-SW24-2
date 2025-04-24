@@ -2,6 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const mn = {
+  mascot: {
+    name: "Блуви",
+    desc: "Хамтдаа эрүүл, чийрэг биетэй болцгооё!",
+  },
   login: {
     title1: "Сайн байна уу! Би бол Блуви!",
     title2: "Хамтдаа эрүүл, чийрэг биетэй болцгооё!",
@@ -10,6 +14,19 @@ export const mn = {
   },
   register: {
     age: "Таны Төрсөн өдөр?",
+    steps: {
+      goal: {
+        title: "Таны зорилго?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "Жингээ хасах",
+          "Жингээ барих",
+          "Жингээ нэмэх",
+          "Стресс бууруулах",
+          "Ерөнхий биеийн чийрэгжилт",
+        ],
+      },
+    },
   },
   welcome: "Тавтай морил",
   logout: "Гарах",
@@ -19,6 +36,10 @@ export const mn = {
 };
 
 export const en = {
+  mascot: {
+    name: "Bluvi",
+    desc: "Let's Get Fit Together",
+  },
   login: {
     title1: "Hi There! I'm Bluvi",
     title2: "Let's Get Fit Together",
@@ -27,6 +48,19 @@ export const en = {
   },
   register: {
     age: "How old are you?",
+    steps: {
+      goal: {
+        title: "Your Goal?",
+        desc: "Your choice will affect your workout plan",
+        choices: [
+          "Lose weight",
+          "Keep fit",
+          "Gain weight",
+          "Reduce stress",
+          "General fitness",
+        ],
+      },
+    },
   },
   welcome: "Welcome",
   logout: "Logout",

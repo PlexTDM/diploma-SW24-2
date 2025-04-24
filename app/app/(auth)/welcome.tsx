@@ -7,9 +7,12 @@ import { Button } from "react-native-paper";
 import { ArrowLeft } from "lucide-react-native";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
 import { useRegisterStore } from "@/lib/store";
+import { ThemeText, ThemeView } from "@/components";
+import { useAppTheme } from "@/lib/theme";
 
 export default function LoginOrRegister() {
   const router = useRouter();
+  const { theme } = useAppTheme();
   const { setField, progress } = useRegisterStore();
   const navigation = useNavigation();
   const { language } = useLanguage();
@@ -33,26 +36,18 @@ export default function LoginOrRegister() {
     }, [])
   );
   return (
-    <View className="relative bg-blue1 flex-1 items-center p-6 justify-between">
+    <ThemeView className="dark:bg-blue1 relative flex-1 items-center p-6 justify-between">
       <View className="h-[60px] w-full relative items-start justify-start">
         <Button
           className="absolute top-0 left-0"
           mode="text"
-          textColor="white"
           rippleColor={"#FFf00020"}
           onPress={handleBack}
         >
-          <ArrowLeft size={40} color={"white"} />
+          <ArrowLeft size={40} color={theme === "dark" ? "white" : "black"} />
         </Button>
       </View>
-      <View className="">
-        <Text className="text-white text-3xl text-center">
-          {languages[language].login.title1}
-        </Text>
-        <Text className="text-white text-2xl text-center">
-          {languages[language].login.title2}
-        </Text>
-      </View>
+
       <View className="w-3/4 relative aspect-square overflow-hidden mx-auto">
         <Image
           source={require("@/assets/mascot/default.png")}
@@ -62,26 +57,36 @@ export default function LoginOrRegister() {
           focusable={false}
         />
       </View>
+      <View>
+        <ThemeText className="text-3xl text-blue1 dark:text-white font-bold text-center">
+          {/* {languages[language].login.title1} */}
+          {languages[language].mascot.name}
+        </ThemeText>
+        <ThemeText className="text-2xl text-gray-500 dark:text-gray-100 text-center">
+          {/* {languages[language].login.title2} */}
+          {languages[language].mascot.desc}
+        </ThemeText>
+      </View>
       <View className="w-3/4 mx-auto gap-4">
         <TouchableHighlight
           onPress={handleRegister}
-          className="rounded-md bg-white p-3 items-center"
+          className="bg-blue1 dark:bg-white rounded-full p-3 items-center"
           activeOpacity={0.9}
           underlayColor={"#DDDDDD"}
         >
-          <Text className="text-blue1 text-lg text-center">
+          <Text className="text-lg text-white dark:text-blue1 text-center">
             {languages[language].login.button1}
           </Text>
         </TouchableHighlight>
         <Button
           mode={"text"}
-          textColor="white"
+          textColor={theme === "dark" ? "white" : "#708FFF"}
           rippleColor={"#FFf00020"}
           onPress={handleLogin}
         >
           {languages[language].login.button2}
         </Button>
       </View>
-    </View>
+    </ThemeView>
   );
 }

@@ -1,41 +1,74 @@
-import { useRouter } from "expo-router";
 import { useRegisterStore } from "@/lib/store";
-import { Text, View } from "react-native";
-import WheelPickerExpo from "react-native-wheel-picker-expo";
-import { ItemType } from "react-native-wheel-picker-expo/lib/typescript/types";
+import { Pressable, Text, View } from "react-native";
 import { languages, useLanguage } from "@/lib/language";
-import { useDebouncedCallback } from "use-debounce";
 import { useState } from "react";
+import { ThemeText } from "..";
+import { Image } from "expo-image";
+import { CheckIcon } from "lucide-react-native";
+import { useAppTheme } from "@/lib/theme";
 
 export default function Step1() {
   const { setField } = useRegisterStore();
   const { language } = useLanguage();
-  const [selectedAge, setSelectedAge] = useState<string>("0");
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  const handleChange = useDebouncedCallback(({ item }: { item: ItemType }) => {
-    setSelectedAge(item.label);
-    setField("age", item.label);
-  }, 100);
+  const choices = languages[language].register.steps.goal.choices;
+
+  const { theme } = useAppTheme();
+
+  const handlePress = (index: number) => {
+    setSelectedIndex(index);
+    setField("goal", choices[index]);
+  };
 
   return (
-    <View className="w-screen justify-center items-center">
-      <Text className="text-white">Your Age: {selectedAge}</Text>
-      <View className="mb-4">
-        <WheelPickerExpo
-          backgroundColor="#708FFF"
-          width={70}
-          height={400}
-          items={[...Array(100).keys()].map((num) => ({
-            label: `${num + 1}`,
-            value: num + 1,
-          }))}
-          initialSelectedIndex={20}
-          onChange={handleChange}
-          renderItem={(props) => (
-            <Text className="text-white text-5xl h-min">{props.label}</Text>
-          )}
-        />
+    <View className="flex-1 gap-8 justify-center items-center">
+      <View className="flex items-center">
+        <View className="flex-row items-center">
+          <View className="w-10 h-10">
+            <Image
+              source={require("@/assets/diamond.png")}
+              style={{ width: "100%", height: "100%" }}
+              contentFit="contain"
+            />
+          </View>
+          <ThemeText className="text-3xl font-bold">
+            {languages[language].register.steps.goal.title}
+          </ThemeText>
+        </View>
+        <Text className="text-gray-600 dark:text-gray-200 text-center">
+          {languages[language].register.steps.goal.desc}
+        </Text>
       </View>
+      <View className="my-4">
+        {choices.map((choice, i) => (
+          <Pressable
+            key={i}
+            onPress={() => handlePress(i)}
+            className={`dark:bg-gray-800 p-4 mb-5 w-[300px] border-2 rounded-3xl relative ${
+              selectedIndex === i
+                ? "border-black dark:border-blue1"
+                : "border-gray-200 dark:border-gray-200"
+            }`}
+          >
+            {i === selectedIndex && (
+              <View className="absolute -right-2 -top-2 rounded-full bg-black dark:bg-blue1 p-1 items-center justify-center">
+                <CheckIcon size={16} color="white" />
+              </View>
+            )}
+            <Text
+              className={`font-semibold text-lg ${
+                selectedIndex === i
+                  ? "text-black dark:text-blue1"
+                  : "text-slate-500 dark:text-gray-300"
+              }`}
+            >
+              {choice}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      <View className="mb-4"></View>
     </View>
   );
 }

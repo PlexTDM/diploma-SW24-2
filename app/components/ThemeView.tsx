@@ -1,15 +1,13 @@
 import { useAppTheme } from "@/lib/theme";
-import { View } from "react-native";
+import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
 
-const ThemeView = ({
-  children,
-  className,
-  ...props
-}: {
+type ThemeViewProps = ViewProps & {
   children: React.ReactNode;
   className?: string;
-}) => {
-  const { theme } = useAppTheme();
+  style?: StyleProp<ViewStyle>;
+};
+
+const ThemeView = ({ children, className, ...props }: ThemeViewProps) => {
   return (
     <View
       {...props}

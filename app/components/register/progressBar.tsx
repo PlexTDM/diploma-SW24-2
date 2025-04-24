@@ -16,7 +16,7 @@ export default function ProgressBar() {
   const router = useRouter();
   const navigaton = useNavigation();
   const maxStep = 2;
-  const progressValue = useSharedValue(progress / maxStep);
+  const progressValue = useSharedValue(0);
 
   useEffect(() => {
     progressValue.value = withTiming(Math.min(progress / maxStep, 1), {
