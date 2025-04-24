@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "coolFitness",
-    "slug": "coolFitness",
+    "name": "CoolFitness",
+    "slug": "coolfitness",
     "version": "0.1.0",
     "scheme": [
       "coolfitness"
@@ -36,7 +36,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.coolFitness.myexpoapp"
+      "package": "com.coolFitness"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "90489b54-2458-4406-a394-e31059a52f0f"
+      }
     }
   }
 }
