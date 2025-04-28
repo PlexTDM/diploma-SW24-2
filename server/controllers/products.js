@@ -1,7 +1,6 @@
 import express from 'express'
 import corsConfig from '../middleware/cors.js'
 import Product from '../models/product.js'
-import redisClient from '../middleware/cache.js'
 
 const app = express.Router()
 
@@ -32,7 +31,7 @@ app.get('/product/:id', async (req, res) => {
     const { id } = req.params
 
     try {
-        const cachedProduct = await redisClient.get(`product:${id}`)
+        const cachedProduct = await req.redis.get(`product:${id}`)
         if (cachedProduct) {
             return res.status(200).json(JSON.parse(cachedProduct))
         }
@@ -42,7 +41,7 @@ app.get('/product/:id', async (req, res) => {
             return res.status(404).json({ error: 'Product not found' })
         }
 
-        await redisClient.set(`product:${id}`, JSON.stringify(product))
+        await req.redis.set(`product:${id}`, JSON.stringify(product))
         console.log('product cached')
 
         res.status(200).json(product)
@@ -67,9 +66,9 @@ app.get('/:page', async (req, res) => {
         }
         if (price) {
             const [min, max] = price.split(',').map(Number)
-            if((min !== 0 || min) && (max !== 0 || max)){
+            if ((min !== 0 || min) && (max !== 0 || max)) {
                 query.price = { ...(min && { $gte: min }), ...(max && { $lte: max }) }
-            } 
+            }
         }
         if (q) {
             query.$or = [
@@ -79,7 +78,7 @@ app.get('/:page', async (req, res) => {
         }
 
         const cacheKey = `products:page:${page}:${JSON.stringify(req.query)}`
-        const cachedProducts = await redisClient.get(cacheKey)
+        const cachedProducts = await req.redis.get(cacheKey)
 
         if (cachedProducts) {
             return res.json(JSON.parse(cachedProducts))
@@ -112,7 +111,7 @@ app.get('/:page', async (req, res) => {
             totalProducts,
             products,
         }
-        await redisClient.set(cacheKey, JSON.stringify(response))
+        await req.redis.set(cacheKey, JSON.stringify(response))
         res.json(response)
 
     } catch (error) {

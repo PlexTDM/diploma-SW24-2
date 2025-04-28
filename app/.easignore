@@ -25,3 +25,7 @@ __tests__/
 
 # Ignore local configuration files
 .git/
+
+# Ignore android and ios directories
+/android
+/ios

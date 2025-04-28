@@ -10,7 +10,7 @@ import PaymentController from '../controllers/paypal.js'
 import ProductsContoller from '../controllers/products.js'
 import User from '../models/user.js'
 import RefreshToken from '../models/refreshToken.js'
-
+import ChatbotController from '../controllers/chatbot.js'
 const app = express.Router()
 const __dirname = path.resolve()
 
@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
 app.use('/auth', AuthController)
 app.use('/payment', PaymentController)
 app.use('/products', ProductsContoller)
+app.use('/chatbot', ChatbotController)
 
 app.put('/refresh-token', async (req, res) => {
   const { refreshToken } = req.body
