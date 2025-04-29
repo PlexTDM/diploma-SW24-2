@@ -9,8 +9,8 @@ export const mn = {
   login: {
     title1: "Сайн байна уу! Би бол Блуви!",
     title2: "Хамтдаа эрүүл, чийрэг биетэй болцгооё!",
-    button1: "Эхлэх",
-    button2: "Бүртгэлтэй юу?",
+    button1: "Нэвтрэх",
+    button2: "Бүртгүүлэх",
   },
   register: {
     age: "Таны Төрсөн өдөр?",
@@ -43,8 +43,8 @@ export const en = {
   login: {
     title1: "Hi There! I'm Bluvi",
     title2: "Let's Get Fit Together",
-    button1: "Start Journey",
-    button2: "Already Have an Account?",
+    button1: "Login",
+    button2: "Sign Up",
   },
   register: {
     age: "How old are you?",

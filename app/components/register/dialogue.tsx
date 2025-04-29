@@ -14,7 +14,7 @@ export default function Dialogue({ text }: propTypes) {
     >
       <View className="w-[30%] relative aspect-square overflow-hidden mx-auto">
         <Image
-          source={require("@/assets/mascot/reading.png")}
+          source={require("@/assets/mascot/logo.png")}
           style={{ width: "100%", height: "100%" }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}

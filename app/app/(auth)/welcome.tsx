@@ -18,7 +18,7 @@ export default function LoginOrRegister() {
   const { language } = useLanguage();
   const handleRegister = () => {
     // router.push("/(auth)/register");
-    router.push("/(auth)/register");
+    router.push("/(auth)/login");
   };
   const handleLogin = () => {
     router.push("/(auth)/login");
@@ -36,7 +36,7 @@ export default function LoginOrRegister() {
     }, [])
   );
   return (
-    <ThemeView className="dark:bg-blue1 relative flex-1 items-center p-6 justify-between">
+    <ThemeView className="dark:bg-blue1 relative flex-1 items-center pb-20 justify-between">
       <View className="h-[60px] w-full relative items-start justify-start">
         <Button
           className="absolute top-0 left-0"
@@ -58,31 +58,29 @@ export default function LoginOrRegister() {
         />
       </View>
       <View>
-        <ThemeText className="text-3xl text-blue1 dark:text-white font-bold text-center">
-          {/* {languages[language].login.title1} */}
-          {languages[language].mascot.name}
-        </ThemeText>
-        <ThemeText className="text-2xl text-gray-500 dark:text-gray-100 text-center">
+        <ThemeText className="text-3xl mb-[40%] text-center ">
           {/* {languages[language].login.title2} */}
           {languages[language].mascot.desc}
         </ThemeText>
       </View>
-      <View className="w-3/4 mx-auto gap-4">
+      <View className="w-3/4 mx-auto flex flex-row items-center justify-center gap-4">
         <TouchableHighlight
           onPress={handleRegister}
-          className="bg-blue1 dark:bg-white rounded-full p-3 items-center"
+          className=" border-[1px] border-black dark:bg-white rounded-full px-10 py-2 items-center "
           activeOpacity={0.9}
           underlayColor={"#DDDDDD"}
         >
-          <Text className="text-lg text-white dark:text-blue1 text-center">
+          <Text className="text-lg text-black dark:text-blue1 text-center">
             {languages[language].login.button1}
           </Text>
         </TouchableHighlight>
         <Button
           mode={"text"}
-          textColor={theme === "dark" ? "white" : "#708FFF"}
+          textColor={theme === "dark" ? "blue1" : "white"}
           rippleColor={"#FFf00020"}
+          buttonColor="black"
           onPress={handleLogin}
+          className="bg-blue1 dark:bg-white rounded-full px-6 items-center"
         >
           {languages[language].login.button2}
         </Button>
