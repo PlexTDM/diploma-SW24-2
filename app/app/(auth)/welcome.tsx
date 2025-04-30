@@ -50,7 +50,7 @@ export default function LoginOrRegister() {
 
       <View className="w-3/4 relative aspect-square overflow-hidden mx-auto">
         <Image
-          source={require("@/assets/mascot/default.png")}
+          source={require("@/assets/mascot/BluviSmile.png")}
           style={{ width: "100%", height: "100%" }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}

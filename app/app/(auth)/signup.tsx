@@ -12,7 +12,7 @@ const SignUp = () => {
   return (
     <ThemeView className="flex-1 items-center justify-center">
       <Image
-      source={require("@/assets/doll.png")}
+      source={require("@/assets/bluviSignup.png")}
       style={{ width: "55%", height: "25%" }}
       cachePolicy={"memory-disk"}
       contentFit={"contain"}
