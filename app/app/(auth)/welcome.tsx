@@ -18,7 +18,7 @@ export default function LoginOrRegister() {
   const { language } = useLanguage();
   const handleRegister = () => {
     // router.push("/(auth)/signup");
-    router.push("/(auth)/signup");
+    router.push("/(auth)/register");
   };
   const handleLogin = () => {
     router.push("/(auth)/login");
