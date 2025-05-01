@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme, View } from "react-native";
-import { useColorScheme as useNativeColorScheme } from "nativewind";
+import {
+  useColorScheme as useNativeColorScheme,
+  colorScheme,
+} from "nativewind";
 
 const THEME_KEY = "app-theme";
 
@@ -18,26 +21,39 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const system = useColorScheme();
-  const { setColorScheme } = useNativeColorScheme();
   const [theme, setThemeState] = useState<Theme>("light");
-  setColorScheme(theme);
 
+  // Initialize theme from storage or system
   useEffect(() => {
-    (async () => {
-      const stored = await AsyncStorage.getItem(THEME_KEY);
-      setThemeState((stored as Theme) || (system as Theme) || "light");
-    })();
+    const initializeTheme = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(THEME_KEY);
+        const initialTheme = (stored as Theme) || (system as Theme) || "light";
+        setThemeState(initialTheme);
+        colorScheme.set(initialTheme);
+      } catch (error) {
+        console.error("Error initializing theme:", error);
+      }
+    };
+
+    initializeTheme();
   }, [system]);
 
   const setTheme = async (newTheme: Theme) => {
-    await AsyncStorage.setItem(THEME_KEY, newTheme);
-    setThemeState(newTheme);
-    setColorScheme(newTheme);
+    try {
+      await AsyncStorage.setItem(THEME_KEY, newTheme);
+      setThemeState(newTheme);
+      colorScheme.set(newTheme);
+    } catch (error) {
+      console.error("Error setting theme:", error);
+    }
   };
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
+      <View className={`${theme === "dark" ? "dark" : "light"} flex-1`}>
+        {children}
+      </View>
     </ThemeContext.Provider>
   );
 };

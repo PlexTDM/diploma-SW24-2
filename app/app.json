@@ -7,6 +7,13 @@
       "coolfitness"
     ],
     "newArchEnabled": true,
+    "android": {
+      "package": "com.coolfitness.app",
+      "versionCode": 1,
+      "permissions": [
+        "ACTIVITY_RECOGNITION"
+      ]
+    },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
@@ -15,7 +22,17 @@
       "tsconfigPaths": true
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "minSdkVersion": 26
+          }
+        }
+      ]
     ],
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
@@ -34,6 +51,9 @@
       "eas": {
         "projectId": "90489b54-2458-4406-a394-e31059a52f0f"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.coolfitness.app"
     }
   }
 }

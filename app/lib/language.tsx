@@ -28,6 +28,9 @@ export const mn = {
       },
     },
   },
+  home: {
+    title: "Өнөөдрийн мэдээлэл",
+  },
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
@@ -61,6 +64,9 @@ export const en = {
         ],
       },
     },
+  },
+  home: {
+    title: "Today's information",
   },
   welcome: "Welcome",
   logout: "Logout",

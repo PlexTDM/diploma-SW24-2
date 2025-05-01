@@ -52,6 +52,25 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="chatbot"
+          options={{
+            tabBarLabel: "Chat",
+            tabBarShowLabel: false,
+            lazy: false,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="blog"
+          options={{
+            title: "Blog",
+            tabBarLabel: "Blog",
+            tabBarShowLabel: false,
+            lazy: false,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
           name="profile"
           options={{
             title: "Profile",
