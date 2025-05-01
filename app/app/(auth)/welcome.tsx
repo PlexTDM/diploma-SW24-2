@@ -17,8 +17,8 @@ export default function LoginOrRegister() {
   const navigation = useNavigation();
   const { language } = useLanguage();
   const handleRegister = () => {
-    // router.push("/(auth)/register");
-    router.push("/(auth)/login");
+    // router.push("/(auth)/signup");
+    router.push("/(auth)/register");
   };
   const handleLogin = () => {
     router.push("/(auth)/login");
@@ -50,7 +50,7 @@ export default function LoginOrRegister() {
 
       <View className="w-3/4 relative aspect-square overflow-hidden mx-auto">
         <Image
-          source={require("@/assets/mascot/default.png")}
+          source={require("@/assets/mascot/BluviSmile.png")}
           style={{ width: "100%", height: "100%" }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}
@@ -65,7 +65,7 @@ export default function LoginOrRegister() {
       </View>
       <View className="w-3/4 mx-auto flex flex-row items-center justify-center gap-4">
         <TouchableHighlight
-          onPress={handleRegister}
+          onPress={handleLogin}
           className=" border-[1px] border-black dark:bg-white rounded-full px-10 py-2 items-center "
           activeOpacity={0.9}
           underlayColor={"#DDDDDD"}
@@ -79,7 +79,7 @@ export default function LoginOrRegister() {
           textColor={theme === "dark" ? "blue1" : "white"}
           rippleColor={"#FFf00020"}
           buttonColor="black"
-          onPress={handleLogin}
+          onPress={handleRegister}
           className="bg-blue1 dark:bg-white rounded-full px-6 items-center"
         >
           {languages[language].login.button2}
