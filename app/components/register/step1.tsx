@@ -1,11 +1,11 @@
-import { useRegisterStore } from "@/lib/store";
-import { Pressable, Text, View } from "react-native";
 import { languages, useLanguage } from "@/lib/language";
-import { useState } from "react";
-import { ThemeText } from "..";
-import { Image } from "expo-image";
-import { CheckIcon } from "lucide-react-native";
+import { useRegisterStore } from "@/lib/store";
 import { useAppTheme } from "@/lib/theme";
+import { Image } from "expo-image";
+import { useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { Icon } from "react-native-paper";
+import { ThemeText } from "..";
 
 export default function Step1() {
   const { setField } = useRegisterStore();
@@ -27,7 +27,7 @@ export default function Step1() {
         <View className="flex-row items-center">
           <View className="w-10 h-10">
             <Image
-              source={require("@/assets/diamond.png")}
+              source={require("@/assets/img/diamond.png")}
               style={{ width: "100%", height: "100%" }}
               contentFit="contain"
             />
@@ -53,7 +53,8 @@ export default function Step1() {
           >
             {i === selectedIndex && (
               <View className="absolute -right-2 -top-2 rounded-full bg-black dark:bg-blue1 p-1 items-center justify-center">
-                <CheckIcon size={16} color="white" />
+                {/* <CheckIcon size={16} color="white" /> */}
+                <Icon source="check" size={16} color="white" />
               </View>
             )}
             <Text

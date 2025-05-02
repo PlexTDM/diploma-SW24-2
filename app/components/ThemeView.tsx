@@ -1,4 +1,3 @@
-import { useAppTheme } from "@/lib/theme";
 import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
 
 type ThemeViewProps = ViewProps & {

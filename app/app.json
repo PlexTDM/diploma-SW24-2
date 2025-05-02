@@ -2,58 +2,49 @@
   "expo": {
     "name": "CoolFitness",
     "slug": "coolfitness",
-    "version": "0.1.0",
-    "scheme": [
-      "coolfitness"
-    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/img/logo.png",
+    "scheme": "coolfitness",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
     "android": {
-      "package": "com.coolfitness.app",
-      "versionCode": 1,
-      "permissions": [
-        "ACTIVITY_RECOGNITION"
-      ]
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/img/logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.unnamed0631.coolfitness"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
-    },
-    "experiments": {
-      "tsconfigPaths": true
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/img/logo.svg"
     },
     "plugins": [
       "expo-router",
       [
-        "expo-build-properties",
+        "expo-splash-screen",
         {
-          "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "minSdkVersion": 26
-          }
+          "image": "./assets/img/logo_text.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
         }
       ]
     ],
-    "icon": "./assets/logo.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/mascot/default.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+    "experiments": {
+      "typedRoutes": true
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "extra": {
-      "router": {
-        "origin": false
-      },
+      "router": {},
       "eas": {
         "projectId": "90489b54-2458-4406-a394-e31059a52f0f"
       }
     },
-    "ios": {
-      "bundleIdentifier": "com.coolfitness.app"
-    }
+    "owner": "unnamed0631"
   }
 }

@@ -3,13 +3,24 @@
     "appVersionSource": "local"
   },
   "build": {
+    "production": {
+      "android": {
+        "buildType": "apk",
+        "distribution": "store"
+      }
+    },
     "development": {
+      "extends": "production",
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
     },
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "distribution": "internal"
       },
       "ios": {
         "simulator": true

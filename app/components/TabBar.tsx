@@ -1,14 +1,14 @@
-import { View, Text, Pressable, LayoutChangeEvent } from "react-native";
-import React, { useEffect, useState } from "react";
+import { icons } from "@/constants/icons";
+import { useAppTheme } from "@/lib/theme";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useState } from "react";
+import { LayoutChangeEvent, Pressable, View } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { icons } from "@/constants/icons";
-import { useAppTheme } from "@/lib/theme";
 
 enum labelValues {
   home = "home",
@@ -37,7 +37,7 @@ const TabBarButton = ({
 
   useEffect(() => {
     scale.value = withSpring(isFocused ? 1 : 0, { duration: 300 });
-  }, [isFocused]);
+  }, [scale, isFocused]);
 
   const animatedTextStyle = useAnimatedStyle(() => {
     const opacity = interpolate(scale.value, [0, 1], [1, 1]);

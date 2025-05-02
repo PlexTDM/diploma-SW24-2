@@ -1,41 +1,63 @@
-import { ThemeView, ThemeText } from "@/components";
-import { useFocusEffect, useRouter } from "expo-router";
-import { BellIcon, EllipsisVerticalIcon } from "lucide-react-native";
-import { View } from "react-native";
-import { Pressable } from "react-native";
-import { useAppTheme } from "@/lib/theme";
+import { ThemeText, ThemeView } from "@/components";
+import Sleep from "@/components/Home/Sleep";
+import Steps from "@/components/Home/Steps";
+import Water from "@/components/Home/Water";
+import Flame from "@/components/icons/Flame";
 import { languages, useLanguage } from "@/lib/language";
-import { useEffect, useState } from "react";
+import { useAppTheme } from "@/lib/theme";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { Pressable, View } from "react-native";
+import { Icon } from "react-native-paper";
 
-export default async function Tab() {
-  const router = useRouter();
+export default function Tab() {
   const { theme } = useAppTheme();
   const { language } = useLanguage();
 
   return (
     <ThemeView className="items-center p-8">
-      <View className="w-full flex-row items-center justify-end border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Pressable onPress={() => router.push("/(auth)/welcome")}>
-          <ThemeText>Login</ThemeText>
+      <View className="w-full flex-row items-center justify-between border-b gap-2 border-gray-200 dark:border-gray-800 pb-4">
+        <Pressable
+          // onPress={() => router.push("/(chat)/chat")}
+          className="rounded-full w-[40px] aspect-square items-center justify-center overflow-hidden"
+        >
+          <LinearGradient
+            colors={["#8A24FF", "#BB80FF"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="rounded-full w-[40px] aspect-square items-center justify-center p-2"
+          >
+            <Image
+              source={require("@/assets/icons/Chat.svg")}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </LinearGradient>
         </Pressable>
-        <BellIcon size={32} color={theme === "light" ? "black" : "white"} />
+        <View className="flex-row items-center gap-2">
+          <Pressable className="border rounded-full items-center justify-center relative w-[40px] aspect-square border-gray-200 dark:border-gray-800">
+            <Flame size={50} />
+          </Pressable>
+          <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
+        </View>
       </View>
       <View className="w-full flex-row items-center justify-between mt-4">
         <ThemeText className="text-2xl font-bold">
           {languages[language].home.title}
         </ThemeText>
-        <EllipsisVerticalIcon
+        <Icon
+          source="chevron-right"
           size={24}
           color={theme === "light" ? "black" : "white"}
         />
       </View>
 
-      <View className="flex-row flex-1 items-center justify-between mt-4 gap-6">
-        <View className="border flex-1 rounded-lg p-4">
-          <ThemeText>Steps: </ThemeText>
+      <View className="flex-row items-center justify-between mt-4 gap-6 h-[500px] p-4">
+        <View className="flex-col flex-1 gap-4 justify-between rounded-[26px]">
+          <Steps />
+          <Sleep />
         </View>
-        <View className="border flex-1">
-          <ThemeText>Tab [Home]</ThemeText>
+        <View className="flex-1">
+          <Water />
         </View>
       </View>
     </ThemeView>

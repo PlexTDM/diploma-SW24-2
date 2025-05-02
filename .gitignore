@@ -36,6 +36,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .npm
+npm-debug.*
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
@@ -43,6 +44,7 @@ yarn-error.log*
 .pnp.*
 
 # React Native
+.metro-health-check*
 .expo/
 dist/
 web-build/

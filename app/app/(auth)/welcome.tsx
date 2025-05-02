@@ -1,19 +1,17 @@
-import { View, Text, TouchableHighlight } from "react-native";
-import React, { useCallback } from "react";
-import { languages } from "@/lib/language";
-import { useLanguage } from "@/lib/language";
-import { Image } from "expo-image";
-import { Button } from "react-native-paper";
-import { ArrowLeft } from "lucide-react-native";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
-import { useRegisterStore } from "@/lib/store";
 import { ThemeText, ThemeView } from "@/components";
+import { languages, useLanguage } from "@/lib/language";
+import { useRegisterStore } from "@/lib/store";
 import { useAppTheme } from "@/lib/theme";
+import { Image } from "expo-image";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import React, { useCallback } from "react";
+import { Text, TouchableHighlight, View } from "react-native";
+import { Button, Icon } from "react-native-paper";
 
 export default function LoginOrRegister() {
   const router = useRouter();
   const { theme } = useAppTheme();
-  const { setField, progress } = useRegisterStore();
+  const { setField } = useRegisterStore();
   const navigation = useNavigation();
   const { language } = useLanguage();
   const handleRegister = () => {
@@ -27,13 +25,13 @@ export default function LoginOrRegister() {
     if (navigation.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)");
+      router.push("/(tabs)/home");
     }
   };
   useFocusEffect(
     useCallback(() => {
       setField("progress", 0);
-    }, [])
+    }, [setField])
   );
   return (
     <ThemeView className="dark:bg-blue1 relative flex-1 items-center pb-20 justify-between">
@@ -44,7 +42,11 @@ export default function LoginOrRegister() {
           rippleColor={"#FFf00020"}
           onPress={handleBack}
         >
-          <ArrowLeft size={40} color={theme === "dark" ? "white" : "black"} />
+          <Icon
+            source="chevron-left"
+            size={24}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
         </Button>
       </View>
 

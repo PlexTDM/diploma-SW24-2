@@ -1,15 +1,14 @@
+import { useRegisterStore } from "@/lib/store";
+import { useNavigation, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";
+import { Button, Icon } from "react-native-paper";
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
   Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
-import { Button } from "react-native-paper";
-import { ArrowLeft } from "lucide-react-native";
-import { useNavigation, useRouter } from "expo-router";
-import { useRegisterStore } from "@/lib/store";
 
 export default function ProgressBar() {
   const { progress } = useRegisterStore();
@@ -23,7 +22,7 @@ export default function ProgressBar() {
       duration: 500,
       easing: Easing.inOut(Easing.quad),
     });
-  }, [progress]);
+  }, [progress, progressValue]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: `${progressValue.value * 100}%`,
@@ -33,7 +32,7 @@ export default function ProgressBar() {
     if (navigaton.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)");
+      router.push("/(tabs)/home");
     }
   };
 
@@ -46,7 +45,7 @@ export default function ProgressBar() {
         rippleColor={"#FFf00020"}
         onPress={handleBack}
       >
-        <ArrowLeft size={40} color={"white"} />
+        <Icon source="chevron-left" size={24} color="white" />
       </Button>
       <View className="flex-1 h-6 bg-white/80 rounded-full p-0.5 overflow-hidden relative">
         <View className="flex-1">

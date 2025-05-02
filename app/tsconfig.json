@@ -9,8 +9,9 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "nativewind-env.d.ts",
-    "app/index.jsx",
-    "assets/profile"
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "app/+not-found.tsx",
+    "nativewind-env.d.ts"
   ]
 }

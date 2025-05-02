@@ -1,4 +1,3 @@
-import { useAppTheme } from "@/lib/theme";
 import { Text } from "react-native";
 
 const ThemeText = ({
@@ -13,14 +12,8 @@ const ThemeText = ({
   const classname = className
     ? `${className} ${defaultClassName}`
     : defaultClassName;
-  const { theme } = useAppTheme();
   return (
-    <Text
-      {...props}
-      className={`${
-        theme === "dark" ? "text-white" : "text-black"
-      } ${classname}`}
-    >
+    <Text {...props} className={`${classname}`}>
       {children}
     </Text>
   );

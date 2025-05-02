@@ -1,8 +1,8 @@
-# node stuff
 node_modules/
 npm-debug.log
 
-# build artifacts
+/android
+/ios
 android/.gradle/
 android/app/build/
 ios/Pods/
@@ -10,12 +10,9 @@ ios/build/
 build/
 dist/
 
-# test files
 __tests__/
 *.test.js
 
-# local dev
-.env
 .DS_Store
 .vscode/
 .idea/
@@ -23,9 +20,4 @@ __tests__/
 # OS
 *.log
 
-# Ignore local configuration files
 .git/
-
-# Ignore android and ios directories
-/android
-/ios

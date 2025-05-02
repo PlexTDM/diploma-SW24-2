@@ -1,7 +1,7 @@
-import { Tabs } from "expo-router";
+import { TabBar, ThemeView } from "@/components";
 import { useAppTheme } from "@/lib/theme";
+import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
-import { ThemeView, TabBar } from "@/components";
 
 export default function TabLayout() {
   const { theme } = useAppTheme();

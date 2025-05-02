@@ -1,9 +1,8 @@
-import { View } from "react-native";
-import { Button } from "react-native-paper";
-import { ArrowLeft } from "lucide-react-native";
-import { useNavigation, useRouter } from "expo-router";
 import { useRegisterStore } from "@/lib/store";
 import { useAppTheme } from "@/lib/theme";
+import { useNavigation, useRouter } from "expo-router";
+import { View } from "react-native";
+import { Button, Icon } from "react-native-paper";
 
 export default function ProgressBar() {
   const { theme } = useAppTheme();
@@ -16,7 +15,7 @@ export default function ProgressBar() {
     if (navigaton.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)");
+      router.push("/(tabs)/home");
     }
   };
 
@@ -28,7 +27,11 @@ export default function ProgressBar() {
         rippleColor={"#FFf00020"}
         onPress={handleBack}
       >
-        <ArrowLeft size={40} color={theme === "dark" ? "white" : "black"} />
+        <Icon
+          source="chevron-left"
+          size={24}
+          color={theme === "dark" ? "#fff" : "#000"}
+        />
       </Button>
       <View className="flex-1 h-2 flex-row overflow-hidden gap-2">
         {[...Array(maxStep).keys()].map((step) => {

@@ -1,30 +1,34 @@
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router/stack";
-import * as SplashScreen from "expo-splash-screen";
-import { ThemeProvider, useAppTheme } from "@/lib/theme";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemeView } from "@/components";
-import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import * as NavigationBar from "expo-navigation-bar";
+import LangSwitch from "@/components/LanguageSwtich";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
 import Providers from "@/components/providers";
 import "@/lib/global.css";
-import { LangSwitch } from "@/components/LanguageSwtich";
-import { View } from "react-native";
+import { ThemeProvider, useAppTheme } from "@/lib/theme";
+import { setBehaviorAsync, setVisibilityAsync } from "expo-navigation-bar";
+import { Stack } from "expo-router/stack";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import { Platform, SafeAreaView, View } from "react-native";
 
 // SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const RootLayout = () => {
   const { theme } = useAppTheme();
 
   useEffect(() => {
-    NavigationBar.setVisibilityAsync("hidden");
+    const hideNavBar = async () => {
+      setVisibilityAsync("hidden");
+      setBehaviorAsync("inset-swipe");
+      // setBehaviorAsync("overlay-swipe");
+    };
+    if (Platform.OS === "android") {
+      hideNavBar();
+    }
   }, []);
 
   return (
     <ThemeView>
-      <SafeAreaView className={`flex-1`} edges={["top", "left", "right"]}>
+      <SafeAreaView className={`flex-1`}>
         <ThemeProvider>
           <Providers>
             <StatusBar
@@ -49,4 +53,6 @@ export default function RootLayout() {
       </SafeAreaView>
     </ThemeView>
   );
-}
+};
+
+export default RootLayout;

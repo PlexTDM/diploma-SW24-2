@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { View, ActivityIndicator } from "react-native";
-import { useRouter, useRootNavigationState } from "expo-router";
+import { useRootNavigationState, useRouter } from "expo-router";
+import { useEffect, useRef } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 export default function RedirectScreen() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function RedirectScreen() {
 
     hasNavigated.current = true;
     router.replace("/(tabs)/home");
-  }, [rootNavigationState]);
+  }, [rootNavigationState, router]);
 
   return (
     <View className="flex-1 items-center justify-center">

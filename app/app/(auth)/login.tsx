@@ -29,12 +29,11 @@ const Login = () => {
   const signUp = () => router.push("/(auth)/signup");
 
   return (
-    
-      <View className="flex-1 bg-white dark:bg-black relative justify-center items-center pt-36">
-        <BlurEllipse/>
-        <View className="flex-1 bg-white rounded-3xl items-center justify-start w-96 h-96">
+    <View className="flex-1 bg-white dark:bg-black relative justify-center items-center pt-36">
+      <BlurEllipse />
+      <View className="flex-1 bg-white rounded-3xl items-center justify-start w-96 h-96">
         <Image
-          source={require("@/assets/Group 19187.png")}
+          source={require("@/assets/img/logoLarge.png")}
           style={{ width: "15%", height: "15%" }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}
@@ -80,7 +79,7 @@ const Login = () => {
           <TouchableOpacity>
             <Text className="border border-gray-300 rounded-full h-10">
               <Image
-              source={require("@/assets/google-logo.png")}
+              source={require("@/assets/img/google-logo.png")}
               style={{ width: "30%", height: "100%" }}
               cachePolicy={"memory-disk"}
               contentFit={"contain"}
@@ -91,7 +90,7 @@ const Login = () => {
           <TouchableOpacity>
             <Text className="border border-gray-300 rounded-full">
               <Image
-              source={require("@/assets/instagram-logo.png")}
+              source={require("@/assets/img/instagram-logo.png")}
               style={{ width: "10%", height: "20%" }}
               cachePolicy={"memory-disk"}
               contentFit={"contain"}
@@ -100,13 +99,16 @@ const Login = () => {
             </Text>
           </TouchableOpacity>
         </View> */}
-        </View>
-        <View className="flex-row justify-center bottom-8">
-          <Text>Don't have an account? </Text><Text className="text-blue-800" onPress={signUp}>Register Now</Text>
-        </View>
-
-        {loading && <ActivityIndicator size="large" className="mt-4" />}
       </View>
+      <View className="flex-row justify-center bottom-8">
+        <Text>Don&apos;t have an account? </Text>
+        <Text className="text-blue-800" onPress={signUp}>
+          Register Now
+        </Text>
+      </View>
+
+      {loading && <ActivityIndicator size="large" className="mt-4" />}
+    </View>
   );
 };
 

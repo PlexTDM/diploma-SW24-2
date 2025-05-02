@@ -31,6 +31,10 @@ export const mn = {
   home: {
     title: "Өнөөдрийн мэдээлэл",
   },
+  steps: {
+    steps: "Алхам",
+    stepsCount: "Алхам тоолох",
+  },
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
@@ -68,6 +72,10 @@ export const en = {
   home: {
     title: "Today's information",
   },
+  steps: {
+    steps: "Steps",
+    stepsCount: "Count Steps",
+  },
   welcome: "Welcome",
   logout: "Logout",
   profile: "Profile",
@@ -91,11 +99,11 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
 );
 
-export const LanguageProvider = ({
-  children,
-}: {
+interface LanguageProviderProps {
   children: React.ReactNode;
-}) => {
+}
+
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [language, setLanguage] = useState<Language>("en");
 
   useEffect(() => {
