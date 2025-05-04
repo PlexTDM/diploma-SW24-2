@@ -119,7 +119,7 @@ export default function TabBar({
   });
   return (
     <View
-      className="flex-row absolute bottom-[50px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
+      className="flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
       key={state.key}
       onLayout={onTabBarLayout}
     >

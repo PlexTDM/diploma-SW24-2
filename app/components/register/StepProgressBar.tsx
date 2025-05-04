@@ -39,7 +39,7 @@ export default function ProgressBar() {
             <View
               key={step}
               className={`flex-1 rounded-full ${
-                step === progress ? "bg-blue1" : "bg-gray-200"
+                step === progress ? "bg-black" : "bg-gray-200"
               }`}
             />
           );
