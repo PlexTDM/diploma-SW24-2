@@ -7,4 +7,5 @@ export const icons = {
   settings: (props: any) => <Text {...props}>⚙️</Text>,
   profile: (props: any) => <Text {...props}>👤</Text>,
   logout: (props: any) => <Text {...props}>🚪</Text>,
+  
 };
