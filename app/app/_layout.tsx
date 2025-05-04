@@ -1,14 +1,11 @@
-import { ThemeView } from "@/components";
-import LangSwitch from "@/components/LanguageSwtich";
-import { ThemeSwitch } from "@/components/ThemeSwitch";
-import Providers from "@/components/providers";
-import "@/lib/global.css";
-import { ThemeProvider, useAppTheme } from "@/lib/theme";
+import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
 import { setBehaviorAsync, setVisibilityAsync } from "expo-navigation-bar";
-import { Stack } from "expo-router/stack";
-import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import { Platform, SafeAreaView, View } from "react-native";
+import { ThemeProvider, useAppTheme } from "@/lib/theme";
+import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router/stack";
+import { useEffect } from "react";
+import "@/lib/global.css";
 
 // SplashScreen.preventAutoHideAsync();
 
