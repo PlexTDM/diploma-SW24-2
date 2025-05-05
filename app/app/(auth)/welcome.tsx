@@ -72,15 +72,15 @@ export default function LoginOrRegister() {
           activeOpacity={0.9}
           underlayColor={"#DDDDDD"}
         >
-          <Text className="text-lg text-black dark:text-blue1 text-center">
+          <Text className="text-lg text-black text-center">
             {languages[language].login.button1}
           </Text>
         </TouchableHighlight>
         <Button
           mode={"text"}
-          textColor={theme === "dark" ? "blue1" : "white"}
+          textColor={theme === "dark" ? "white" : "white"}
           rippleColor={"#FFf00020"}
-          buttonColor="black"
+          buttonColor={theme === "dark" ? "#136CF1" : "black"}
           onPress={handleRegister}
           className="bg-blue1 dark:bg-white rounded-full px-6 items-center"
         >
