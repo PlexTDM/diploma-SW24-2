@@ -24,7 +24,7 @@ export default function Step1() {
   };
 
   return (
-    <View className="flex-1 gap-8 justify-center items-center">
+    <View className="flex-1 gap-4 justify-center items-center">
       <View className="flex items-center">
         <View className="flex-row items-center">
           <View className="w-10 h-10">

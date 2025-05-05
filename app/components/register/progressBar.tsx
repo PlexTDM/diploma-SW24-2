@@ -14,7 +14,7 @@ export default function ProgressBar() {
   const { progress } = useRegisterStore();
   const router = useRouter();
   const navigaton = useNavigation();
-  const maxStep = 2;
+  const maxStep = 4;
   const progressValue = useSharedValue(0);
 
   useEffect(() => {
