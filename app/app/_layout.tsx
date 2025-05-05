@@ -1,27 +1,14 @@
 import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
-import { setBehaviorAsync, setVisibilityAsync } from "expo-navigation-bar";
-import { Platform, SafeAreaView, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
-import { useEffect } from "react";
 import "@/lib/global.css";
 
 // SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const { theme } = useAppTheme();
-
-  useEffect(() => {
-    const hideNavBar = async () => {
-      setVisibilityAsync("hidden");
-      setBehaviorAsync("inset-swipe");
-      // setBehaviorAsync("overlay-swipe");
-    };
-    if (Platform.OS === "android") {
-      hideNavBar();
-    }
-  }, []);
 
   return (
     <ThemeView>

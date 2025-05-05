@@ -2,7 +2,7 @@ import { icons } from "@/constants/icons";
 import { useAppTheme } from "@/lib/theme";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
-import { LayoutChangeEvent, Pressable, View } from "react-native";
+import { LayoutChangeEvent, Pressable, View, Platform } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -119,7 +119,9 @@ export default function TabBar({
   });
   return (
     <View
-      className="flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
+      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg ${
+        Platform.OS === "android" && "mb-10"
+      }`}
       key={state.key}
       onLayout={onTabBarLayout}
     >
