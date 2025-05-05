@@ -19,7 +19,7 @@ export default function Step1() {
 
   return (
     <View className="w-screen justify-center items-center">
-      <Text className="text-white">Your Age2: {selectedAge}</Text>
+      <Text className="text-black">Your Age: {selectedAge}</Text>
       <View className="mb-4">
         <WheelPickerExpo
           backgroundColor="#708FFF"

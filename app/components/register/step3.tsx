@@ -6,8 +6,8 @@ import { ItemType } from "react-native-wheel-picker-expo/lib/typescript/types";
 export default function Step3() {
   const [selectedValue, setSelectedValue] = useState<number>(60);
   return (
-    <View className="w-screen p-6 h-full flex-1 overflow-hidden items-center justify-center">
-      <Text className="text-white text-2xl">Your Height :{selectedValue}</Text>
+    <View className="w-screen pt-20 h-full flex-1 overflow-hidden items-center justify-center">
+      <Text className="text-black text-2xl">Your Height :{selectedValue}</Text>
       <WheelPickerExpo
         backgroundColor="#708FFF"
         width={70}

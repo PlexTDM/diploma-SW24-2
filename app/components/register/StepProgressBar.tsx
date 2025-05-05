@@ -9,7 +9,7 @@ export default function ProgressBar() {
   const { progress } = useRegisterStore();
   const router = useRouter();
   const navigaton = useNavigation();
-  const maxStep = 3;
+  const maxStep = 4;
 
   const handleBack = () => {
     if (navigaton.canGoBack()) {

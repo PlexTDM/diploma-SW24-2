@@ -27,7 +27,7 @@ export default function Register() {
 
   const scrollRef = useRef<FlatList>(null);
 
-  const maxTabs = 2; // 0,1,2
+  const maxTabs = 4; // 0,1,2
 
   const scrollToTab = (index: number) => {
     if (screenWidth > 0 && scrollRef.current) {
@@ -152,13 +152,8 @@ export default function Register() {
 
 const style = StyleSheet.create({
   button: {
-    borderRadius: 10,
-    shadowOffset: {
-      height: 4,
-      width: 0,
-    },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 20,
   },
 });
