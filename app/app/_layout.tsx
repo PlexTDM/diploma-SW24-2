@@ -25,7 +25,7 @@ const RootLayout = () => {
 
   return (
     <ThemeView>
-      <SafeAreaView className={`flex-1`}>
+      {/* <SafeAreaView className={`flex-1`}> */}
         <ThemeProvider>
           <Providers>
             <StatusBar
@@ -47,7 +47,7 @@ const RootLayout = () => {
             </Stack>
           </Providers>
         </ThemeProvider>
-      </SafeAreaView>
+      {/* </SafeAreaView> */}
     </ThemeView>
   );
 };
