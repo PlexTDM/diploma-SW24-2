@@ -14,6 +14,10 @@ export const mn = {
   },
   register: {
     age: "Таны Төрсөн өдөр?",
+    button: {
+      button1: "Өмнөх",
+      button2: "Дараах",
+    },
     steps: {
       goal: {
         title: "Таны зорилго?",
@@ -26,6 +30,56 @@ export const mn = {
           "Ерөнхий биеийн чийрэгжилт",
         ],
       },
+      activity: {
+        title: "Таны хөдөлгөөний түвшин ямар вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "Маш идэвхтэй (өдөр бүр дасгал хийдэг)",
+          "Дунд зэрэг (7 хоногт 2-3 удаа дасгал хийдэг)",
+          "Идэвхгүй (7 хоногт 1 удаа эсвэл огт биш)",
+        ],
+      },
+      meals: {
+        title: "Та өдөрт хэдэн удаа хооллодог вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "4+ удаа",
+          "2-3 удаа",
+          "1 удаа",
+        ],
+      },
+      water: {
+        title: "Та өдөрт хэдэн литр ус уудаг вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "4+ литр",
+          "2-3 литр",
+          "1 литр",
+        ],
+      },
+      work: {
+        title: "Таны ажлын хуваарь ямар вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "Уян хатан хуваарьтай",
+          "Байнгын цагаар ажилладаг (09:00–17:00)",
+          "Ээлжийн ажил",
+          "Ачаалалтай / завгүй хуваарьтай",
+          "Одоогоор ажилгүй / завтай байгаа",
+        ],
+      },
+      health: {
+        title: "Танд эрүүл мэндийн ямар нэгэн асуудал байгаа юу?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: [
+          "Үгүй, би эрүүл",
+          "Нуруу, үе мөчний асуудалтай",
+          "Зүрх судасны асуудалтай",
+          "Амьсгалын замын өвчтэй (астма гэх мэт)",
+          "Эмчийн заавар дор дасгал хийдэг",
+        ],
+      },
+      
     },
   },
   home: {
@@ -59,6 +113,10 @@ export const en = {
   },
   register: {
     age: "How old are you?",
+    button: {
+      button1: "Back",
+      button2: "Next",
+    },
     steps: {
       goal: {
         title: "Your Goal?",
@@ -71,6 +129,55 @@ export const en = {
           "General fitness",
         ],
       },
+      activity: {
+        title: "What's your current activity level?",
+        desc: "Your choice will affect your workout plan",
+        choices: [
+          "Very active (exercises every day)",
+          "Moderate (exercises 2–3 times a week)",
+          "Inactive (exercises once a week or not at all)",
+        ],
+      },
+      meals: {
+        title: "How many meals do you have per day?",
+        desc: "Your choice will affect your workout plan",
+        choices: [
+          "4 meals or more",
+          "2-3 meals per day",
+          "1 meal per day",
+        ],
+      },
+      water: {
+        title: "How much water do you drink per day?",
+        desc: "Your choice will affect your workout plan",
+        choices: [
+          "4 liters or more",
+          "2-3 liters per day",
+          "1 liter per day",
+        ],
+      },
+      work: {
+        title: "What is your current work schedule?",
+        desc: "Your choice will affect your workout plan.",
+        choices: [
+          "Flexible schedule",
+          "Regular hours (9:00 AM – 5:00 PM)",
+          "Shift work",
+          "Busy or irregular schedule",
+          "Currently not working / have free time",
+        ],
+      },
+      health: {
+        title: "Do you have any health conditions?",
+        desc: "Your choice will affect your workout plan.",
+        choices: [
+          "No, I'm healthy",
+          "Back or joint problems",
+          "Heart or cardiovascular condition",
+          "Respiratory issues (e.g., asthma)",
+          "Exercising under medical supervision",
+        ],
+      },      
     },
   },
   home: {

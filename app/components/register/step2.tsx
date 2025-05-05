@@ -19,23 +19,7 @@ export default function Step1() {
 
   return (
     <View className="w-screen justify-center items-center">
-      <Text className="text-black">Your Age: {selectedAge}</Text>
-      <View className="mb-4">
-        <WheelPickerExpo
-          backgroundColor="#708FFF"
-          width={70}
-          height={400}
-          items={[...Array(100).keys()].map((num) => ({
-            label: `${num + 1}`,
-            value: num + 1,
-          }))}
-          initialSelectedIndex={20}
-          onChange={handleChange}
-          renderItem={(props) => (
-            <Text className="text-white text-5xl h-min">{props.label}</Text>
-          )}
-        />
-      </View>
+      <Text className="text-black">hiinee ndd itge</Text>
     </View>
   );
 }

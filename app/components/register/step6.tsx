@@ -13,7 +13,7 @@ export default function Step1() {
   const { language } = useLanguage();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  const choices = languages[language].register.steps.goal.choices;
+  const choices = languages[language].register.steps.work.choices;
 
   const { theme } = useAppTheme();
   const colorScheme = useColorScheme();
@@ -26,7 +26,7 @@ export default function Step1() {
   return (
     <View className="flex-1 gap-auto justify-center items-center">
       <View className="flex items-center">
-        <View className="flex-row items-center">
+        <View className="flex-row px-6">
           <View className="w-10 h-10">
             <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
               <LottieView
@@ -37,12 +37,12 @@ export default function Step1() {
               />
             </View>
           </View>
-          <ThemeText className="text-3xl font-bold">
-            {languages[language].register.steps.goal.title}
+          <ThemeText className="text-3xl w-[80%] font-bold">
+            {languages[language].register.steps.work.title}
           </ThemeText>
         </View>
         <Text className="text-gray-300 text-xl w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
-          {languages[language].register.steps.goal.desc}
+          {languages[language].register.steps.work.desc}
         </Text>
       </View>
       <View className="my-4">
