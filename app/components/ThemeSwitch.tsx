@@ -2,7 +2,7 @@ import { useAppTheme } from "@/lib/theme";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 
-export function ThemeSwitch() {
+const ThemeSwitch = () => {
   const { theme, setTheme } = useAppTheme();
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -24,4 +24,6 @@ export function ThemeSwitch() {
       </View>
     </Pressable>
   );
-}
+};
+
+export default ThemeSwitch;

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
-import BlurEllipse from "@/components/BlurEllipse";
+import { BlurEllipse } from "@/components";
 import { Image } from "expo-image";
 
 const Login = () => {

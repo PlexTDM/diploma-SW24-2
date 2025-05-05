@@ -101,7 +101,7 @@ export default function TabBar({
   navigation,
 }: BottomTabBarProps) {
   const [dimensions, setDimensions] = useState({ width: 100, height: 20 });
-  const btnWidth = dimensions.width / (state.routes.length - 1) - 5;
+  const btnWidth = dimensions.width / state.routes.length - 5;
   const { theme } = useAppTheme();
   const onTabBarLayout = (e: LayoutChangeEvent) => {
     setDimensions(e.nativeEvent.layout);
@@ -119,7 +119,7 @@ export default function TabBar({
   });
   return (
     <View
-      className="flex-row absolute bottom-[50px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
+      className="flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
       key={state.key}
       onLayout={onTabBarLayout}
     >
@@ -139,19 +139,13 @@ export default function TabBar({
         ]}
       />
       {state.routes.map((route, index) => {
-        if (route.name === "index") {
-          return null;
-        }
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
         const onPress = () => {
           tabPosition.value = withSpring(
             Math.max(
-              Math.min(
-                (index - 1) * btnWidth + 5,
-                dimensions.width - btnWidth - 5
-              ),
+              Math.min(index * btnWidth + 5, dimensions.width - btnWidth - 5),
               10
             ),
             {
