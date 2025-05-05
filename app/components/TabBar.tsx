@@ -66,8 +66,8 @@ const TabBarButton = ({
       // testID={options.tabBarButtonTestID}
       onPress={onPress}
       onLongPress={onLongPress}
-      className="flex-1 items-center justify-center relative z-10 flex-row"
-      style={buttonStyle} // Apply dynamic button style
+      className="flex-1 items-center justify-center relative z-10 flex-row gap-1"
+      style={buttonStyle}
     >
       <Animated.View style={inimatedIconStyle}>
         {icons[label]({ color: isFocused ? "#fff" : "gray" })}
@@ -88,6 +88,9 @@ const TabBarButton = ({
             width: isFocused ? "auto" : "0%",
           },
         ]}
+        className={`font-semibold ${isFocused ? "opacity-100" : "opacity-0"}`}
+        numberOfLines={1}
+        adjustsFontSizeToFit
       >
         {label}
       </Animated.Text>
@@ -100,7 +103,7 @@ export default function TabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
-  const [dimensions, setDimensions] = useState({ width: 100, height: 20 });
+  const [dimensions, setDimensions] = useState({ width: 100, height: 30 });
   const btnWidth = dimensions.width / state.routes.length - 5;
   const { theme } = useAppTheme();
   const onTabBarLayout = (e: LayoutChangeEvent) => {
@@ -133,7 +136,7 @@ export default function TabBar({
             width: btnWidth + 15,
             marginLeft: -5,
             opacity: 1,
-            height: dimensions.height - 12,
+            height: dimensions.height - 6,
             backgroundColor: theme === "dark" ? "#4C91F9" : "#4C91F9",
             borderRadius: 999,
             zIndex: 1,

@@ -40,18 +40,14 @@ export default function TabLayout() {
           name="home"
           options={{
             title: "Home",
-            tabBarShowLabel: false,
             lazy: false,
-            headerShown: false,
           }}
         />
         <Tabs.Screen
           name="chatbot"
           options={{
             tabBarLabel: "Chat",
-            tabBarShowLabel: false,
             lazy: false,
-            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -59,9 +55,7 @@ export default function TabLayout() {
           options={{
             title: "Blog",
             tabBarLabel: "Blog",
-            tabBarShowLabel: false,
             lazy: false,
-            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -69,8 +63,6 @@ export default function TabLayout() {
           options={{
             title: "Profile",
             lazy: false,
-            tabBarShowLabel: false,
-            headerShown: false,
           }}
         />
       </Tabs>

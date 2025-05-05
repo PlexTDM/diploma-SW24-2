@@ -31,9 +31,13 @@ export const mn = {
   home: {
     title: "Өнөөдрийн мэдээлэл",
   },
-  steps: {
-    steps: "Алхам",
+  walk: {
+    steps: "Алхалт",
     stepsCount: "Алхам тоолох",
+  },
+  sleep: {
+    sleep: "Нойр",
+    duration: "цаг",
   },
   welcome: "Тавтай морил",
   logout: "Гарах",
@@ -72,9 +76,13 @@ export const en = {
   home: {
     title: "Today's information",
   },
-  steps: {
+  walk: {
     steps: "Steps",
     stepsCount: "Count Steps",
+  },
+  sleep: {
+    sleep: "Sleep",
+    duration: "hours",
   },
   welcome: "Welcome",
   logout: "Logout",

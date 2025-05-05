@@ -1,7 +1,5 @@
+import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
 import { ThemeText, ThemeView } from "@/components";
-import Sleep from "@/components/Home/Sleep";
-import Steps from "@/components/Home/Steps";
-import Water from "@/components/Home/Water";
 import Flame from "@/components/icons/Flame";
 import { languages, useLanguage } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
@@ -10,7 +8,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import { Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
-
 
 export default function Tab() {
   const { theme } = useAppTheme();
@@ -36,13 +33,16 @@ export default function Tab() {
           </LinearGradient>
         </Pressable>
         <View className="flex-row items-center gap-2">
-          <Pressable onPress={() => router.push("/Streak")} className="border rounded-full items-center justify-center relative w-[40px] aspect-square border-gray-200 dark:border-gray-800" >
-            <Flame size={50}  />
+          <Pressable
+            onPress={() => router.push("/Streak")}
+            className="border rounded-full items-center justify-center relative w-[40px] aspect-square border-gray-200 dark:border-gray-800"
+          >
+            <Flame size={50} />
           </Pressable>
           <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
         </View>
       </View>
-      <View className="w-full flex-row items-center justify-between mt-4">
+      <View className="w-full flex-row items-center justify-between mt-12">
         <ThemeText className="text-2xl font-bold">
           {languages[language].home.title}
         </ThemeText>
@@ -53,13 +53,20 @@ export default function Tab() {
         />
       </View>
 
-      <View className="flex-row items-center justify-between mt-4 gap-6 h-[500px] p-4">
-        <View className="flex-col flex-1 gap-4 justify-between rounded-[26px]">
-          <Steps />
-          <Sleep />
+      <View className="flex-col items-center justify-between mt-6 gap-3 h-[400px]">
+        <View className="flex-1 flex-row gap-3">
+          <View className="flex-1 gap-3">
+            <Steps />
+            <Sleep />
+          </View>
+          <View className="flex-1 gap-3">
+            <Water />
+          </View>
         </View>
-        <View className="flex-1">
-          <Water />
+
+        <View className="flex-row gap-3 h-1/3">
+          <Training />
+          <Calories />
         </View>
       </View>
     </ThemeView>
