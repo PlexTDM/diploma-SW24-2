@@ -37,7 +37,7 @@ export default function Tab() {
             onPress={() => router.push("/Streak")}
             className="border rounded-full items-center justify-center relative w-[40px] aspect-square border-gray-200 dark:border-gray-800"
           >
-            <Flame size={50} />
+            <Flame size={35} />
           </Pressable>
           <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
         </View>

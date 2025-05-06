@@ -120,11 +120,13 @@ export default function TabBar({
       ],
     };
   });
+  const barMargin = Platform.OS === "android" ? "mb-10": Platform.OS === "ios" ? "mb-10" : "mb-0";
   return (
     <View
-      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg ${
-        Platform.OS === "android" && "mb-10"
+      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center h-[60px] justify-between mx-12 px-3 bg-white dark:bg-slate-950 rounded-full ${
+        barMargin
       }`}
+      style={{boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}
       key={state.key}
       onLayout={onTabBarLayout}
     >
