@@ -42,20 +42,12 @@ export const mn = {
       meals: {
         title: "Та өдөрт хэдэн удаа хооллодог вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
-        choices: [
-          "4+ удаа",
-          "2-3 удаа",
-          "1 удаа",
-        ],
+        choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
       },
       water: {
         title: "Та өдөрт хэдэн литр ус уудаг вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
-        choices: [
-          "4+ литр",
-          "2-3 литр",
-          "1 литр",
-        ],
+        choices: ["4+ литр", "2-3 литр", "1 литр"],
       },
       work: {
         title: "Таны ажлын хуваарь ямар вэ?",
@@ -79,7 +71,18 @@ export const mn = {
           "Эмчийн заавар дор дасгал хийдэг",
         ],
       },
-      
+      step2: {
+        title: "Таны профайлыг бүрэн гүйцээцгээе",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        question1: {
+          title: "Та хүйсээ сонгоно уу",
+          choices: {
+            1: "Эрэгтэй",
+            2: "Эмэгтэй",
+            3: "Бусад",
+          },
+        },
+      },
     },
   },
   home: {
@@ -141,20 +144,12 @@ export const en = {
       meals: {
         title: "How many meals do you have per day?",
         desc: "Your choice will affect your workout plan",
-        choices: [
-          "4 meals or more",
-          "2-3 meals per day",
-          "1 meal per day",
-        ],
+        choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
       },
       water: {
         title: "How much water do you drink per day?",
         desc: "Your choice will affect your workout plan",
-        choices: [
-          "4 liters or more",
-          "2-3 liters per day",
-          "1 liter per day",
-        ],
+        choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
       },
       work: {
         title: "What is your current work schedule?",
@@ -177,7 +172,19 @@ export const en = {
           "Respiratory issues (e.g., asthma)",
           "Exercising under medical supervision",
         ],
-      },      
+      },
+      step2: {
+        title: "Let's complete your profile",
+        desc: "Your choice will affect your workout plan.",
+        question1: {
+          title: "Choose gender",
+          choices: {
+            1: "Male",
+            2: "Female",
+            3: "Other",
+          },
+        },
+      },
     },
   },
   home: {

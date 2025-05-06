@@ -146,17 +146,15 @@ export default function Register() {
             onPress={handleBack}
             style={style.button1}
             className="text-black"
-            textColor={theme === "light" ? "white" : "black"}
           >
-            <ThemeText>{languages[language].back}</ThemeText>
+            <ThemeText className="text-black">{languages[language].back}</ThemeText>
           </Button>
           <Button
             mode="contained"
             onPress={handleNext}
             style={style.button2}
-            textColor="white"
           >
-            <ThemeText>{languages[language].next}</ThemeText>
+            <ThemeText className="text-white">{languages[language].next}</ThemeText>
           </Button>
         </View>
       </View>
