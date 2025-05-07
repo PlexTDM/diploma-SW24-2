@@ -14,6 +14,10 @@ import { languages, useLanguage } from "@/lib/language";
 import Step1 from "@/components/register/step1";
 import Step2 from "@/components/register/step2";
 import Step3 from "@/components/register/step3";
+import Step4 from "@/components/register/step4";
+import Step5 from "@/components/register/step5";
+import Step6 from "@/components/register/step6";
+import Step7 from "@/components/register/step7";
 import { ThemeText, ThemeView } from "@/components";
 import { useAppTheme } from "@/lib/theme";
 import StepProgressBar from "@/components/register/StepProgressBar";
@@ -27,7 +31,7 @@ export default function Register() {
 
   const scrollRef = useRef<FlatList>(null);
 
-  const maxTabs = 2; // 0,1,2
+  const maxTabs = 8; // 0,1,2
 
   const scrollToTab = (index: number) => {
     if (screenWidth > 0 && scrollRef.current) {
@@ -66,9 +70,13 @@ export default function Register() {
   // Pre-define the data array to avoid recreating it on each render
   const steps = [
     { key: "1", component: Step1 },
-    { key: "2", component: Step1 },
-    { key: "3", component: Step2 },
-    { key: "4", component: Step3 },
+    { key: "2", component: Step2 },
+    { key: "3", component: Step3 },
+    { key: "4", component: Step4 },
+    { key: "5", component: Step5 },
+    { key: "6", component: Step6 },
+    { key: "7", component: Step7 },
+
   ];
 
   // Memoize the getItemLayout function
@@ -104,6 +112,11 @@ export default function Register() {
             {tab === 0 && <Step1 />}
             {tab === 1 && <Step2 />}
             {tab === 2 && <Step3 />}
+            {tab === 3 && <Step4 />}
+            {tab === 4 && <Step5 />}
+            {tab === 5 && <Step6 />}
+            {tab === 6 && <Step7 />}
+            {/* Add more steps as needed */}
           </View>
         ) : (
           <View className="flex-1 overflow-hidden">
@@ -126,23 +139,22 @@ export default function Register() {
             />
           </View>
         )}
-
+        
         <View className="flex-row w-full px-12 justify-between mt-4 mb-12">
-          <Button
+          <Button	
             mode="contained"
             onPress={handleBack}
-            style={style.button}
-            disabled={tab <= 0}
+            style={style.button1}
+            className="text-black"
           >
-            <ThemeText>{languages[language].back}</ThemeText>
+            <ThemeText className="text-black">{languages[language].back}</ThemeText>
           </Button>
           <Button
             mode="contained"
             onPress={handleNext}
-            style={style.button}
-            disabled={tab >= maxTabs}
+            style={style.button2}
           >
-            <ThemeText>{languages[language].next}</ThemeText>
+            <ThemeText className="text-white">{languages[language].next}</ThemeText>
           </Button>
         </View>
       </View>
@@ -151,14 +163,15 @@ export default function Register() {
 }
 
 const style = StyleSheet.create({
-  button: {
-    borderRadius: 10,
-    shadowOffset: {
-      height: 4,
-      width: 0,
-    },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+  button1: {
+    backgroundColor: "white",
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 20,
+  },
+  button2: {
+    backgroundColor: "#3b82f6",
+    color: "white",
+    borderRadius: 20,
   },
 });

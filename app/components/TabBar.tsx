@@ -2,7 +2,7 @@ import { icons } from "@/constants/icons";
 import { useAppTheme } from "@/lib/theme";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
-import { LayoutChangeEvent, Pressable, View } from "react-native";
+import { LayoutChangeEvent, Pressable, View, Platform } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -66,8 +66,8 @@ const TabBarButton = ({
       // testID={options.tabBarButtonTestID}
       onPress={onPress}
       onLongPress={onLongPress}
-      className="flex-1 items-center justify-center relative z-10 flex-row"
-      style={buttonStyle} // Apply dynamic button style
+      className="flex-1 items-center justify-center relative z-10 flex-row gap-1"
+      style={buttonStyle}
     >
       <Animated.View style={inimatedIconStyle}>
         {icons[label]({ color: isFocused ? "#fff" : "gray" })}
@@ -88,6 +88,9 @@ const TabBarButton = ({
             width: isFocused ? "auto" : "0%",
           },
         ]}
+        className={`font-semibold ${isFocused ? "opacity-100" : "opacity-0"}`}
+        numberOfLines={1}
+        adjustsFontSizeToFit
       >
         {label}
       </Animated.Text>
@@ -100,7 +103,7 @@ export default function TabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
-  const [dimensions, setDimensions] = useState({ width: 100, height: 20 });
+  const [dimensions, setDimensions] = useState({ width: 100, height: 30 });
   const btnWidth = dimensions.width / state.routes.length - 5;
   const { theme } = useAppTheme();
   const onTabBarLayout = (e: LayoutChangeEvent) => {
@@ -117,9 +120,13 @@ export default function TabBar({
       ],
     };
   });
+  const barMargin = Platform.OS === "android" ? "mb-10": Platform.OS === "ios" ? "mb-10" : "mb-0";
   return (
     <View
-      className="flex-row absolute bottom-[10px] left-0 right-0 items-center justify-between mx-12 py-4 px-3 bg-white dark:bg-slate-950 rounded-full shadow-lg"
+      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center h-[60px] justify-between mx-12 px-3 bg-white dark:bg-slate-950 rounded-full ${
+        barMargin
+      }`}
+      style={{boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}
       key={state.key}
       onLayout={onTabBarLayout}
     >
@@ -131,7 +138,7 @@ export default function TabBar({
             width: btnWidth + 15,
             marginLeft: -5,
             opacity: 1,
-            height: dimensions.height - 12,
+            height: dimensions.height - 6,
             backgroundColor: theme === "dark" ? "#4C91F9" : "#4C91F9",
             borderRadius: 999,
             zIndex: 1,

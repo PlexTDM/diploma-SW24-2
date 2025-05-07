@@ -9,7 +9,7 @@ export default function ProgressBar() {
   const { progress } = useRegisterStore();
   const router = useRouter();
   const navigaton = useNavigation();
-  const maxStep = 3;
+  const maxStep = 7; // 0,1,2,3,4,5,6,7
 
   const handleBack = () => {
     if (navigaton.canGoBack()) {
@@ -39,7 +39,9 @@ export default function ProgressBar() {
             <View
               key={step}
               className={`flex-1 rounded-full ${
-                step === progress ? "bg-black" : "bg-gray-200"
+                step === progress
+                  ? "bg-black dark:bg-blue-500"
+                  : "bg-gray-200 dark:bg-gray-700"
               }`}
             />
           );

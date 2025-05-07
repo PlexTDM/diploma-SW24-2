@@ -1,4 +1,4 @@
-import { ThemeText, ThemeView } from "@/components";
+import { ThemeView } from "@/components";
 import { useState } from "react";
 import { View, Text } from "react-native";
 import { addMonths, subMonths } from "date-fns";
@@ -62,30 +62,39 @@ export default function Streak() {
   return (
     <ThemeView>
       <View className="w-full px-2 mb-2">
-  <Text className="text-lg font-bold text-black dark:text-white mb-2 text-center">Streak Days</Text>
-</View>
-    <View className="p-4 dark:bg-gray-900 ">
-      <View className="flex-row justify-between mb-4 ">
-        <View className="flex-1 bg-blue-100 p-3 rounded-xl mr-2 ">
-          <Text className="text-md font-semibold text-blue-800">Current Streak</Text>
-          <Text className="text-2xl font-bold text-blue-900">{currentStreak}</Text>
-        </View>
-        <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
-          <Text className="text-md font-semibold text-yellow-800">Longest Streak</Text>
-          <Text className="text-2xl font-bold text-yellow-900">{longestStreak}</Text>
-        </View>
+        <Text className="text-lg font-bold text-black dark:text-white mb-2 text-center">
+          Streak Days
+        </Text>
       </View>
+      <View className="p-4 dark:bg-gray-900 ">
+        <View className="flex-row justify-between mb-4 ">
+          <View className="flex-1 bg-blue-100 p-3 rounded-xl mr-2 ">
+            <Text className="text-md font-semibold text-blue-800">
+              Current Streak
+            </Text>
+            <Text className="text-2xl font-bold text-blue-900">
+              {currentStreak}
+            </Text>
+          </View>
+          <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
+            <Text className="text-md font-semibold text-yellow-800">
+              Longest Streak
+            </Text>
+            <Text className="text-2xl font-bold text-yellow-900">
+              {longestStreak}
+            </Text>
+          </View>
+        </View>
 
-      <MiniCalendar
-        currentDate={currentDate}
-        completedDays={completedDays}
-        onToggleComplete={onToggleComplete}
-        onPrevMonth={handlePrevMonth}
-        onNextMonth={handleNextMonth}
-        isNextDisabled={isNextDisabled}
-      />
-    </View>
-
+        <MiniCalendar
+          currentDate={currentDate}
+          completedDays={completedDays}
+          onToggleComplete={onToggleComplete}
+          onPrevMonth={handlePrevMonth}
+          onNextMonth={handleNextMonth}
+          isNextDisabled={isNextDisabled}
+        />
+      </View>
     </ThemeView>
   );
 }
