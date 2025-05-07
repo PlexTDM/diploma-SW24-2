@@ -75,30 +75,36 @@ const Login = () => {
           <Text className="text-gray-500">or login with</Text>
           <Text className="bg-gray-300 w-28 h-0.5 flex justify-center items-center"></Text>
         </View>
-        {/* <View className="flex-row justify-center mt-5 h-26">
-          <TouchableOpacity>
-            <Text className="border border-gray-300 rounded-full h-10">
+        {/* <View className="flex-row gap-4 justify-center mt-5 h-26">
+          <TouchableOpacity className="border border-gray-300 rounded-full h-14 w-14">
               <Image
-              source={require("@/assets/img/google-logo.png")}
-              style={{ width: "30%", height: "100%" }}
-              cachePolicy={"memory-disk"}
+              source={require("@/assets/google-logo.png")}
+              style={{ width: "100%", height: "100%" }}
+              cachePolicy={"memory"}
               contentFit={"contain"}
               focusable={false}
               />
-            </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text className="border border-gray-300 rounded-full">
+          <TouchableOpacity className="border border-gray-300 rounded-full h-14 w-14 p-1">
               <Image
-              source={require("@/assets/img/instagram-logo.png")}
-              style={{ width: "10%", height: "20%" }}
-              cachePolicy={"memory-disk"}
+              source={require("@/assets/instagram-logo.png")}
+              style={{ width: "100%", height: "100%" }}
+              cachePolicy={"memory"}
               contentFit={"contain"}
               focusable={false}
               />
-            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="border border-gray-300 rounded-full h-14 w-14 p-1">
+              <Image
+              source={require("@/assets/instagram-logo.png")}
+              style={{ width: "100%", height: "100%" }}
+              cachePolicy={"memory"}
+              contentFit={"contain"}
+              focusable={false}
+              />
           </TouchableOpacity>
         </View> */}
+        {loading && <ActivityIndicator size="large" className="mt-4" />}
       </View>
       <View className="flex-row justify-center bottom-8">
         <Text>Don&apos;t have an account? </Text>

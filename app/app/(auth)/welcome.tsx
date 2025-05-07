@@ -62,7 +62,7 @@ export default function LoginOrRegister() {
       <View>
         <ThemeText className="text-3xl mb-[40%] text-center ">
           {/* {languages[language].login.title2} */}
-          {languages[language].mascot.desc}
+          {languages[language].mascot.desc}\
         </ThemeText>
       </View>
       <View className="w-3/4 mx-auto flex flex-row items-center justify-center gap-4">
