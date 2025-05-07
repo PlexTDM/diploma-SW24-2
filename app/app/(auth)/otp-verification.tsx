@@ -24,9 +24,9 @@ const OTPVerification = () => {
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
-      <BlurEllipse />
+      {/* <BlurEllipse /> */}
       {/* 🔙 Back button */}
-      <View className="flex-row items-center px-4 pt-12">
+      <View className="flex-row items-center px-4 pt-12 z-50">
         <Pressable
           onPress={handleBack}
           className="w-10 h-10 bg-white dark:bg-gray-800 items-center justify-center shadow rounded-md"
