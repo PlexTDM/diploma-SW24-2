@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type RegisterState = {
+interface RegisterState {
   name: string;
   email: string;
   password: string;
@@ -10,8 +10,9 @@ type RegisterState = {
   gender: string;
   weight: number;
   height: number;
-  setField: (key: string, value: string | number) => void;
-};
+  birthday: Date | null;
+  setField: (key: keyof Omit<RegisterState, "setField">, value: any) => void;
+}
 
 export const useRegisterStore = create<RegisterState>((set) => ({
   name: "",
@@ -23,5 +24,6 @@ export const useRegisterStore = create<RegisterState>((set) => ({
   gender: "",
   weight: 0,
   height: 0,
+  birthday: null,
   setField: (key, value) => set((state) => ({ ...state, [key]: value })),
 }));

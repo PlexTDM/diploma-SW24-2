@@ -1,8 +1,6 @@
 import { useRegisterStore } from "@/lib/store";
-import { Button } from "react-native-paper";
 import {
   LayoutChangeEvent,
-  StyleSheet,
   View,
   Platform,
   FlatList,
@@ -21,11 +19,9 @@ import {
   Step6,
   Step7,
 } from "@/components/register";
-import { ThemeView, ThemeText } from "@/components";
-import { useAppTheme } from "@/lib/theme";
+import { ThemeView } from "@/components";
 
 export default function Register() {
-  const { theme } = useAppTheme();
   const { setField } = useRegisterStore();
   const { language } = useLanguage();
   const [tab, setTab] = useState(0);
@@ -47,7 +43,7 @@ export default function Register() {
   const maxTabs = steps.length;
 
   const scrollToTab = (index: number) => {
-    if (screenWidth > 0 && scrollRef.current) {
+    if (screenWidth > 0 && scrollRef.current && index >= 0 && index < maxTabs) {
       setField("progress", index);
       requestAnimationFrame(() => {
         scrollRef.current?.scrollToIndex({
@@ -103,7 +99,7 @@ export default function Register() {
   return (
     <ThemeView className="flex-1" onLayout={setDimensions}>
       {/* <ProgressBar /> */}
-      <StepProgressBar maxTabs />
+      <StepProgressBar maxTabs={maxTabs} />
       {/* <Dialogue text={languages[language].register.age} /> */}
 
       <View className="flex-1 items-center justify-center overflow-hidden">
@@ -117,7 +113,6 @@ export default function Register() {
             {tab === 4 && <Step5 />}
             {tab === 5 && <Step6 />}
             {tab === 6 && <Step7 />}
-            {/* Add more steps as needed */}
           </View>
         ) : (
           <View className="flex-1 overflow-hidden">
@@ -143,7 +138,9 @@ export default function Register() {
 
         <View className="flex-row w-full px-12 justify-between mt-4 mb-12">
           <Pressable
-            className="bg-white px-6 py-2 items-center justify-center rounded-3xl font-medium text-gray-500 disabled: overflow-hidden"
+            className={`px-6 py-3 items-center justify-center rounded-3xl font-medium ${
+              tab === 0 ? "text-gray-800 bg-gray-300" : "bg-white text-black"
+            }`}
             android_ripple={{
               color: "#6b7280",
               radius: 30,
@@ -151,31 +148,35 @@ export default function Register() {
             onPress={handleBack}
             disabled={tab === 0}
           >
-            <Text className="text-black text-center">
+            <Text
+              className={`text-center ${
+                tab === 0 ? "text-gray-400" : "text-black"
+              }`}
+            >
               {languages[language].back}
             </Text>
           </Pressable>
-
-          <Button
-            mode="contained"
+          <Pressable
+            className={`px-6 py-3 items-center justify-center rounded-3xl font-medium ${
+              tab === maxTabs - 1 ? "bg-gray-300" : "bg-blue-500"
+            }`}
+            android_ripple={{
+              color: "#6b7280",
+              radius: 30,
+            }}
             onPress={handleNext}
-            style={style.button2}
-            textColor="white"
+            disabled={tab === maxTabs - 1}
           >
-            <ThemeText className="text-white">
+            <Text
+              className={`text-center ${
+                tab === maxTabs - 1 ? "text-gray-400" : "text-white"
+              }`}
+            >
               {languages[language].next}
-            </ThemeText>
-          </Button>
+            </Text>
+          </Pressable>
         </View>
       </View>
     </ThemeView>
   );
 }
-
-const style = StyleSheet.create({
-  button2: {
-    backgroundColor: "#3b82f6",
-    color: "white",
-    borderRadius: 20,
-  },
-});

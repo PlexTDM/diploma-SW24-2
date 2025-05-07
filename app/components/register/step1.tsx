@@ -2,7 +2,9 @@ import { useRegisterStore } from "@/lib/store";
 import { Text, View, TextInput, Pressable } from "react-native";
 import { useState, useEffect } from "react";
 import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { languages, useLanguage } from "@/lib/language";
 
 export default function Step1() {
@@ -35,9 +37,16 @@ export default function Step1() {
     ]);
   }, [language, genderChoices]);
 
-  const handleChange = ({ label }: ItemType<string>) => {
+  const handleGender = ({ label }: ItemType<string>) => {
     if (label) {
       setField("gender", label);
+    }
+  };
+
+  const handleDob = (event: DateTimePickerEvent, date?: Date | undefined) => {
+    if (date) {
+      setDob(date);
+      setField("birthday", date);
     }
   };
 
@@ -59,7 +68,7 @@ export default function Step1() {
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
-          onSelectItem={handleChange}
+          onSelectItem={handleGender}
           placeholder={languages[language].register.steps.step1.question1.title}
           style={{
             borderRadius: 12,
@@ -92,10 +101,7 @@ export default function Step1() {
           mode="date"
           display="default"
           maximumDate={new Date()}
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setDob(selectedDate);
-          }}
+          onChange={handleDob}
         />
       )}
 

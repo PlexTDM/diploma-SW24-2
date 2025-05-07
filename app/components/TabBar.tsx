@@ -21,7 +21,6 @@ type TabButtonProps = {
   onLongPress: () => void;
   isFocused: boolean;
   label: labelValues;
-  color: string;
   btnWidth: number;
 };
 
@@ -120,13 +119,16 @@ export default function TabBar({
       ],
     };
   });
-  const barMargin = Platform.OS === "android" ? "mb-10": Platform.OS === "ios" ? "mb-10" : "mb-0";
+  const barMargin =
+    Platform.OS === "android"
+      ? "mb-10"
+      : Platform.OS === "ios"
+      ? "mb-10"
+      : "mb-0";
   return (
     <View
-      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center h-[60px] justify-between mx-12 px-3 bg-white dark:bg-slate-950 rounded-full ${
-        barMargin
-      }`}
-      style={{boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"}}
+      className={`flex-row absolute bottom-[10px] left-0 right-0 items-center h-[60px] justify-between mx-12 px-3 bg-white dark:bg-slate-950 rounded-full ${barMargin}`}
+      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
       key={state.key}
       onLayout={onTabBarLayout}
     >
@@ -191,7 +193,6 @@ export default function TabBar({
             onLongPress={onLongPress}
             isFocused={isFocused}
             btnWidth={btnWidth}
-            color={options.tabBarActiveTintColor || ""}
             label={
               (label?.toString().toLowerCase() as labelValues) ||
               (route.name.toLowerCase() as labelValues)

@@ -1,13 +1,12 @@
 import { languages, useLanguage } from "@/lib/language";
 import { useRegisterStore } from "@/lib/store";
 import { useAppTheme } from "@/lib/theme";
-import { Image } from "expo-image";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Icon } from "react-native-paper";
 import { ThemeText } from "..";
-import LottieView from 'lottie-react-native';
-import { useColorScheme } from 'react-native';
+import LottieView from "lottie-react-native";
+
 export default function Step1() {
   const { setField } = useRegisterStore();
   const { language } = useLanguage();
@@ -16,8 +15,7 @@ export default function Step1() {
   const choices = languages[language].register.steps.health.choices;
 
   const { theme } = useAppTheme();
-  const colorScheme = useColorScheme();
-  const iconColor = colorScheme === 'dark' ? 'black' : 'white';
+  const iconColor = theme === "dark" ? "black" : "white";
   const handlePress = (index: number) => {
     setSelectedIndex(index);
     setField("goal", choices[index]);
@@ -28,16 +26,27 @@ export default function Step1() {
       <View className="flex items-center ">
         <View className="flex-row px-6">
           <View className="w-10 h-10">
-            <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center' }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "transparent",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <LottieView
-                source={{ uri: "https://lottie.host/5468f6ff-9e43-4df5-b00a-d41a6a142914/bTxkNrkVJi.lottie" }}
+                source={require("@/assets/icons/gem.json")}
                 autoPlay
                 loop
-                style={{ width: 80, height: 45, backgroundColor: 'transparent' }}
+                style={{
+                  width: 80,
+                  height: 45,
+                  backgroundColor: "transparent",
+                }}
               />
             </View>
           </View>
-          <ThemeText className="text-3xl w-[80%] font-bold">
+          <ThemeText className="text-3xl w-[90%] font-bold text-center">
             {languages[language].register.steps.health.title}
           </ThemeText>
         </View>
@@ -50,26 +59,23 @@ export default function Step1() {
           <Pressable
             key={i}
             onPress={() => handlePress(i)}
-            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${selectedIndex === i
+            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${
+              selectedIndex === i
                 ? "border-black dark:border-white"
                 : "border-gray-200 dark:border-gray-700"
-              }`}
+            }`}
           >
             {i === selectedIndex && (
               <View className="absolute -right-2 -top-2 rounded-full dark:text-black bg-black dark:bg-white p-1 items-center justify-center">
-
-                <Icon
-                  source="check"
-                  size={16}
-                  color={iconColor}
-                />
+                <Icon source="check" size={16} color={iconColor} />
               </View>
             )}
             <Text
-              className={`font-semibold text-lg ${selectedIndex === i
+              className={`font-semibold text-lg ${
+                selectedIndex === i
                   ? "text-black dark:text-white"
                   : "text-slate-500 dark:text-gray-300"
-                }`}
+              }`}
             >
               {choice}
             </Text>

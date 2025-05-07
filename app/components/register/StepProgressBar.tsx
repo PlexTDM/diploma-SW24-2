@@ -4,12 +4,12 @@ import { useNavigation, useRouter } from "expo-router";
 import { View } from "react-native";
 import { Button, Icon } from "react-native-paper";
 
-export default function ProgressBar() {
+export default function ProgressBar({ maxTabs = 3 }: { maxTabs?: number }) {
   const { theme } = useAppTheme();
   const { progress } = useRegisterStore();
   const router = useRouter();
   const navigaton = useNavigation();
-  const maxStep = 7; // 0,1,2,3,4,5,6,7
+  const maxStep = maxTabs;
 
   const handleBack = () => {
     if (navigaton.canGoBack()) {
