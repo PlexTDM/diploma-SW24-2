@@ -71,9 +71,12 @@ export const mn = {
           "Эмчийн заавар дор дасгал хийдэг",
         ],
       },
-      step2: {
+      step1: {
         title: "Таны профайлыг бүрэн гүйцээцгээе",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        date: "Төрсөн өдрөө сонгоно уу",
+        weight: "Жин",
+        height: "Өндөр",
         question1: {
           title: "Та хүйсээ сонгоно уу",
           choices: {
@@ -173,9 +176,12 @@ export const en = {
           "Exercising under medical supervision",
         ],
       },
-      step2: {
+      step1: {
         title: "Let's complete your profile",
         desc: "Your choice will affect your workout plan.",
+        date: "Date of birth",
+        weight: "Weight",
+        height: "Height",
         question1: {
           title: "Choose gender",
           choices: {

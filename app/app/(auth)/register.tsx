@@ -145,14 +145,16 @@ export default function Register() {
             mode="contained"
             onPress={handleBack}
             style={style.button1}
+            textColor="black"
             className="text-black"
           >
-            <ThemeText className="text-black">{languages[language].back}</ThemeText>
+            <ThemeText className="text-black ">{languages[language].back}</ThemeText>
           </Button>
           <Button
             mode="contained"
             onPress={handleNext}
             style={style.button2}
+            textColor="white"
           >
             <ThemeText className="text-white">{languages[language].next}</ThemeText>
           </Button>
