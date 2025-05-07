@@ -18,7 +18,7 @@ export default function Step3() {
   const iconColor = theme === "dark" ? "black" : "white";
   const handlePress = (index: number) => {
     setSelectedIndex(index);
-    setField("movementLevel", choices[index]);
+    setField("activityLevel", choices[index]);
   };
 
   return (

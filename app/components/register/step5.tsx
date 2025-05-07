@@ -18,7 +18,7 @@ export default function Step5() {
   const iconColor = theme === "dark" ? "black" : "white";
   const handlePress = (index: number) => {
     setSelectedIndex(index);
-    setField("goal", choices[index]);
+    setField("waterPerDay", choices[index]);
   };
 
   return (

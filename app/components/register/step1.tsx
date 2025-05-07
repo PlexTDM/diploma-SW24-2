@@ -6,6 +6,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { languages, useLanguage } from "@/lib/language";
+import { useAppTheme } from "@/lib/theme";
 
 export default function Step1() {
   const { setField } = useRegisterStore();
@@ -18,6 +19,7 @@ export default function Step1() {
   const [height, setHeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [heightUnit, setHeightUnit] = useState("cm");
+  const { theme } = useAppTheme();
 
   const genderChoices =
     languages[language].register.steps.step1.question1.choices;
@@ -43,10 +45,42 @@ export default function Step1() {
     }
   };
 
-  const handleDob = (event: DateTimePickerEvent, date?: Date | undefined) => {
+  const handleDob = (e: DateTimePickerEvent, date?: Date | undefined) => {
+    setShowDatePicker(false);
+    if (e.type === "dismissed") {
+      setShowDatePicker(false);
+      return;
+    }
     if (date) {
       setDob(date);
       setField("birthday", date);
+    }
+  };
+
+  const handleWeight = (text: string) => {
+    setWeight(text);
+    const numericValue = parseFloat(text);
+    if (!isNaN(numericValue)) {
+      let convertedValue = numericValue;
+      if (weightUnit === "lbs") {
+        // Convert lbs to kg
+        convertedValue = numericValue * 0.453592;
+      }
+      setWeight(text);
+      setField("weight", convertedValue);
+    }
+  };
+  const handleHeight = (text: string) => {
+    setHeight(text);
+    const numericValue = parseFloat(text);
+    if (!isNaN(numericValue)) {
+      let convertedValue = numericValue;
+      if (heightUnit === "ft") {
+        // Convert ft to cm
+        convertedValue = numericValue * 30.48;
+      }
+      setHeight(text);
+      setField("height", convertedValue);
     }
   };
 
@@ -100,6 +134,9 @@ export default function Step1() {
           value={dob || new Date()}
           mode="date"
           display="default"
+          themeVariant={theme}
+          design="default"
+          minimumDate={new Date(1900, 0, 1)}
           maximumDate={new Date()}
           onChange={handleDob}
         />
@@ -111,7 +148,7 @@ export default function Step1() {
           placeholder={languages[language].register.steps.step1.weight}
           placeholderTextColor="gray"
           value={weight}
-          onChangeText={setWeight}
+          onChangeText={handleWeight}
           keyboardType="numeric"
           className="flex-1 p-4 text-gray-800"
         />
@@ -133,7 +170,7 @@ export default function Step1() {
           placeholder={languages[language].register.steps.step1.height}
           placeholderTextColor="gray"
           value={height}
-          onChangeText={setHeight}
+          onChangeText={handleHeight}
           keyboardType="numeric"
           className="flex-1 p-4 text-gray-800"
         />

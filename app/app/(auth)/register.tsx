@@ -19,13 +19,16 @@ import {
   Step6,
   Step7,
 } from "@/components/register";
+import { useRouter } from "expo-router";
 import { ThemeView } from "@/components";
 
 export default function Register() {
-  const { setField } = useRegisterStore();
+  const store = useRegisterStore();
+  const { setField } = store;
   const { language } = useLanguage();
   const [tab, setTab] = useState(0);
   const [screenWidth, setScreenWidth] = useState(0);
+  const router = useRouter();
 
   const scrollRef = useRef<FlatList>(null);
 
@@ -57,6 +60,10 @@ export default function Register() {
   };
 
   const handleNext = () => {
+    if (tab === maxTabs - 1) {
+      router.push("/(auth)/signup");
+      return;
+    }
     if (tab < maxTabs) {
       const nextTab = tab + 1;
       scrollToTab(nextTab);
@@ -96,14 +103,36 @@ export default function Register() {
     [screenWidth]
   );
 
+  const nextDisabeled = () => {
+    if (process.env.NODE_ENV === "development") return false;
+    switch (tab) {
+      case 0:
+        return !Boolean(
+          store.height && store.gender && store.weight && store.birthday
+        );
+      case 1:
+        return !Boolean(store.goal);
+      case 2:
+        return !Boolean(store.activityLevel);
+      case 3:
+        return !Boolean(store.mealPerDay);
+      case 4:
+        return !Boolean(store.waterPerDay);
+      case 5:
+        return !Boolean(store.workSchedule);
+      case 6:
+        return !Boolean(store.healthCondition);
+      default:
+        return false;
+    }
+  };
+
   return (
     <ThemeView className="flex-1" onLayout={setDimensions}>
-      {/* <ProgressBar /> */}
       <StepProgressBar maxTabs={maxTabs} />
-      {/* <Dialogue text={languages[language].register.age} /> */}
 
       <View className="flex-1 items-center justify-center overflow-hidden">
-        {/* Web scroll wrapper */}
+        {/* code for web idk why i made this tbh */}
         {Platform.OS === "web" ? (
           <View className="flex-1 overflow-hidden">
             {tab === 0 && <Step1 />}
@@ -128,9 +157,9 @@ export default function Register() {
               nestedScrollEnabled={true}
               renderItem={renderItem}
               getItemLayout={getItemLayout}
-              removeClippedSubviews={true}
+              removeClippedSubviews={false}
               maxToRenderPerBatch={1}
-              windowSize={3}
+              windowSize={5}
               initialNumToRender={1}
             />
           </View>
@@ -158,18 +187,18 @@ export default function Register() {
           </Pressable>
           <Pressable
             className={`px-6 py-3 items-center justify-center rounded-3xl font-medium ${
-              tab === maxTabs - 1 ? "bg-gray-300" : "bg-blue-500"
+              nextDisabeled() ? "bg-gray-300" : "bg-blue-500"
             }`}
             android_ripple={{
               color: "#6b7280",
               radius: 30,
             }}
             onPress={handleNext}
-            disabled={tab === maxTabs - 1}
+            disabled={nextDisabeled()}
           >
             <Text
               className={`text-center ${
-                tab === maxTabs - 1 ? "text-gray-400" : "text-white"
+                nextDisabeled() ? "text-gray-400" : "text-white"
               }`}
             >
               {languages[language].next}

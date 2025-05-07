@@ -10,7 +10,7 @@ import LottieView from "lottie-react-native";
 export default function Step2() {
   const { setField } = useRegisterStore();
   const { language } = useLanguage();
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const choices = languages[language].register.steps.goal.choices;
 
