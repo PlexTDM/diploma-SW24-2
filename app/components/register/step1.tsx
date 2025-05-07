@@ -1,8 +1,7 @@
-import { useRouter } from "expo-router";
 import { useRegisterStore } from "@/lib/store";
 import { Text, View, TextInput, Pressable } from "react-native";
 import { useState, useEffect } from "react";
-import DropDownPicker from "react-native-dropdown-picker";
+import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { languages, useLanguage } from "@/lib/language";
 
@@ -27,13 +26,20 @@ export default function Step1() {
     { label: genderChoices[3], value: "3" },
   ]);
 
+  // Update items when language changes
   useEffect(() => {
     setItems([
       { label: genderChoices[1], value: "1" },
       { label: genderChoices[2], value: "2" },
       { label: genderChoices[3], value: "3" },
     ]);
-  }, [language]);
+  }, [language, genderChoices]);
+
+  const handleChange = ({ label }: ItemType<string>) => {
+    if (label) {
+      setField("gender", label);
+    }
+  };
 
   return (
     <View className="flex-1 gap-4 items-center px-6 pt-10 bg-white dark:bg-black">
@@ -53,6 +59,7 @@ export default function Step1() {
           setOpen={setOpen}
           setValue={setValue}
           setItems={setItems}
+          onSelectItem={handleChange}
           placeholder={languages[language].register.steps.step1.question1.title}
           style={{
             borderRadius: 12,
@@ -125,9 +132,7 @@ export default function Step1() {
           className="flex-1 p-4 text-gray-800"
         />
         <Pressable
-          onPress={() =>
-            setHeightUnit((prev) => (prev === "cm" ? "ft" : "cm"))
-          }
+          onPress={() => setHeightUnit((prev) => (prev === "cm" ? "ft" : "cm"))}
           className="px-4 py-3"
         >
           <Text className="text-black font-bold">

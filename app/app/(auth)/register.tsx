@@ -6,21 +6,23 @@ import {
   View,
   Platform,
   FlatList,
+  Pressable,
+  Text,
 } from "react-native";
-import ProgressBar from "@/components/register/progressBar";
 import { useCallback, useRef, useState } from "react";
-import Dialogue from "@/components/register/dialogue";
 import { languages, useLanguage } from "@/lib/language";
-import Step1 from "@/components/register/step1";
-import Step2 from "@/components/register/step2";
-import Step3 from "@/components/register/step3";
-import Step4 from "@/components/register/step4";
-import Step5 from "@/components/register/step5";
-import Step6 from "@/components/register/step6";
-import Step7 from "@/components/register/step7";
-import { ThemeText, ThemeView } from "@/components";
+import {
+  StepProgressBar,
+  Step1,
+  Step2,
+  Step3,
+  Step4,
+  Step5,
+  Step6,
+  Step7,
+} from "@/components/register";
+import { ThemeView, ThemeText } from "@/components";
 import { useAppTheme } from "@/lib/theme";
-import StepProgressBar from "@/components/register/StepProgressBar";
 
 export default function Register() {
   const { theme } = useAppTheme();
@@ -31,7 +33,18 @@ export default function Register() {
 
   const scrollRef = useRef<FlatList>(null);
 
-  const maxTabs = 8; // 0,1,2
+  // Pre-define the data array to avoid recreating it on each render
+  const steps = [
+    { key: "1", component: Step1 },
+    { key: "2", component: Step2 },
+    { key: "3", component: Step3 },
+    { key: "4", component: Step4 },
+    { key: "5", component: Step5 },
+    { key: "6", component: Step6 },
+    { key: "7", component: Step7 },
+  ];
+
+  const maxTabs = steps.length;
 
   const scrollToTab = (index: number) => {
     if (screenWidth > 0 && scrollRef.current) {
@@ -67,18 +80,6 @@ export default function Register() {
     setScreenWidth(e.nativeEvent.layout.width);
   }, []);
 
-  // Pre-define the data array to avoid recreating it on each render
-  const steps = [
-    { key: "1", component: Step1 },
-    { key: "2", component: Step2 },
-    { key: "3", component: Step3 },
-    { key: "4", component: Step4 },
-    { key: "5", component: Step5 },
-    { key: "6", component: Step6 },
-    { key: "7", component: Step7 },
-
-  ];
-
   // Memoize the getItemLayout function
   const getItemLayout = useCallback(
     (_: any, index: number) => ({
@@ -102,7 +103,7 @@ export default function Register() {
   return (
     <ThemeView className="flex-1" onLayout={setDimensions}>
       {/* <ProgressBar /> */}
-      <StepProgressBar />
+      <StepProgressBar maxTabs />
       {/* <Dialogue text={languages[language].register.age} /> */}
 
       <View className="flex-1 items-center justify-center overflow-hidden">
@@ -139,24 +140,31 @@ export default function Register() {
             />
           </View>
         )}
-        
+
         <View className="flex-row w-full px-12 justify-between mt-4 mb-12">
-          <Button	
-            mode="contained"
+          <Pressable
+            className="bg-white px-6 py-2 items-center justify-center rounded-3xl font-medium text-gray-500 disabled: overflow-hidden"
+            android_ripple={{
+              color: "#6b7280",
+              radius: 30,
+            }}
             onPress={handleBack}
-            style={style.button1}
-            textColor="black"
-            className="text-black"
+            disabled={tab === 0}
           >
-            <ThemeText className="text-black ">{languages[language].back}</ThemeText>
-          </Button>
+            <Text className="text-black text-center">
+              {languages[language].back}
+            </Text>
+          </Pressable>
+
           <Button
             mode="contained"
             onPress={handleNext}
             style={style.button2}
             textColor="white"
           >
-            <ThemeText className="text-white">{languages[language].next}</ThemeText>
+            <ThemeText className="text-white">
+              {languages[language].next}
+            </ThemeText>
           </Button>
         </View>
       </View>
@@ -165,12 +173,6 @@ export default function Register() {
 }
 
 const style = StyleSheet.create({
-  button1: {
-    backgroundColor: "white",
-    borderColor: "black",
-    borderWidth: 1,
-    borderRadius: 20,
-  },
   button2: {
     backgroundColor: "#3b82f6",
     color: "white",
