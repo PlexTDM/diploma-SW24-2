@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
+import { Modal } from 'react-native';
 import Animated, {
   Easing,
   interpolate,
@@ -14,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useAppTheme } from "@/lib/theme";
 import { useEffect, useState } from "react";
+import WaterModal from "./WaterModal";
 
 export default function Water() {
   const router = useRouter();
@@ -24,6 +26,8 @@ export default function Water() {
   const animateHeight = useSharedValue<number>(0);
   const waterGoal = 3500;
   const [currentWater, setCurrentWater] = useState(100);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     animateHeight.value = withTiming(Math.min(currentWater / waterGoal, 1), {
@@ -42,7 +46,8 @@ export default function Water() {
 
   const handlePress = () => {
     // router.push("/home/water");
-    setCurrentWater((p) => Math.max(p + 500));
+    setModalVisible(true);
+    // setCurrentWater((p) => Math.max(p + 500));
   };
 
   const pressed = useSharedValue<number>(0);
@@ -134,9 +139,10 @@ export default function Water() {
       onLayout={(e) => {
         setComponentHeight(e.nativeEvent.layout.height);
       }}
-      className="dark:bg-gray-800 rounded-[26px] flex-[2] relative overflow-hidden"
+      className="dark:bg-gray-90000 rounded-[26px] flex-[2] relative overflow-hidden dark:border-gray-800 border-[1px] border-gray-200"
       style={[animatedStyle, { flex: 2 }]}
     >
+      <WaterModal visible={modalVisible} setVisible={setModalVisible}/>
       <Pressable
         className="flex-1 justify-between p-4 relative z-10"
         onPressIn={handlePressIn}
@@ -144,7 +150,7 @@ export default function Water() {
         onPress={handlePress}
       >
         <View className="flex-row items-center justify-between">
-          <ThemeText className="flex-1 font-bold text-xl">Water</ThemeText>
+          <ThemeText className="flex-1 font-bold text-lg ">Water</ThemeText>
           <View className="w-[20px] h-[25px]">
             <Image
               source={require("@/assets/icons/waterDrop.svg")}
