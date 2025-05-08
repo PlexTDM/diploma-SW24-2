@@ -1,6 +1,12 @@
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, TextInput, TouchableOpacity, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { BlurEllipse } from "@/components";
 
@@ -36,7 +42,8 @@ const ForgotPassword = () => {
         </Text>
 
         <Text className="text-base text-center text-gray-600 dark:text-gray-300 mb-6 px-2">
-          Don't worry! It occurs. Please enter the email address linked with your account.
+          Don&apos;t worry! It occurs. Please enter the email address linked
+          with your account.
         </Text>
 
         <TextInput
