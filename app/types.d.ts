@@ -26,3 +26,9 @@ interface RegisterState {
   progress: number;
   setField: (key: keyof Omit<RegisterState, "setField">, value: any) => void;
 }
+
+type LoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+  user: any;
+};
