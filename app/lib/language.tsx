@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
+import { register } from "./data";
 
 export const mn = {
   mascot: {
@@ -14,6 +15,9 @@ export const mn = {
   },
   register: {
     age: "Таны Төрсөн өдөр?",
+    register: "Бүртгүүлэх",
+    email: "Имэйл хаягаа оруулна уу",
+    password: "Нууц үгээ оруулна уу",
     button: {
       button1: "Өмнөх",
       button2: "Дараах",
@@ -71,9 +75,12 @@ export const mn = {
           "Эмчийн заавар дор дасгал хийдэг",
         ],
       },
-      step2: {
+      step1: {
         title: "Таны профайлыг бүрэн гүйцээцгээе",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        date: "Төрсөн өдрөө сонгоно уу",
+        weight: "Жин",
+        height: "Өндөр",
         question1: {
           title: "Та хүйсээ сонгоно уу",
           choices: {
@@ -116,6 +123,9 @@ export const en = {
   },
   register: {
     age: "How old are you?",
+    email: "Enter your email",
+    password: "Enter your password",
+    register: "Register",
     button: {
       button1: "Back",
       button2: "Next",
@@ -173,9 +183,12 @@ export const en = {
           "Exercising under medical supervision",
         ],
       },
-      step2: {
+      step1: {
         title: "Let's complete your profile",
         desc: "Your choice will affect your workout plan.",
+        date: "Date of birth",
+        weight: "Weight",
+        height: "Height",
         question1: {
           title: "Choose gender",
           choices: {
@@ -210,20 +223,9 @@ export const languages = {
   en,
 };
 
-type Language = "en" | "mn";
-
-type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-};
-
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
 );
-
-interface LanguageProviderProps {
-  children: React.ReactNode;
-}
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [language, setLanguage] = useState<Language>("en");

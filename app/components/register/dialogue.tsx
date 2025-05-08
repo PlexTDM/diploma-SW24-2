@@ -3,7 +3,7 @@ import React from "react";
 import { Image } from "expo-image";
 
 type propTypes = {
-  text: String;
+  text: string;
 };
 
 export default function Dialogue({ text }: propTypes) {

@@ -1,9 +1,21 @@
 import React from "react";
 import Svg, { Defs, RadialGradient, Stop, Ellipse } from "react-native-svg";
 
-export default function BlurEllipse() {
-  const svgWidth = 600;
-  const svgHeight = 550;
+export default function BlurEllipse({
+  top = -120,
+  left,
+  right,
+  bottom,
+  size = 200,
+}: {
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+  size?: number;
+}) {
+  const svgWidth = size * 3;
+  const svgHeight = size * 2.75;
   const centerX = svgWidth / 2;
   const centerY = svgHeight / 2;
 
@@ -13,7 +25,10 @@ export default function BlurEllipse() {
       height={svgHeight}
       style={{
         position: "absolute",
-        top: -120,
+        top: top || 0,
+        left: left || 0,
+        right: right || 0,
+        bottom: bottom || 0,
       }}
     >
       <Defs>
@@ -21,8 +36,8 @@ export default function BlurEllipse() {
           id="grad"
           cx={centerX}
           cy={centerY}
-          rx="200"
-          ry="200"
+          rx={size}
+          ry={size}
           gradientUnits="userSpaceOnUse"
         >
           <Stop offset="0" stopColor="#719BE3" stopOpacity="0.7" />
@@ -32,8 +47,8 @@ export default function BlurEllipse() {
       <Ellipse
         cx={centerX}
         cy={centerY}
-        rx="200"
-        ry="200"
+        rx={size}
+        ry={size}
         fill="url(#grad)"
       />
     </Svg>

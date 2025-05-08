@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -11,23 +11,25 @@ import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView, BlurEllipse } from "@/components";
-const Login = () => {
+import { languages, useLanguage } from "@/lib/language";
+
+const RegisterForm = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
-
+  const { language } = useLanguage();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const logIn = async () => {
+  const handleRegister = async () => {
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setLoading(false);
     // router.push("Home");
   };
 
-  const signUp = () => router.push("/(auth)/signup");
+  const gotoLogin = () => router.replace("/(auth)/signup");
 
   return (
     <ThemeView className="relative">
@@ -43,29 +45,29 @@ const Login = () => {
               contentFit={"contain"}
               focusable={false}
             />
-            <Text className="text-3xl text-center mb-6 font-semibold">
-              Login
+            <Text className="text-3xl text-center mb-6 font-semibold dark:text-gray-100">
+              Register your account
             </Text>
             <View className="w-5/6 mb-4">
               <View className="mb-4">
                 <TextInput
-                  placeholder="Enter your email"
+                  placeholder={languages[language].register.email}
                   autoCapitalize="none"
-                  className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 text-lg"
+                  className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={setUsername}
-                  placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  placeholderTextColor={"#89888E"}
                 />
               </View>
 
-              <View className="mb-2 relative border flex-row border-gray-300 rounded-full overflow-hidden">
+              <View className="mb-2 relative border flex-row border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-full overflow-hidden">
                 <TextInput
-                  placeholder="Enter your password"
+                  placeholder={languages[language].register.password}
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  className="bg-white dark:bg-gray-700 text-black flex-1 dark:text-white px-6 py-5 text-lg"
+                  className="bg-white dark:bg-gray-800 text-black flex-1 dark:text-white px-6 py-5 text-lg"
                   onChangeText={setPassword}
-                  placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  placeholderTextColor={"#89888E"}
                 />
                 <Pressable
                   className="w-[50px] h-full"
@@ -94,7 +96,7 @@ const Login = () => {
                 <TouchableOpacity
                   onPress={() => router.push("/(auth)/ForgotPassword")}
                 >
-                  <Text className="text-blue-700 text-sm">
+                  <Text className="text-blue-700 dark:text-gray-300 underline text-sm">
                     Forgot Password?
                   </Text>
                 </TouchableOpacity>
@@ -102,35 +104,35 @@ const Login = () => {
 
               <View className="flex-row justify-center mb-4 space-x-4 mt-2">
                 <TouchableOpacity
-                  onPress={logIn}
-                  className="bg-black rounded-full w-full py-4 items-center"
+                  onPress={handleRegister}
+                  className="bg-black dark:bg-transparent dark:border-2 border-slate-500 rounded-full w-full py-4 items-center"
                 >
-                  <Text className="text-white font-semibold text-lg">
-                    Нэвтрэх
+                  <Text className="text-white dark:text-slate-200 font-semibold text-lg">
+                    {languages[language].register.register}
                   </Text>
                 </TouchableOpacity>
               </View>
               <View className="flex-row justify-center w-full items-center gap-2">
-                <View className="bg-gray-300 h-[1px] flex-1" />
+                <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
                 <Text className="text-gray-500">or login with</Text>
-                <View className="bg-gray-300 h-[1px] flex-1" />
+                <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
               </View>
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
-                <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
+                <TouchableOpacity className="border border-gray-300 dark:border-gray-600 rounded-full px-8 py-3">
                   <Image
                     source={require("@/assets/socialLogo/google.png")}
                     style={{ width: 25, height: 30 }}
                     contentFit="contain"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
+                <TouchableOpacity className="border border-gray-300 dark:border-gray-600 rounded-full px-8 py-3">
                   <Image
                     source={require("@/assets/socialLogo/instagram.png")}
                     style={{ width: 25, height: 30 }}
                     contentFit="contain"
                   />
                 </TouchableOpacity>
-                <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
+                <TouchableOpacity className="border border-gray-300 dark:border-gray-600 rounded-full px-8 py-3">
                   <Image
                     source={require("@/assets/socialLogo/apple.png")}
                     style={{ width: 28, height: 28 }}
@@ -140,18 +142,16 @@ const Login = () => {
               </View>
             </View>
             <View className="flex-row justify-center mt-8">
-              <Text>Don&apos;t have an account? </Text>
-              <Text className="text-blue-700 font-semibold" onPress={signUp}>
-                Register Now
+              <Text>Already have an account?</Text>
+              <Text className="text-blue-700 font-semibold" onPress={gotoLogin}>
+                Login
               </Text>
             </View>
           </View>
         </View>
-
-        {loading && <ActivityIndicator size="large" className="mt-4" />}
       </View>
     </ThemeView>
   );
 };
 
-export default Login;
+export default RegisterForm;
