@@ -14,6 +14,28 @@ const { genSaltSync, hashSync, compareSync } = bcryptjs
 app.post("/login", async (req, res) => {
   const { password, email } = req.body
   try {
+    const token = req.cookies.token; // Assuming the token is stored in cookies
+    if (token) {
+      jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ message: "Invalid token" });
+        }
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        const accessToken = generateAccessToken(user);
+        const refreshToken = await generateRefreshToken(user);
+
+        return res.json({
+          message: "User logged in successfully with token",
+          user,
+          accessToken,
+          refreshToken,
+        });
+      });
+    }
+
     const user = await User.findOne({ email: email })
     if (!user) {
       return res.status(404).json({ message: "user not found" })
@@ -37,43 +59,19 @@ app.post("/login", async (req, res) => {
   }
 })
 
-app.options("/auth/loginToken", (req, res) => {
-  // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-})
-
-app.get('/loginToken', authenticate, async (req, res) => {
-
-    try {
-        const user = await User.findById(req.user.id)
-        if (!user) return res.status(404).json({ message: "User not found" })
-
-        const newAccessToken = generateAccessToken(user)
-        const newRefreshToken = await generateRefreshToken(user)
-
-        res.json({
-            message: "User Logged in successfully",
-            user,
-            accessToken: newAccessToken,
-            refreshToken:newRefreshToken,
-        })
-    }catch (e) {
-        console.error("login", e)
-        res.status(500).json({ message: "Internal Server Error" })
-    }
-})
-
 const validateUser = [
-  body("firstName").isLength({ min: 4}).withMessage("Name must be at least 4 characters").isLength({max:30}).withMessage('Name must be less than 30 characters'),
-  body("lastName").optional({values: "falsy"}).isLength({ min: 4 }).withMessage('Name must be at least 4 characters').isLength({ max: 30 }).withMessage("Name must be less than 30 characters long"),
   body("email").isEmail().withMessage("Invalid email"),
-  body("phone").optional({values:"falsy"}),
-  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
   body("password").exists().withMessage('Password is required').isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
+  body("age").isNumeric().withMessage("Age must be a number"),
+  body("height").isNumeric().withMessage("Height must be a number"),
+  body("weight").isNumeric().withMessage("Weight must be a number"),
+  body("goal").exists().withMessage("Goal is required"),
+  body("activityLevel").exists().withMessage("Activity Level is required"),
+  body("mealPerDay").exists().withMessage("Meal Per Day is required"),
+  body("waterPerDay").exists().withMessage("Water Per Day is required"),
+  body("workSchedule").exists().withMessage("Work Schedule is required"),
+  body("healthCondition").exists().withMessage("Health Condition is required"),
 ]
-
 app.post("/register", validateUser, async (req, res) => {
 
   const errors = validationResult(req)
@@ -82,7 +80,7 @@ app.post("/register", validateUser, async (req, res) => {
     return res.status(400).json({ errors: errors.array() })
   }
 
-  const { firstName, lastName, email, phone, password, confirmPassword } = req.body
+  const { email } = req.body
 
   if (password !== confirmPassword) {
     return res.status(400).json({ message: "Passwords do not match" })
@@ -171,57 +169,5 @@ app.put("/update", authenticate, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" })
   }
 })
-
-app.put("/address", authenticate, async (req, res) => {
-  try {
-    const address  = req.body
-    const id = req.user.id
-    const user = await User.findById(id)
-
-    if (!user) {
-      return res.status(404).json({ message: "user not found" })
-    }
-
-    const newData = await User.findByIdAndUpdate(id, {address})
-
-    res.status(200).json({ message: "Address updated successfully", data:req.body })
-  } catch (e) {
-    console.error("update", e)
-    res.status(500).json({ message: "Internal Server Error" })
-  }
-})
-
-// app.put("/profile", async (req, res) => {
-//   try {
-
-//     const authHeader = req.headers.authorization
-
-//     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//       return res.status(401).json({ message: "No token provided" })
-//     }
-
-//     const accessToken = authHeader.split(" ")[1]
-//     if (!accessToken) return res.status(401).json({ message: "Unauthorized" })
-
-//     const data = jwt.verify(accessToken, process.env.SECRET_ACCESS_TOKEN)
-
-//     const user = await User.findById(data.id)
-
-//     if (!user) {
-//       return res.status(404).json({ message: "user not found" })
-//     }
-
-
-//     res.status(200).json({ user }).lean()
-//   } catch (e) {
-//     if (e.name === "TokenExpiredError") {
-//       return res
-//         .status(401)
-//         .json({ message: "Access token expired, please login again" })
-//     }
-//     console.error("profile", e)
-//     res.status(500).json({ message: "Internal Server Error" })
-//   }
-// })
 
 export default app

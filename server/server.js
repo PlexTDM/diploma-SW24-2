@@ -10,12 +10,12 @@ import os from 'os'
 
 const app = express()
 
-// app.use((req, res, next) => {
-//   const ip = req.ip || req.socket.remoteAddress;
-//   const ipPrefix = ip.split('.').slice(0, 2).join('.');
-//   console.log(`Request from IP: ${ipPrefix}.*.* to ${req.method} ${req.url}`);
-//   next();
-// });
+app.use((req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress;
+  const ipPrefix = ip.split('.').slice(0, 2).join('.');
+  console.log(`Request from IP: ${ipPrefix}.*.* to ${req.method} ${req.url}`);
+  next();
+});
 
 app.use(corsConfig)
 app.use(express.json())
