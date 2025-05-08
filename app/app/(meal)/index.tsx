@@ -3,6 +3,7 @@ import React from 'react'
 import { Feather } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
+import { TextInput } from 'react-native'
 
 export default function meal() {
     
@@ -17,10 +18,17 @@ export default function meal() {
         </Pressable>
       </View>
       <View className='flex-row justify-between items-center mt-8'>
-        <View className='w-[85%] h-12 border border-gray-400 rounded-full flex-row items-center gap-5 px-4'>
-          <Feather name='search' size={20} color='gray' />
-          <Text className='text-gray-400'>Search for food</Text>
-        </View>
+      <View className="w-[85%] h-14 justify-center">
+        <TextInput
+          placeholder="Search"
+          clearButtonMode="always"
+          autoCapitalize="none"
+          autoCorrect={false}
+          numberOfLines={1}
+          className="px-4 border flex-1 border-gray-800 rounded-full text-gray-500"
+          placeholderClassName="text-gray-500"
+        />
+      </View>
         <View className='justify-center items-center w-12 h-12 bg-black rounded-full'>
           <Feather name='mic' size={20} color='white' />
         </View>
