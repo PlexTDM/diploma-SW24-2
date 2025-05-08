@@ -1,7 +1,7 @@
 import { useRegisterStore } from "@/lib/store";
 import { Text, View, TextInput, Pressable } from "react-native";
 import { useState, useEffect } from "react";
-import DropDownPicker, { ItemType } from "react-native-dropdown-picker";
+import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -24,7 +24,7 @@ export default function Step1() {
   const genderChoices =
     languages[language].register.steps.step1.question1.choices;
 
-  const [items, setItems] = useState([
+  const [items, setItems] = useState<DropdownItem[]>([
     { label: genderChoices[1], value: "1" },
     { label: genderChoices[2], value: "2" },
     { label: genderChoices[3], value: "3" },
@@ -39,11 +39,16 @@ export default function Step1() {
     ]);
   }, [language, genderChoices]);
 
-  const handleGender = ({ label }: ItemType<string>) => {
-    if (label) {
-      setField("gender", label);
+  const handleGender = (item: { label: string; value: string }) => {
+    if (item.label) {
+      setField("gender", item.label);
     }
   };
+  type DropdownItem = {
+    label: string;
+    value: string;
+  };
+    
 
   const handleDob = (e: DateTimePickerEvent, date?: Date | undefined) => {
     setShowDatePicker(false);
@@ -101,8 +106,7 @@ export default function Step1() {
           items={items}
           setOpen={setOpen}
           setValue={setValue}
-          setItems={setItems}
-          onSelectItem={handleGender}
+          setItems={setItems}          
           placeholder={languages[language].register.steps.step1.question1.title}
           style={{
             borderRadius: 12,

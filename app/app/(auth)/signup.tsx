@@ -8,6 +8,7 @@ const SignUp = () => {
   const router = useRouter();
   const handleEmail = () => router.push("/(auth)/EmailRegister");
   const LogIn = () => router.push("/(auth)/login");
+
   return (
     <ThemeView className="flex-1 items-center justify-center">
       <Image
