@@ -1,66 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable, useColorScheme } from 'react-native';
-import moment, { Moment } from 'moment';
-import { Feather } from '@expo/vector-icons';
-import {useRouter} from 'expo-router';
-import {Image} from 'expo-image';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Pressable,
+  useColorScheme,
+} from "react-native";
+import moment, { Moment } from "moment";
+import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Image } from "expo-image";
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
-<<<<<<< HEAD
-const SevenDayCalendar = () => {
-  const router = useRouter();
-=======
 const Blog = () => {
->>>>>>> 12da8cb52368213a24274bc5283629ac798ff5f1
   const [dates, setDates] = useState<Moment[]>([]);
-  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const isDark = colorScheme === "dark";
 
   useEffect(() => {
     const today = moment();
     const days = [];
     for (let i = 0; i < 7; i++) {
-      days.push(today.clone().add(i, 'days'));
+      days.push(today.clone().add(i, "days"));
     }
     setDates(days);
   }, []);
 
   const handleSelectDate = (date: Moment) => {
-    setSelectedDate(date.format('YYYY-MM-DD'));
+    setSelectedDate(date.format("YYYY-MM-DD"));
   };
 
   return (
-    <View className='p-6 items-center'>
-      <View className='flex-row justify-between items-center gap-80'>
-        <Text className='font-bold text-2xl'>Calories</Text>
+    <View className="p-6 items-center">
+      <View className="flex-row justify-between items-center gap-80">
+        <Text className="font-bold text-2xl">Calories</Text>
         <Feather name="bell" size={20} color="black" />
       </View>
 
       {/* Calendar */}
       <View style={styles.container}>
         {dates.map((date) => {
-          const isSelected = selectedDate === date.format('YYYY-MM-DD');
+          const isSelected = selectedDate === date.format("YYYY-MM-DD");
           return (
             <TouchableOpacity
-              key={date.format('YYYY-MM-DD')}
+              key={date.format("YYYY-MM-DD")}
               onPress={() => handleSelectDate(date)}
               style={styles.dayContainer}
               activeOpacity={0.7}
             >
-              <Text style={[styles.dayText, isDark && { color: '#ccc' }]}>
-                {date.format('dd').charAt(0)}
+              <Text style={[styles.dayText, isDark && { color: "#ccc" }]}>
+                {date.format("dd").charAt(0)}
               </Text>
               <Text
                 style={[
                   styles.dateText,
                   isSelected && styles.selectedDate,
-                  isDark && !isSelected && { color: '#fff' },
+                  isDark && !isSelected && { color: "#fff" },
                 ]}
               >
-                {date.format('D')}
+                {date.format("D")}
               </Text>
             </TouchableOpacity>
           );
@@ -70,21 +75,45 @@ const Blog = () => {
       {/* Nutrient Bars */}
       <View className="flex-row justify-between gap-7 mt-6">
         {[
-          { label: 'Cal', height: 'h-36', color: 'bg-blue-300', value: '1240' },
-          { label: 'Prot', height: 'h-28', color: 'bg-green-200', value: '60.2' },
-          { label: 'Carb', height: 'h-40', color: 'bg-green-300', value: '80.2' },
-          { label: 'Fats', height: 'h-36', color: 'bg-green-300', value: '68.2' },
-          { label: 'RDC', height: 'h-24', color: 'bg-orange-200', value: '12%' },
+          { label: "Cal", height: "h-36", color: "bg-blue-300", value: "1240" },
+          {
+            label: "Prot",
+            height: "h-28",
+            color: "bg-green-200",
+            value: "60.2",
+          },
+          {
+            label: "Carb",
+            height: "h-40",
+            color: "bg-green-300",
+            value: "80.2",
+          },
+          {
+            label: "Fats",
+            height: "h-36",
+            color: "bg-green-300",
+            value: "68.2",
+          },
+          {
+            label: "RDC",
+            height: "h-24",
+            color: "bg-orange-200",
+            value: "12%",
+          },
         ].map((item, i) => (
           <View className="flex-col gap-4 justify-center" key={i}>
             <View className="w-14 h-48 border rounded-full border-gray-400 pt-8 justify-end">
-              <View className={`w-15 ${item.height} ${item.color} rounded-full items-center`}>
+              <View
+                className={`w-15 ${item.height} ${item.color} rounded-full items-center`}
+              >
                 <View className="top-2 flex bg-white w-10 h-10 rounded-full items-center justify-center">
                   <Text className="text-[10px]">{item.value}</Text>
                 </View>
               </View>
             </View>
-            <Text className="justify-center text-center text-gray-500">{item.label}</Text>
+            <Text className="justify-center text-center text-gray-500">
+              {item.label}
+            </Text>
           </View>
         ))}
       </View>
@@ -103,13 +132,29 @@ const Blog = () => {
       </View>
 
       {/* Meals Section */}
-      <Text className={`text-2xl font-bold mt-6  ${isDark ? 'text-white' : 'text-black'}`}>Meals</Text>
+      <Text
+        className={`text-2xl font-bold mt-6  ${
+          isDark ? "text-white" : "text-black"
+        }`}
+      >
+        Meals
+      </Text>
       <View className="w-full h-24 border border-gray-300 rounded-3xl mt-6 flex-row p-2">
         <View className="w-20 h-20 border border-gray-300 rounded-full justify-center">
-          <Text className={`text-center ${isDark ? 'text-white' : 'text-black'}`}>Hool zurag</Text>
+          <Text
+            className={`text-center ${isDark ? "text-white" : "text-black"}`}
+          >
+            Hool zurag
+          </Text>
         </View>
         <View className="ml-10 justify-center">
-          <Text className={`font-bold text-center text-xl ${isDark ? 'text-white' : 'text-black'}`}>Breakfast</Text>
+          <Text
+            className={`font-bold text-center text-xl ${
+              isDark ? "text-white" : "text-black"
+            }`}
+          >
+            Breakfast
+          </Text>
           <Text className="text-gray-500">120/304 cal</Text>
         </View>
         <Pressable
@@ -123,41 +168,34 @@ const Blog = () => {
   );
 };
 
-<<<<<<< HEAD
-export default SevenDayCalendar;
-=======
 export default Blog;
 
->>>>>>> 12da8cb52368213a24274bc5283629ac798ff5f1
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 10,
     marginTop: 20,
   },
   dayContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     width: (screenWidth - 20) / 7,
   },
   dayText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     marginBottom: 4,
   },
   dateText: {
     fontSize: 14,
-    color: '#000',
+    color: "#000",
     paddingHorizontal: 4,
     paddingVertical: 4,
     borderRadius: 20,
   },
   selectedDate: {
-    backgroundColor: '#3b82f6',
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: "#3b82f6",
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
-
-
-
