@@ -1,5 +1,5 @@
 import { languages, useLanguage } from "@/lib/language";
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -9,7 +9,7 @@ import LottieView from "lottie-react-native";
 export default function Step4() {
   const { setField } = useRegisterStore();
   const { language } = useLanguage();
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const choices = languages[language].register.steps.meals.choices;
 

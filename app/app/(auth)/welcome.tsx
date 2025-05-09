@@ -1,6 +1,6 @@
 import { ThemeText, ThemeView } from "@/components";
 import { languages, useLanguage } from "@/lib/language";
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";

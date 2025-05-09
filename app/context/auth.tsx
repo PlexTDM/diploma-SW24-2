@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { login, logout, register } from "@/lib/data";
+import { login, logout } from "@/lib/data";
 
 type AuthContextType = {
   user: any;
@@ -16,6 +16,8 @@ type AuthContextType = {
   logout: () => Promise<void>;
   register: (formData: registerFormType) => Promise<void>;
 };
+
+const api = process.env.EXPO_PUBLIC_API_URL as string;
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
@@ -56,9 +58,31 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const registerUser = async (formData: registerFormType) => {
+    setLoading(true);
     console.log(formData);
-    const data = await register(formData);
-    console.log("data", data);
+
+    const data = await fetch(`${api}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res: any) => {
+        if (!res.ok) {
+          return res.text().then((text) => {
+            console.log("Error response:", text);
+            throw new Error("Registration failed");
+          });
+        }
+        return res.json();
+      })
+      .catch((error: any) => {
+        console.error("Error:", error);
+        throw error;
+      });
+    setUser(data);
+    setLoading(false);
   };
 
   return (

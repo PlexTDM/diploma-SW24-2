@@ -7,6 +7,7 @@ import User from "@/models/user";
 import { generateAccessToken, generateRefreshToken } from "./token";
 import { transporter } from "@/services/nodemailer";
 import { UserPayload } from "@/types";
+import RefreshToken from "@/models/refreshToken";
 
 class AuthController {
   public static async login(req: Request, res: Response): Promise<any> {
@@ -154,26 +155,30 @@ class AuthController {
     }
   }
 
-  public static async logout(req: Request, res: Response): Promise<void> {
+  public static async logout(req: Request, res: Response): Promise<any> {
     try {
-      const token = req.cookies?.token;
-      if (token) {
-        return jwt.verify(
-          token,
-          process.env.REFRESH_TOKEN_SECRET as string,
-          async (err: Error | null, decoded: any) => {
-            if (err) {
-              return res.status(403).json({ message: "Invalid token" });
-            }
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
 
-            await User.findByIdAndUpdate(decoded.userId, { token: null });
-            res.clearCookie("token");
-            res.status(200).json({ message: "User logged out successfully" });
-          }
-        );
+      if (!token) {
+        return res.status(400).json({ message: "No token provided" });
       }
 
-      res.status(400).json({ message: "No token provided" });
+      return jwt.verify(
+        token,
+        process.env.REFRESH_TOKEN_SECRET as string,
+        async (err: Error | null, decoded: any) => {
+          if (err) {
+            return res.status(403).json({ message: "Invalid token" });
+          }
+
+          await User.findByIdAndUpdate(decoded.id, { token: null });
+          await RefreshToken.deleteMany({ userId: decoded.id });
+          res.status(200).json({ message: "User logged out successfully" });
+        }
+      );
     } catch (e) {
       console.error("logout error:", e);
       res.status(500).json({ message: "Internal Server Error" });

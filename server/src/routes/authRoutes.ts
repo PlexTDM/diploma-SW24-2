@@ -4,9 +4,11 @@ import { body } from "express-validator";
 const app = express.Router();
 
 const validateUser = [
+  body("username").exists(),
   body("email").isEmail().withMessage("Invalid email"),
   body("password").exists().isLength({ min: 8 }),
-  body("age").isNumeric(),
+  body("gender").exists(),
+  body("birthday").isDate().exists(),
   body("height").isNumeric(),
   body("weight").isNumeric(),
   body("goal").exists(),

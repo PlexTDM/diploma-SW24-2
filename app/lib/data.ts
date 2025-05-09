@@ -1,48 +1,40 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const api =
-  (process.env.EXPO_PUBLIC_API_URL as string) || "http://localhost:3000";
-console.log(api);
+const api = process.env.EXPO_PUBLIC_API_URL as string;
 
-export const register = async (data: registerFormType): Promise<any> => {
-  return fetch(`${api}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.json())
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error;
-    });
-};
+if (!api) {
+  throw new Error("API URL is not set");
+}
 
 export async function login(
   email?: string,
   password?: string
 ): Promise<LoginResponse | null> {
   try {
-    // Try cookie-based session first
-    const sessionRes = await fetch(`${api}/auth/login`, {
-      credentials: "include",
-    });
+    const accessToken = await AsyncStorage.getItem("accessToken");
 
-    if (sessionRes.ok) {
-      const data = await sessionRes.json();
-      const { accessToken, refreshToken, user } = data;
+    if (accessToken) {
+      const sessionRes = await fetch(`${api}/auth/login`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-      if (accessToken && refreshToken) {
-        await AsyncStorage.setItem("accessToken", accessToken);
-        await AsyncStorage.setItem("refreshToken", refreshToken);
-        return { accessToken, refreshToken, user };
+      if (sessionRes.ok) {
+        const data = await sessionRes.json();
+        const { accessToken, refreshToken, user } = data;
+
+        if (accessToken && refreshToken) {
+          await AsyncStorage.setItem("accessToken", accessToken);
+          await AsyncStorage.setItem("refreshToken", refreshToken);
+          return { accessToken, refreshToken, user };
+        }
       }
     }
 
     // Fallback to email/password login
     if (email && password) {
-      const res = await fetch("https://your-api.com/login", {
+      const res = await fetch(`${api}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -73,10 +65,9 @@ export async function refreshAccessToken(): Promise<string | null> {
   if (!refreshToken) return null;
 
   try {
-    const res = await fetch("https://your-api.com/refresh", {
+    const res = await fetch(`${api}/auth/generateNewToken`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify({ refreshToken }),
     });
 
@@ -98,11 +89,14 @@ export async function refreshAccessToken(): Promise<string | null> {
 }
 
 export async function logout() {
+  const accessToken = await AsyncStorage.getItem("accessToken");
   await AsyncStorage.multiRemove(["accessToken", "refreshToken"]);
   try {
-    await fetch("https://your-api.com/logout", {
+    await fetch(`${api}/auth/logout`, {
       method: "POST",
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
   } catch (err) {
     console.warn("Failed to notify server of logout", err);

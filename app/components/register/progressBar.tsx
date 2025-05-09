@@ -1,4 +1,4 @@
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { useNavigation, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";

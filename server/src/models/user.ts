@@ -12,6 +12,7 @@ export interface IUser extends Document {
   role: Role;
   bio?: string;
   image?: string | null;
+  posts?: string[];
   isEmailVerified: boolean;
   emailVerificationToken: string;
   emailVerificationTokenExpiry: Date;
@@ -48,6 +49,12 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     image: {
       type: String,
       default: null,
+    },
+    posts: {
+      type: [Schema.Types.ObjectId],
+      ref: "Post",
+      required: false,
+      default: [],
     },
     isEmailVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String, required: true },

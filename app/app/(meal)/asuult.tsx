@@ -1,8 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { View, Text } from 'react-native';
 
-export default function asuult() {
+export default function Asuult() {
   return (
-    <div>asuult</div>
-  )
+    <View>
+      <Text>asuult</Text>
+    </View>
+  );
 }
 

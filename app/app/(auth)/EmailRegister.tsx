@@ -11,49 +11,34 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView, BlurEllipse } from "@/components";
 import { languages, useLanguage } from "@/lib/language";
-import { register } from "@/lib/data";
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { AuthContext } from "@/context/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
   const { language } = useLanguage();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordHidden, setPasswordHidden] = useState(true);
+  const [passwordHidden, setPasswordHidden] = useState<boolean>(true);
+  const { loading, register } = use(AuthContext);
   const store = useRegisterStore();
-  const { loading } = use(AuthContext);
+  const { setField } = store;
 
-  const {
-    gender,
-    birthday,
-    weight,
-    height,
-    goal,
-    activityLevel,
-    mealPerDay,
-    waterPerDay,
-    workSchedule,
-    healthCondition,
-  } = store;
-
-  const handleRegister = async () => {
-    // if (birthday) {
+  const handleRegister = () => {
+    const { progress, setField, ...rest } = store;
     register({
-      gender,
-      birthday,
-      weight,
-      height,
-      goal,
-      activityLevel,
-      mealPerDay,
-      waterPerDay,
-      workSchedule,
-      healthCondition,
-      email: username,
-      password,
+      ...rest,
     });
-    // }
+  };
+
+  const handleUsername = (text: string) => {
+    setField("username", text);
+  };
+
+  const handleEmail = (text: string) => {
+    setField("email", text);
+  };
+
+  const handlePassword = (text: string) => {
+    setField("password", text);
   };
 
   const gotoLogin = () => router.replace("/(auth)/signup");
@@ -78,11 +63,27 @@ const RegisterForm = () => {
             <View className="w-5/6 mb-4">
               <View className="mb-4">
                 <TextInput
+                  placeholder={languages[language].register.username}
+                  autoCapitalize="none"
+                  className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
+                  onChangeText={handleUsername}
+                  placeholderTextColor={"#89888E"}
+                  autoFocus={true}
+                  autoCorrect={false}
+                  autoComplete="off"
+                />
+              </View>
+
+              <View className="mb-4">
+                <TextInput
                   placeholder={languages[language].register.email}
                   autoCapitalize="none"
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
-                  onChangeText={setUsername}
+                  onChangeText={handleEmail}
                   placeholderTextColor={"#89888E"}
+                  autoFocus={true}
+                  autoCorrect={false}
+                  autoComplete="off"
                 />
               </View>
 
@@ -93,8 +94,10 @@ const RegisterForm = () => {
                   autoCapitalize="none"
                   autoCorrect={false}
                   className="bg-white dark:bg-gray-800 text-black flex-1 dark:text-white px-6 py-5 text-lg"
-                  onChangeText={setPassword}
+                  onChangeText={handlePassword}
                   placeholderTextColor={"#89888E"}
+                  autoFocus={true}
+                  autoComplete="off"
                 />
                 <Pressable
                   className="w-[50px] h-full"
