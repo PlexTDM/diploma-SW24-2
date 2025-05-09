@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable } from 'react-native';
 import moment, { Moment } from 'moment';
 import { Feather } from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
@@ -94,13 +94,7 @@ const SevenDayCalendar = () => {
       </View>
       <View className='w-full h-[200px]  rounded-3xl mt-6 p-7'>
       <View className="w-full rounded-3xl  p-7 justify-center items-center">
-  <View className="w-[350px] h-[200px] relative rounded-xl overflow-hidden ">
-    <Image
-      source={require("@/assets/foodPoster.png")}
-      className="w-full h-full"
-      resizeMode="cover"
-    />
-  </View>
+ 
 </View>
 
 
