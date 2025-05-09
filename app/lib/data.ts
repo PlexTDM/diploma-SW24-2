@@ -2,9 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api =
   (process.env.EXPO_PUBLIC_API_URL as string) || "http://localhost:3000";
+console.log(api);
 
-export const register = async (data: RegisterState) => {
-  return fetch(`${api}/register`, {
+export const register = async (data: registerFormType): Promise<any> => {
+  return fetch(`${api}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,7 +25,7 @@ export async function login(
 ): Promise<LoginResponse | null> {
   try {
     // Try cookie-based session first
-    const sessionRes = await fetch("https://your-api.com/me", {
+    const sessionRes = await fetch(`${api}/auth/login`, {
       credentials: "include",
     });
 

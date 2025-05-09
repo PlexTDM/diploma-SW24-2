@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable } from 'react-native';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Feather } from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 import {Image} from 'expo-image';
@@ -8,7 +8,7 @@ import {Image} from 'expo-image';
 const screenWidth = Dimensions.get('window').width;
 
 const SevenDayCalendar = () => {
-  const [dates, setDates] = useState([]);
+  const [dates, setDates] = useState<Moment[]>([]);
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const SevenDayCalendar = () => {
     setDates(days);
   }, []);
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = (date:Moment) => {
     setSelectedDate(date.format('YYYY-MM-DD'));
   };
 

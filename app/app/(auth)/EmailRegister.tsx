@@ -1,32 +1,59 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import {
-  ActivityIndicator,
   Text,
   TextInput,
   View,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView, BlurEllipse } from "@/components";
 import { languages, useLanguage } from "@/lib/language";
+import { register } from "@/lib/data";
+import { useRegisterStore } from "@/lib/store";
+import { AuthContext } from "@/context/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
-  const { theme } = useAppTheme();
   const { language } = useLanguage();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const store = useRegisterStore();
+  const { loading } = use(AuthContext);
+
+  const {
+    gender,
+    birthday,
+    weight,
+    height,
+    goal,
+    activityLevel,
+    mealPerDay,
+    waterPerDay,
+    workSchedule,
+    healthCondition,
+  } = store;
 
   const handleRegister = async () => {
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    // router.push("Home");
+    // if (birthday) {
+    register({
+      gender,
+      birthday,
+      weight,
+      height,
+      goal,
+      activityLevel,
+      mealPerDay,
+      waterPerDay,
+      workSchedule,
+      healthCondition,
+      email: username,
+      password,
+    });
+    // }
   };
 
   const gotoLogin = () => router.replace("/(auth)/signup");
@@ -143,8 +170,13 @@ const RegisterForm = () => {
             </View>
             <View className="flex-row justify-center mt-8">
               <Text>Already have an account?</Text>
-              <Text className="text-blue-700 font-semibold" onPress={gotoLogin}>
+              <Text
+                className="text-blue-700 font-semibold"
+                disabled={loading}
+                onPress={gotoLogin}
+              >
                 Login
+                {loading && <ActivityIndicator />}
               </Text>
             </View>
           </View>

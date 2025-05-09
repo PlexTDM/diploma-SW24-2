@@ -31,6 +31,7 @@ const RootLayout = () => {
             >
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(meal)" options={{ headerShown: false }} />
             </Stack>
           </Providers>
         </ThemeProvider>

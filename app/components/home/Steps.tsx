@@ -51,17 +51,17 @@ export default function Steps() {
 
   return (
     <Animated.View
-      className="dark:bg-gray-800 rounded-[26px] flex-1"
+      className="dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
       style={animatedStyle}
     >
       <Pressable
-        className="flex-1 justify-between p-4"
+        className="flex-1 justify-between p-4 px-6"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
       >
         <View className="flex-row items-center justify-between">
-          <ThemeText className="flex-1 font-bold">
+          <ThemeText className="flex-1 font-bold text-lg ">
             {languages[language].walk.steps}
           </ThemeText>
           <View className="w-[25px] h-[20px]">
