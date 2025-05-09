@@ -1,15 +1,15 @@
 import { ThemeView, ThemeText } from "@/components";
-import { useCallback, useRef, useState } from "react";
+import { use, useCallback, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
 import { useLanguage } from "@/lib/language";
-import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { Button, Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
-
+import { AuthContext } from "@/context/auth";
 const Tabs = () => {
   const { language } = useLanguage();
   const tabRef = useRef<FlatList>(null);
@@ -85,7 +85,9 @@ const Tabs = () => {
           onPress={handlePress}
           className="flex-1 justify-center items-center"
         >
-          <ThemeText className={`${selected ? "font-bold" : ""}`}>{children}</ThemeText>
+          <ThemeText className={`${selected ? "font-bold" : ""}`}>
+            {children}
+          </ThemeText>
         </Pressable>
       </View>
     );
@@ -124,11 +126,20 @@ export default function Tab() {
   const { theme } = useAppTheme();
   const navigation = useNavigation();
   const handleBack = () => {
-    navigation.canGoBack() ? navigation.goBack() : router.push("/");
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      router.push("/");
+    }
+  };
+  const { user } = use(AuthContext);
+
+  const handlePfp = () => {
+    // router.push("/settings");
   };
 
   return (
-    <ThemeView className=" flex items-center w-full justify-center pt-4 w-[85%]">
+    <ThemeView className="items-center justify-center pt-4">
       <View className="flex-row items-center px-6 justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
           <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
@@ -153,15 +164,23 @@ export default function Tab() {
           />
         </Pressable>
       </View>
-      <Image
-        source={require("@/assets/img/profile.png")}
-        style={{
-          width: 100,
-          height: 100,
-          marginTop: 20,
-        }}
-      />
-      <ThemeText className="text-2xl font-bold mt-4 ">Nergui</ThemeText>
+      <Pressable onPress={handlePfp}>
+        <Image
+          source={
+            user?.image
+              ? { uri: user.image }
+              : require("@/assets/img/profile.png")
+          }
+          style={{
+            width: 100,
+            height: 100,
+            marginTop: 20,
+          }}
+        />
+      </Pressable>
+      <ThemeText className="text-2xl font-bold mt-4">
+        {user?.username}
+      </ThemeText>
       <View className="flex-row items-center justify-between w-1/2 mt-4">
         <View className="items-center">
           <Icon

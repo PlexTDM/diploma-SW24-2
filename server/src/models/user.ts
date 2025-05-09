@@ -30,8 +30,8 @@ export interface IUser extends Document {
   image?: string | null;
   posts?: string[];
   isEmailVerified: boolean;
-  emailVerificationToken: string;
-  emailVerificationTokenExpiry: Date;
+  emailVerificationToken?: string;
+  emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -118,8 +118,12 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       default: [],
     },
     isEmailVerified: { type: Boolean, default: false, required: false },
-    emailVerificationToken: { type: String, required: false },
-    emailVerificationTokenExpiry: { type: Date, required: false },
+    emailVerificationToken: { type: String, required: false, default: null },
+    emailVerificationTokenExpiry: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

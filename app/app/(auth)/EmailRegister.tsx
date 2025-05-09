@@ -29,11 +29,11 @@ const RegisterForm = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     router.replace("/(tabs)/home");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/home");
+    }
+  }, [user, router]);
 
   const handleUsername = (text: string) => {
     setField("username", text);

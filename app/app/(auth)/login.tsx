@@ -21,16 +21,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
 
-  const logIn = async () => {
-    await login(username, password);
-    // router.push("Home");
+  const logIn = () => {
+    login(username, password);
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     router.replace("/(tabs)/home");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/home");
+    }
+  }, [user, router]);
 
   const signUp = () => router.push("/(auth)/signup");
 
