@@ -28,11 +28,10 @@ const Blog = () => {
   };
 
   return (
-    <View className={`p-8 items-center ${isDark ? 'bg-black' : 'bg-white'} min-h-screen`}>
-      {/* Header */}
-      <View className="flex-row justify-between items-center gap-80">
-        <Text className={`font-bold text-2xl ${isDark ? 'text-white' : 'text-black'}`}>Calories</Text>
-        <Feather name="bell" size={20} color={isDark ? 'white' : 'black'} />
+    <View className='p-6 items-center'>
+      <View className='flex-row justify-between items-center gap-80'>
+        <Text className='font-bold text-2xl'>Calories</Text>
+        <Feather name="bell" size={20} color="black" />
       </View>
 
       {/* Calendar */}
@@ -99,7 +98,7 @@ const Blog = () => {
       </View>
 
       {/* Meals Section */}
-      <Text className={`text-2xl font-bold mt-6 ${isDark ? 'text-white' : 'text-black'}`}>Meals</Text>
+      <Text className={`text-2xl font-bold mt-6  ${isDark ? 'text-white' : 'text-black'}`}>Meals</Text>
       <View className="w-full h-24 border border-gray-300 rounded-3xl mt-6 flex-row p-2">
         <View className="w-20 h-20 border border-gray-300 rounded-full justify-center">
           <Text className={`text-center ${isDark ? 'text-white' : 'text-black'}`}>Hool zurag</Text>
