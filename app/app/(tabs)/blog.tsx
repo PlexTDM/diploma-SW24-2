@@ -8,6 +8,7 @@ import {Image} from 'expo-image';
 const screenWidth = Dimensions.get('window').width;
 
 const SevenDayCalendar = () => {
+  const router = useRouter();
   const [dates, setDates] = useState<Moment[]>([]);
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
@@ -121,7 +122,6 @@ const SevenDayCalendar = () => {
 };
 
 export default SevenDayCalendar;
- const router = useRouter();
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',

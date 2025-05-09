@@ -4,10 +4,17 @@ import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
+import { useLanguage } from "@/lib/language";
+import { useFocusEffect, useNavigation, useRouter } from "expo-router";
+import { Button, Icon } from "react-native-paper";
+import { useAppTheme } from "@/lib/theme";
+import { Image } from "expo-image";
 
 const Tabs = () => {
+  const { language } = useLanguage();
   const tabRef = useRef<FlatList>(null);
   const [width, setWidth] = useState<number>(0);
+  const [selectedTab, setselectedTab] = useState<number>(0);
   const tabs = [
     {
       key: "1",
@@ -59,28 +66,37 @@ const Tabs = () => {
   );
 
   const TabButton = ({ children, tab }: { children: string; tab: number }) => {
+    const handlePress = () => {
+      scrollTo(tab);
+      setselectedTab(tab);
+    };
+    const selected = selectedTab === tab;
     return (
-      <View className="flex-1 overflow-hidden h-12">
+      <View
+        className={`flex-1 overflow-hidden  ${
+          selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
+        }`}
+      >
         <Pressable
           android_ripple={{
             color: "#00000020",
             radius: 40,
           }}
-          onPress={() => scrollTo(tab)}
-          className="flex-1 border justify-center items-center"
+          onPress={handlePress}
+          className="flex-1 justify-center items-center"
         >
-          <ThemeText>{children}</ThemeText>
+          <ThemeText className={`${selected ? "font-bold" : ""}`}>{children}</ThemeText>
         </Pressable>
       </View>
     );
   };
 
   return (
-    <View className="flex-1 m-12" onLayout={setDimensions}>
-      <View className="flex-row justify-between w-full items-center bg-white dark:bg-gray-800">
-        <TabButton tab={0}>Tab1</TabButton>
-        <TabButton tab={1}>Tab2</TabButton>
-        <TabButton tab={2}>Tab3</TabButton>
+    <View className="flex-1 w-[85%] my-4" onLayout={setDimensions}>
+      <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
+        <TabButton tab={0}>Timeline</TabButton>
+        <TabButton tab={1}>Stats</TabButton>
+        <TabButton tab={2}>Duels</TabButton>
       </View>
       <FlatList
         ref={tabRef}
@@ -104,8 +120,68 @@ const Tabs = () => {
 };
 
 export default function Tab() {
+  const router = useRouter();
+  const { theme } = useAppTheme();
+  const navigation = useNavigation();
+  const handleBack = () => {
+    navigation.canGoBack() ? navigation.goBack() : router.push("/");
+  };
+
   return (
-    <ThemeView className="items-center justify-center">
+    <ThemeView className=" flex items-center w-full justify-center pt-4 w-[85%]">
+      <View className="flex-row items-center px-6 justify-between w-full">
+        <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
+          <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
+            <Icon
+              source="chevron-left"
+              size={25}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
+          </Button>
+        </View>
+        <ThemeText className="text-2xl text-center font-semibold">
+          Your Profile
+        </ThemeText>
+        <Pressable
+          className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
+          onPress={() => router.push("/settings")}
+        >
+          <Icon
+            source="cog-outline"
+            size={25}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
+        </Pressable>
+      </View>
+      <Image
+        source={require("@/assets/img/profile.png")}
+        style={{
+          width: 100,
+          height: 100,
+          marginTop: 20,
+        }}
+      />
+      <ThemeText className="text-2xl font-bold mt-4 ">Nergui</ThemeText>
+      <View className="flex-row items-center justify-between w-1/2 mt-4">
+        <View className="items-center">
+          <Icon
+            source="flash-outline"
+            color={theme === "dark" ? "#fff" : "#000"}
+            size={30}
+          />
+          <ThemeText className="font-semibold text-xl">247</ThemeText>
+          <ThemeText className="color-gray-400">Total colories</ThemeText>
+        </View>
+        <View className="items-center">
+          <Icon
+            source="account-outline"
+            color={theme === "dark" ? "#fff" : "#000"}
+            size={30}
+          />
+          <ThemeText className="font-semibold text-xl">682</ThemeText>
+          <ThemeText className="color-gray-400">Followers</ThemeText>
+        </View>
+      </View>
       <Tabs />
     </ThemeView>
   );
