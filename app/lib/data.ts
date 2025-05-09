@@ -37,13 +37,15 @@ export async function login(
       const res = await fetch(`${api}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) throw new Error("Login failed");
-
+      if (!res.ok) {
+        console.log(await res.text());
+        throw new Error("Login failed");
+      }
       const data = await res.json();
+      console.log(data);
       const { accessToken, refreshToken, user } = data;
 
       if (accessToken && refreshToken) {

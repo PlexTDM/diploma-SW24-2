@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
-import User from "@/models/user";
+import User, { IUser } from "@/models/user";
 import { generateAccessToken, generateRefreshToken } from "./token";
 import { transporter } from "@/services/nodemailer";
 import { UserPayload } from "@/types";
@@ -63,7 +63,23 @@ class AuthController {
 
       res.json({
         message: "User logged in successfully",
-        user,
+        user: {
+          id: user._id,
+          email: user.email,
+          role: user.role,
+          username: user.username,
+          gender: user.gender,
+          birthday: user.birthday,
+          height: user.height,
+          weight: user.weight,
+          goal: user.goal,
+          activityLevel: user.activityLevel,
+          mealPerDay: user.mealPerDay,
+          waterPerDay: user.waterPerDay,
+          workSchedule: user.workSchedule,
+          healthCondition: user.healthCondition,
+          isEmailVerified: user.isEmailVerified,
+        },
         accessToken,
         refreshToken,
       });
@@ -95,13 +111,13 @@ class AuthController {
         return;
       }
 
-      const salt = await bcryptjs.genSalt(10);
-      const hashedPassword = await bcryptjs.hash(password, salt);
+      const salt = bcryptjs.genSaltSync(10);
+      const hashedPassword = bcryptjs.hashSync(password, salt);
 
-      const newUser = await User.create(
+      const newUser = (await User.create(
         [{ ...req.body, password: hashedPassword }],
         { session }
-      );
+      )) as IUser[];
 
       const accessToken = generateAccessToken(newUser[0]);
       const refreshToken = await generateRefreshToken(newUser[0]);
@@ -114,6 +130,18 @@ class AuthController {
           id: newUser[0]._id,
           email: newUser[0].email,
           role: newUser[0].role,
+          username: newUser[0].username,
+          gender: newUser[0].gender,
+          birthday: newUser[0].birthday,
+          height: newUser[0].height,
+          weight: newUser[0].weight,
+          goal: newUser[0].goal,
+          activityLevel: newUser[0].activityLevel,
+          mealPerDay: newUser[0].mealPerDay,
+          waterPerDay: newUser[0].waterPerDay,
+          workSchedule: newUser[0].workSchedule,
+          healthCondition: newUser[0].healthCondition,
+          isEmailVerified: newUser[0].isEmailVerified,
         },
         accessToken,
         refreshToken,

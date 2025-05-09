@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   Text,
   TextInput,
@@ -18,7 +18,7 @@ const RegisterForm = () => {
   const router = useRouter();
   const { language } = useLanguage();
   const [passwordHidden, setPasswordHidden] = useState<boolean>(true);
-  const { loading, register } = use(AuthContext);
+  const { loading, register, user } = use(AuthContext);
   const store = useRegisterStore();
   const { setField } = store;
 
@@ -28,6 +28,12 @@ const RegisterForm = () => {
       ...rest,
     });
   };
+
+  // useEffect(() => {
+  //   if (user) {
+  //     router.replace("/(tabs)/home");
+  //   }
+  // }, [user, router]);
 
   const handleUsername = (text: string) => {
     setField("username", text);
@@ -135,11 +141,13 @@ const RegisterForm = () => {
               <View className="flex-row justify-center mb-4 space-x-4 mt-2">
                 <TouchableOpacity
                   onPress={handleRegister}
+                  disabled={loading}
                   className="bg-black dark:bg-transparent dark:border-2 border-slate-500 rounded-full w-full py-4 items-center"
                 >
                   <Text className="text-white dark:text-slate-200 font-semibold text-lg">
                     {languages[language].register.register}
                   </Text>
+                  {loading && <ActivityIndicator />}
                 </TouchableOpacity>
               </View>
               <View className="flex-row justify-center w-full items-center gap-2">
@@ -179,7 +187,6 @@ const RegisterForm = () => {
                 onPress={gotoLogin}
               >
                 Login
-                {loading && <ActivityIndicator />}
               </Text>
             </View>
           </View>

@@ -8,7 +8,7 @@ const validateUser = [
   body("email").isEmail().withMessage("Invalid email"),
   body("password").exists().isLength({ min: 8 }),
   body("gender").exists(),
-  body("birthday").isDate().exists(),
+  body("birthday").exists(),
   body("height").isNumeric(),
   body("weight").isNumeric(),
   body("goal").exists(),

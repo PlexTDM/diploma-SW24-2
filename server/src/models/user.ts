@@ -5,9 +5,25 @@ export enum Role {
   USER = "USER",
 }
 
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+}
+
 export interface IUser extends Document {
+  username: string;
   email: string;
   stats?: Record<string, any>;
+  gender: Gender;
+  birthday: Date;
+  height: number;
+  weight: number;
+  goal: string;
+  activityLevel: string;
+  mealPerDay: string;
+  waterPerDay: string;
+  workSchedule: string;
+  healthCondition: string;
   password: string;
   role: Role;
   bio?: string;
@@ -23,6 +39,10 @@ export interface IUser extends Document {
 // Define the schema
 const userSchema: Schema<IUser> = new Schema<IUser>(
   {
+    username: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -31,6 +51,47 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: Schema.Types.Mixed,
       required: false,
     },
+    gender: {
+      type: String,
+      required: true,
+    },
+    birthday: {
+      type: Date,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
+    weight: {
+      type: Number,
+      required: true,
+    },
+    goal: {
+      type: String,
+      required: true,
+    },
+    activityLevel: {
+      type: String,
+      required: true,
+    },
+    mealPerDay: {
+      type: String,
+      required: true,
+    },
+    waterPerDay: {
+      type: String,
+      required: true,
+    },
+    workSchedule: {
+      type: String,
+      required: true,
+    },
+    healthCondition: {
+      type: String,
+      required: true,
+    },
+
     password: {
       type: String,
       required: true,
@@ -56,9 +117,9 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       required: false,
       default: [],
     },
-    isEmailVerified: { type: Boolean, default: false },
-    emailVerificationToken: { type: String, required: true },
-    emailVerificationTokenExpiry: { type: Date, required: true },
+    isEmailVerified: { type: Boolean, default: false, required: false },
+    emailVerificationToken: { type: String, required: false },
+    emailVerificationTokenExpiry: { type: Date, required: false },
     createdAt: {
       type: Date,
       default: Date.now,
