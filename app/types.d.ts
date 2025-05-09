@@ -10,8 +10,9 @@ type LanguageContextType = {
 };
 
 interface RegisterState {
+  username: string;
   gender: string;
-  birthday: Date | null;
+  birthday: Date;
   weight: number;
   height: number;
   goal: string;
@@ -27,13 +28,8 @@ interface RegisterState {
   setField: (key: keyof Omit<RegisterState, "setField">, value: any) => void;
 }
 
-type LoginResponse = {
-  accessToken: string;
-  refreshToken: string;
-  user: any;
-};
-
 type registerFormType = {
+  username: string;
   gender: string;
   birthday: Date;
   weight: number;
@@ -46,4 +42,10 @@ type registerFormType = {
   healthCondition: string;
   email: string;
   password: string;
+};
+
+type LoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+  user: any;
 };

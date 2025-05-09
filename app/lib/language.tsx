@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
-import { register } from "./data";
 
 export const mn = {
   mascot: {
@@ -15,9 +14,10 @@ export const mn = {
   },
   register: {
     age: "Таны Төрсөн өдөр?",
+    username: "Нэр",
     register: "Бүртгүүлэх",
-    email: "Имэйл хаягаа оруулна уу",
-    password: "Нууц үгээ оруулна уу",
+    email: "Имэйл",
+    password: "Нууц үг",
     button: {
       button1: "Өмнөх",
       button2: "Дараах",
@@ -122,9 +122,10 @@ export const en = {
     button2: "Sign Up",
   },
   register: {
+    username: "Username",
     age: "How old are you?",
-    email: "Enter your email",
-    password: "Enter your password",
+    email: "Email",
+    password: "Password",
     register: "Register",
     button: {
       button1: "Back",
