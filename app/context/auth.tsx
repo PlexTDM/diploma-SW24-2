@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { login, logout } from "@/lib/data";
+import { login, logout, register } from "@/lib/data";
 
 type AuthContextType = {
   user: any;
@@ -14,6 +14,7 @@ type AuthContextType = {
   loading: boolean;
   login: (email?: string, password?: string) => Promise<LoginResponse | null>;
   logout: () => Promise<void>;
+  register: (formData: registerFormType) => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -22,6 +23,7 @@ export const AuthContext = createContext<AuthContextType>({
   loading: true,
   login: async () => null,
   logout: async () => {},
+  register: async () => {},
 });
 
 export function AuthProvider({ children }: PropsWithChildren) {
@@ -53,6 +55,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setLoggedIn(false);
   };
 
+  const registerUser = async (formData: registerFormType) => {
+    console.log(formData);
+    const data = await register(formData);
+    console.log("data", data);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -61,6 +69,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         loading,
         login,
         logout: logoutUser,
+        register: registerUser,
       }}
     >
       {children}

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable, useColorScheme } from 'react-native';
 import moment, { Moment } from 'moment';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import {useRouter} from 'expo-router';
+import {Image} from 'expo-image';
 
 const screenWidth = Dimensions.get('window').width;
 

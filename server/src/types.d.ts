@@ -1,0 +1,16 @@
+import { RedisService } from "@/services/redis";
+
+declare global {
+  namespace Express {
+    interface Request {
+      redis: RedisService;
+    }
+  }
+}
+
+type UserRoles = "admin" | "user";
+
+interface UserPayload {
+  id: string;
+  role: "ADMIN" | "USER";
+}
