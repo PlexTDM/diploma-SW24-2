@@ -32,3 +32,18 @@ type LoginResponse = {
   refreshToken: string;
   user: any;
 };
+
+type registerFormType = {
+  gender: string;
+  birthday: Date;
+  weight: number;
+  height: number;
+  goal: string;
+  activityLevel: string;
+  mealPerDay: string;
+  waterPerDay: string;
+  workSchedule: string;
+  healthCondition: string;
+  email: string;
+  password: string;
+};

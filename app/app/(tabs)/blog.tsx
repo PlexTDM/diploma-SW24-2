@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image 
 import moment, { Moment } from 'moment';
 import { Feather } from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
+import {Image} from 'expo-image';
 
 const screenWidth = Dimensions.get('window').width;
 

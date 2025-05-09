@@ -1,0 +1,308 @@
+import { Request, Response } from "express";
+import { validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
+import mongoose from "mongoose";
+import User from "@/models/user";
+import { generateAccessToken, generateRefreshToken } from "./token";
+import { transporter } from "@/services/nodemailer";
+import { UserPayload } from "@/types";
+
+class AuthController {
+  public static async login(req: Request, res: Response): Promise<any> {
+    const { password, email } = req.body;
+
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
+
+      if (token) {
+        const decoded = jwt.verify(
+          token,
+          process.env.SECRET_ACCESS_TOKEN as string
+        ) as UserPayload;
+
+        if (!decoded) {
+          return res.status(403).json({ message: "Invalid token" });
+        }
+
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const accessToken = generateAccessToken(user);
+        const refreshToken = await generateRefreshToken(user);
+
+        return res.json({
+          message: "User logged in successfully with token",
+          user,
+          accessToken,
+          refreshToken,
+        });
+      }
+
+      const user = await User.findOne({ email });
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const match = bcryptjs.compareSync(password, user.password);
+      if (!match) {
+        res.status(401).json({ message: "Password does not match" });
+        return;
+      }
+
+      const accessToken = generateAccessToken(user);
+      const refreshToken = await generateRefreshToken(user);
+
+      res.json({
+        message: "User logged in successfully",
+        user,
+        accessToken,
+        refreshToken,
+      });
+    } catch (e) {
+      console.error("login error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async register(req: Request, res: Response): Promise<void> {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    const { email, password } = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const existingUser = await User.findOne({ email })
+        .session(session)
+        .exec();
+      if (existingUser) {
+        await session.abortTransaction();
+        res.status(400).json({ message: "User already exists" });
+        return;
+      }
+
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(password, salt);
+
+      const newUser = await User.create(
+        [{ ...req.body, password: hashedPassword }],
+        { session }
+      );
+
+      const accessToken = generateAccessToken(newUser[0]);
+      const refreshToken = await generateRefreshToken(newUser[0]);
+
+      await session.commitTransaction();
+
+      res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          id: newUser[0]._id,
+          email: newUser[0].email,
+          role: newUser[0].role,
+        },
+        accessToken,
+        refreshToken,
+      });
+    } catch (e) {
+      await session.abortTransaction();
+      console.error("register error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+      session.endSession();
+    }
+  }
+
+  public async update(req: Request, res: Response): Promise<void> {
+    const { password, newPassword, id } = req.body;
+
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+
+      const match = bcryptjs.compareSync(password, user.password);
+      if (!match) {
+        res.status(401).json({ message: "Password didn't match" });
+        return;
+      }
+
+      const salt = bcryptjs.genSaltSync(10);
+      const hashedPassword = bcryptjs.hashSync(newPassword, salt);
+
+      await User.findByIdAndUpdate(id, { password: hashedPassword });
+
+      res.status(200).json({ message: "Password updated successfully" });
+    } catch (e) {
+      console.error("update error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async logout(req: Request, res: Response): Promise<void> {
+    try {
+      const token = req.cookies?.token;
+      if (token) {
+        return jwt.verify(
+          token,
+          process.env.REFRESH_TOKEN_SECRET as string,
+          async (err: Error | null, decoded: any) => {
+            if (err) {
+              return res.status(403).json({ message: "Invalid token" });
+            }
+
+            await User.findByIdAndUpdate(decoded.userId, { token: null });
+            res.clearCookie("token");
+            res.status(200).json({ message: "User logged out successfully" });
+          }
+        );
+      }
+
+      res.status(400).json({ message: "No token provided" });
+    } catch (e) {
+      console.error("logout error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async generateNewToken(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const authHeader = req.headers.authorization;
+      const refreshToken = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
+
+      if (!refreshToken) {
+        res.status(400).json({ message: "Refresh token is required" });
+        return;
+      }
+
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET as string,
+        async (err: Error | null, decoded: any) => {
+          if (err) {
+            return res.status(403).json({ message: "Invalid refresh token" });
+          }
+
+          const user = await User.findById(decoded.userId);
+          if (!user) {
+            return res.status(404).json({ message: "User not found" });
+          }
+
+          const accessToken = generateAccessToken(user);
+          const newRefreshToken = await generateRefreshToken(user);
+
+          res.json({
+            message: "Tokens generated successfully",
+            accessToken,
+            refreshToken: newRefreshToken,
+          });
+        }
+      );
+    } catch (e) {
+      console.error("generateNewToken error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async sendVerificationEmail(
+    req: Request,
+    res: Response
+  ): Promise<any> {
+    const { email } = req.body;
+
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const token = jwt.sign(
+        { id: user._id },
+        process.env.EMAIL_VERIFICATION_SECRET as string,
+        { expiresIn: "1h" }
+      );
+
+      const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+
+      user.emailVerificationToken = token;
+      user.emailVerificationTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiry
+      await user.save();
+
+      const mailOptions = {
+        from: process.env.SMTP_USER,
+        to: user.email,
+        subject: "Email Verification",
+        html: `<p>Please click on the link below to verify your email:</p>
+               <a href="${verificationUrl}">Verify Email</a>`,
+      };
+
+      transporter.sendMail(mailOptions, (error, _info) => {
+        if (error) {
+          return res.status(500).json({ message: "Error sending email" });
+        }
+        res.status(200).json({ message: "Verification email sent" });
+      });
+    } catch (e) {
+      console.error("Error sending verification email:", e);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  public static async verifyEmail(req: Request, res: Response): Promise<any> {
+    const { token } = req.query;
+
+    try {
+      const decoded = jwt.verify(
+        token as string,
+        process.env.EMAIL_VERIFICATION_SECRET as string
+      ) as UserPayload;
+
+      const user = await User.findById(decoded.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.isEmailVerified) {
+        return res.status(400).json({ message: "Email already verified" });
+      }
+
+      // Check token expiry
+      if (user.emailVerificationTokenExpiry < new Date()) {
+        return res.status(400).json({ message: "Token expired" });
+      }
+
+      // Set user as verified
+      user.isEmailVerified = true;
+      user.emailVerificationToken = "";
+      user.emailVerificationTokenExpiry = new Date();
+      await user.save();
+
+      res.status(200).json({ message: "Email verified successfully" });
+    } catch (e) {
+      console.error("Error verifying email:", e);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+}
+
+export default AuthController;

@@ -125,6 +125,20 @@ export default function TabBar({
       : Platform.OS === "ios"
       ? "mb-10"
       : "mb-0";
+
+  useEffect(() => {
+    const newPosition = Math.max(
+      Math.min(state.index * btnWidth + 5, dimensions.width - btnWidth - 5),
+      10
+    );
+
+    tabPosition.value = withSpring(newPosition, {
+      duration: 900,
+      dampingRatio: 0.6,
+      overshootClamping: false,
+    });
+  }, [state.index, btnWidth, dimensions.width, tabPosition]);
+
   return (
     <View
       className={`flex-row absolute bottom-[10px] left-0 right-0 items-center h-[60px] justify-between mx-12 px-3 bg-white dark:bg-slate-950 rounded-full ${barMargin}`}
