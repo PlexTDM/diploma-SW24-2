@@ -36,15 +36,15 @@ const Blog = () => {
 
       {/* Calendar */}
       <View style={styles.container}>
-        {dates.map((date) => {
-          const isSelected = selectedDate === date.format('YYYY-MM-DD');
-          return (
-            <TouchableOpacity
-              key={date.format('YYYY-MM-DD')}
-              onPress={() => handleSelectDate(date)}
-              style={styles.dayContainer}
-              activeOpacity={0.7}
-            >
+      {dates.map((date) => {
+        const isSelected = selectedDate === date.format('YYYY-MM-DD');
+        return (
+          <TouchableOpacity
+            key={date.format('YYYY-MM-DD')}
+            onPress={() => handleSelectDate(date)}
+            style={styles.dayContainer}
+            activeOpacity={0.7}
+          >
               <Text style={[styles.dayText, isDark && { color: '#ccc' }]}>
                 {date.format('dd').charAt(0)}
               </Text>
@@ -55,11 +55,11 @@ const Blog = () => {
                   isDark && !isSelected && { color: '#fff' },
                 ]}
               >
-                {date.format('D')}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+              {date.format('D')}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
       </View>
 
       {/* Nutrient Bars */}
@@ -76,9 +76,9 @@ const Blog = () => {
               <View className={`w-15 ${item.height} ${item.color} rounded-full items-center`}>
                 <View className="top-2 flex bg-white w-10 h-10 rounded-full items-center justify-center">
                   <Text className="text-[10px]">{item.value}</Text>
-                </View>
-              </View>
-            </View>
+          </View>
+        </View>
+        </View>
             <Text className="justify-center text-center text-gray-500">{item.label}</Text>
           </View>
         ))}
@@ -111,7 +111,7 @@ const Blog = () => {
           onPress={() => router.push("/(meal)")}
           className="w-14 h-14 rounded-full bg-[#CBE4FC] justify-center items-center mt-3 ml-28"
         >
-          <Feather name="plus" size={32} color="#136CF1" />
+        <Feather name="plus" size={32} color="#136CF1" />
         </Pressable>
       </View>
     </View>
