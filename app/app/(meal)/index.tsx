@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { TextInput } from 'react-native'
+import { Image } from 'expo-image'
 
 export default function meal() {
     
@@ -41,15 +42,27 @@ export default function meal() {
       <Text className='text-xl font-bold mt-8'>More Scanners</Text>
       <View className='flex-row items-center mt-8 gap-6'>
         <View className='justify-center items-center'>
-          <View className='w-24 h-24 bg-blue-200 border border-[#4C91F9] rounded-3xl'></View>
+          <View className='w-24 h-24 bg-blue-200 justify-center items-center border border-[#4C91F9] rounded-3xl'>
+            <Image source={require('@/assets/barcode.png')} 
+            style={{ width: "60%", height: "60%" }}
+            className='w-full h-full' />
+          </View>
           <Text className='mt-2 font-bold'>Barcode</Text>
         </View>
         <View className='justify-center items-center'>
-          <View className='w-24 h-24 bg-blue-200 border border-[#4C91F9] rounded-3xl'></View>
+          <View className='w-24 h-24 bg-blue-200 justify-center items-center border border-[#4C91F9] rounded-3xl'>
+          <Image source={require('@/assets/Menu.png')} 
+          style={{ width: "60%", height: "60%" }}
+          className='w-full h-full' />
+          </View>
           <Text className='mt-2 font-bold'>Menu</Text>
         </View>
         <View className='justify-center items-center'>
-          <View className='w-24 h-24 bg-blue-200 border border-[#4C91F9] rounded-3xl'></View>
+          <View className='w-24 h-24 justify-center items-center bg-blue-200 border border-[#4C91F9] rounded-3xl'>
+          <Image source={require('@/assets/fridge.png')}
+          style={{ width: "60%", height: "60%" }}
+           className='w-full h-full' />
+          </View>
           <Text className='mt-2 font-bold'>Fridge</Text>
         </View>
       </View>

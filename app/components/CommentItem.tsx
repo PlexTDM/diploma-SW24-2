@@ -15,7 +15,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
   const timeAgo = formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true });
   
   return (
-    <ThemeView className="mb-4 p-2 border-b border-gray-200">
+    <View className="mb-4 p-2 border-b border-gray-200">
       <View className='flex-row items-center justify-between'>
         <View className='flex-row items-center'>
         <Image 
@@ -24,7 +24,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
         />
         <View className=''>
           <View className="flex-row items-center mb-1">
-            <Text className="font-bold text-neutral-800 mr-2">
+            <Text className="font-bold text-neutral-800 mr-2 dark:text-white">
               {comment.author.name}
             </Text>
           </View>
@@ -44,9 +44,9 @@ export default function CommentItem({ comment }: CommentItemProps) {
       </View>
       <View className="flex-1">
         <View className="rounded-lg p-3">
-          <Text className="text-neutral-700">{comment.content}</Text>
+          <Text className="text-neutral-700 dark:text-neutral-100">{comment.content}</Text>
         </View>
       </View>
-    </ThemeView>
+    </View>
   );
 }
