@@ -1,5 +1,5 @@
 import { languages, useLanguage } from "@/lib/language";
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";

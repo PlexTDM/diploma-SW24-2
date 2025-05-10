@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -11,21 +11,25 @@ import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView, BlurEllipse } from "@/components";
+import { AuthContext } from "@/context/auth";
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
+  const { login, user, loading } = use(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
-  const [loading, setLoading] = useState(false);
 
-  const logIn = async () => {
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    // router.push("Home");
+  const logIn = () => {
+    login(username, password);
   };
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/home");
+    }
+  }, [user, router]);
 
   const signUp = () => router.push("/(auth)/signup");
 

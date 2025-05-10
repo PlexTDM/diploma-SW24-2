@@ -1,4 +1,4 @@
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { Text, View, TextInput, Pressable } from "react-native";
 import { useState, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -39,16 +39,16 @@ export default function Step1() {
     ]);
   }, [language, genderChoices]);
 
-  const handleGender = (item: { label: string; value: string }) => {
-    if (item.label) {
-      setField("gender", item.label);
+  const handleGender = (value: string | null) => {
+    if (value) {
+      const selected = items.find((item) => item.value === value);
+      if (selected) setField("gender", selected.label);
     }
   };
   type DropdownItem = {
     label: string;
     value: string;
   };
-    
 
   const handleDob = (e: DateTimePickerEvent, date?: Date | undefined) => {
     setShowDatePicker(false);
@@ -106,7 +106,8 @@ export default function Step1() {
           items={items}
           setOpen={setOpen}
           setValue={setValue}
-          setItems={setItems}          
+          setItems={setItems}
+          onChangeValue={handleGender}
           placeholder={languages[language].register.steps.step1.question1.title}
           style={{
             borderRadius: 12,

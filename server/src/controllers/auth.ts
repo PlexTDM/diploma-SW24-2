@@ -3,10 +3,14 @@ import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
-import User from "@/models/user";
+import User, { IUser } from "@/models/user";
 import { generateAccessToken, generateRefreshToken } from "./token";
 import { transporter } from "@/services/nodemailer";
 import { UserPayload } from "@/types";
+import RefreshToken from "@/models/refreshToken";
+
+const { genSaltSync, hashSync, compareSync } = bcryptjs;
+const hashRounds = 10;
 
 class AuthController {
   public static async login(req: Request, res: Response): Promise<any> {
@@ -51,7 +55,7 @@ class AuthController {
         return;
       }
 
-      const match = bcryptjs.compareSync(password, user.password);
+      const match = compareSync(password, user.password);
       if (!match) {
         res.status(401).json({ message: "Password does not match" });
         return;
@@ -62,7 +66,24 @@ class AuthController {
 
       res.json({
         message: "User logged in successfully",
-        user,
+        user: {
+          id: user._id,
+          email: user.email,
+          role: user.role,
+          username: user.username,
+          gender: user.gender,
+          birthday: user.birthday,
+          height: user.height,
+          weight: user.weight,
+          goal: user.goal,
+          activityLevel: user.activityLevel,
+          mealPerDay: user.mealPerDay,
+          waterPerDay: user.waterPerDay,
+          workSchedule: user.workSchedule,
+          healthCondition: user.healthCondition,
+          isEmailVerified: user.isEmailVerified,
+          posts: user.posts,
+        },
         accessToken,
         refreshToken,
       });
@@ -72,12 +93,10 @@ class AuthController {
     }
   }
 
-  public static async register(req: Request, res: Response): Promise<void> {
+  public static async register(req: Request, res: Response): Promise<any> {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
-      return;
-    }
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
 
     const { email, password } = req.body;
 
@@ -90,17 +109,16 @@ class AuthController {
         .exec();
       if (existingUser) {
         await session.abortTransaction();
-        res.status(400).json({ message: "User already exists" });
-        return;
+        return res.status(400).json({ message: "User already exists" });
       }
 
-      const salt = await bcryptjs.genSalt(10);
-      const hashedPassword = await bcryptjs.hash(password, salt);
+      const salt = genSaltSync(hashRounds);
+      const hashedPassword = hashSync(password, salt);
 
-      const newUser = await User.create(
+      const newUser = (await User.create(
         [{ ...req.body, password: hashedPassword }],
         { session }
-      );
+      )) as IUser[];
 
       const accessToken = generateAccessToken(newUser[0]);
       const refreshToken = await generateRefreshToken(newUser[0]);
@@ -113,6 +131,19 @@ class AuthController {
           id: newUser[0]._id,
           email: newUser[0].email,
           role: newUser[0].role,
+          username: newUser[0].username,
+          gender: newUser[0].gender,
+          birthday: newUser[0].birthday,
+          height: newUser[0].height,
+          weight: newUser[0].weight,
+          goal: newUser[0].goal,
+          activityLevel: newUser[0].activityLevel,
+          mealPerDay: newUser[0].mealPerDay,
+          waterPerDay: newUser[0].waterPerDay,
+          workSchedule: newUser[0].workSchedule,
+          healthCondition: newUser[0].healthCondition,
+          isEmailVerified: newUser[0].isEmailVerified,
+          posts: newUser[0].posts,
         },
         accessToken,
         refreshToken,
@@ -126,24 +157,20 @@ class AuthController {
     }
   }
 
-  public async update(req: Request, res: Response): Promise<void> {
+  // update doesn't work for now
+  public static async update(req: Request, res: Response): Promise<any> {
     const { password, newPassword, id } = req.body;
 
     try {
-      const user = await User.findById(id);
-      if (!user) {
-        res.status(404).json({ message: "User not found" });
-        return;
-      }
+      const user = await User.findById(id).exec();
+      if (!user) return res.status(404).json({ message: "User not found" });
 
-      const match = bcryptjs.compareSync(password, user.password);
-      if (!match) {
-        res.status(401).json({ message: "Password didn't match" });
-        return;
-      }
+      const match = compareSync(password, user.password);
+      if (!match)
+        return res.status(401).json({ message: "Passwords don't match" });
 
-      const salt = bcryptjs.genSaltSync(10);
-      const hashedPassword = bcryptjs.hashSync(newPassword, salt);
+      const salt = genSaltSync(hashRounds);
+      const hashedPassword = hashSync(newPassword, salt);
 
       await User.findByIdAndUpdate(id, { password: hashedPassword });
 
@@ -154,26 +181,30 @@ class AuthController {
     }
   }
 
-  public static async logout(req: Request, res: Response): Promise<void> {
+  public static async logout(req: Request, res: Response): Promise<any> {
     try {
-      const token = req.cookies?.token;
-      if (token) {
-        return jwt.verify(
-          token,
-          process.env.REFRESH_TOKEN_SECRET as string,
-          async (err: Error | null, decoded: any) => {
-            if (err) {
-              return res.status(403).json({ message: "Invalid token" });
-            }
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
 
-            await User.findByIdAndUpdate(decoded.userId, { token: null });
-            res.clearCookie("token");
-            res.status(200).json({ message: "User logged out successfully" });
-          }
-        );
+      if (!token) {
+        return res.status(400).json({ message: "No token provided" });
       }
 
-      res.status(400).json({ message: "No token provided" });
+      return jwt.verify(
+        token,
+        process.env.REFRESH_TOKEN_SECRET as string,
+        async (err: Error | null, decoded: any) => {
+          if (err) {
+            return res.status(403).json({ message: "Invalid token" });
+          }
+
+          await User.findByIdAndUpdate(decoded.id, { token: null }).exec();
+          await RefreshToken.deleteMany({ userId: decoded.id }).exec();
+          res.status(200).json({ message: "User logged out successfully" });
+        }
+      );
     } catch (e) {
       console.error("logout error:", e);
       res.status(500).json({ message: "Internal Server Error" });
@@ -183,17 +214,15 @@ class AuthController {
   public static async generateNewToken(
     req: Request,
     res: Response
-  ): Promise<void> {
+  ): Promise<any> {
     try {
       const authHeader = req.headers.authorization;
       const refreshToken = authHeader?.startsWith("Bearer ")
         ? authHeader.slice(7)
         : null;
 
-      if (!refreshToken) {
-        res.status(400).json({ message: "Refresh token is required" });
-        return;
-      }
+      if (!refreshToken)
+        return res.status(400).json({ message: "Refresh token is required" });
 
       jwt.verify(
         refreshToken,
@@ -203,7 +232,9 @@ class AuthController {
             return res.status(403).json({ message: "Invalid refresh token" });
           }
 
-          const user = await User.findById(decoded.userId);
+          const user = await User.findById(decoded.userId)
+            .select("-password")
+            .exec();
           if (!user) {
             return res.status(404).json({ message: "User not found" });
           }
@@ -277,7 +308,7 @@ class AuthController {
         process.env.EMAIL_VERIFICATION_SECRET as string
       ) as UserPayload;
 
-      const user = await User.findById(decoded.id);
+      const user = await User.findById(decoded.id).select("-password").exec();
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -287,7 +318,10 @@ class AuthController {
       }
 
       // Check token expiry
-      if (user.emailVerificationTokenExpiry < new Date()) {
+      if (
+        user.emailVerificationTokenExpiry &&
+        user.emailVerificationTokenExpiry < new Date()
+      ) {
         return res.status(400).json({ message: "Token expired" });
       }
 
