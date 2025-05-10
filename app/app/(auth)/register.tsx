@@ -1,4 +1,4 @@
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import {
   LayoutChangeEvent,
   View,

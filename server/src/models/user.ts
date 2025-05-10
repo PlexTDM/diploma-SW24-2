@@ -5,16 +5,33 @@ export enum Role {
   USER = "USER",
 }
 
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+}
+
 export interface IUser extends Document {
+  username: string;
   email: string;
   stats?: Record<string, any>;
+  gender: Gender;
+  birthday: Date;
+  height: number;
+  weight: number;
+  goal: string;
+  activityLevel: string;
+  mealPerDay: string;
+  waterPerDay: string;
+  workSchedule: string;
+  healthCondition: string;
   password: string;
   role: Role;
   bio?: string;
   image?: string | null;
+  posts?: string[];
   isEmailVerified: boolean;
-  emailVerificationToken: string;
-  emailVerificationTokenExpiry: Date;
+  emailVerificationToken?: string;
+  emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,6 +39,10 @@ export interface IUser extends Document {
 // Define the schema
 const userSchema: Schema<IUser> = new Schema<IUser>(
   {
+    username: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -30,6 +51,47 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: Schema.Types.Mixed,
       required: false,
     },
+    gender: {
+      type: String,
+      required: true,
+    },
+    birthday: {
+      type: Date,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
+    weight: {
+      type: Number,
+      required: true,
+    },
+    goal: {
+      type: String,
+      required: true,
+    },
+    activityLevel: {
+      type: String,
+      required: true,
+    },
+    mealPerDay: {
+      type: String,
+      required: true,
+    },
+    waterPerDay: {
+      type: String,
+      required: true,
+    },
+    workSchedule: {
+      type: String,
+      required: true,
+    },
+    healthCondition: {
+      type: String,
+      required: true,
+    },
+
     password: {
       type: String,
       required: true,
@@ -49,9 +111,19 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: String,
       default: null,
     },
-    isEmailVerified: { type: Boolean, default: false },
-    emailVerificationToken: { type: String, required: true },
-    emailVerificationTokenExpiry: { type: Date, required: true },
+    posts: {
+      type: [Schema.Types.ObjectId],
+      ref: "Post",
+      required: false,
+      default: [],
+    },
+    isEmailVerified: { type: Boolean, default: false, required: false },
+    emailVerificationToken: { type: String, required: false, default: null },
+    emailVerificationTokenExpiry: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
