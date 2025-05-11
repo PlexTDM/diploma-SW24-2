@@ -1,10 +1,16 @@
 import { TabBar, ThemeView } from "@/components";
 import { useAppTheme } from "@/lib/theme";
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function TabLayout() {
   const { theme } = useAppTheme();
 
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/(tabs)/home");
+  }, [router]);
   return (
     <ThemeView>
       <Tabs
