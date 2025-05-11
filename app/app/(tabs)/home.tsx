@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import { Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
+import { MeshGradientView } from 'expo-mesh-gradient';
 
 export default function Tab() {
   const { theme } = useAppTheme();

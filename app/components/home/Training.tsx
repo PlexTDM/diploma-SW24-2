@@ -62,7 +62,7 @@ export default function Training() {
       >
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg">
-            {languages[language].walk.steps}
+            {languages[language].training.training}
           </ThemeText>
           <View className="w-[25px] h-[20px]">
             <Image
@@ -77,7 +77,7 @@ export default function Training() {
             12,000
           </Text>
           <Text className="text-sm font-normal text-slate-400">
-            {languages[language].walk.stepsCount}
+            {languages[language].training.duration}
           </Text>
         </View>
       </Pressable>

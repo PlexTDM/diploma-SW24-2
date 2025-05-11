@@ -103,6 +103,14 @@ export const mn = {
     sleep: "Нойр",
     duration: "цаг",
   },
+  training:{
+    training:"Бэлтгэл",
+    duration:["цаг","минут"] 
+  },
+  calories:{
+    calories:" Калори",
+    kcal:"ккал"
+  },
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
@@ -211,6 +219,14 @@ export const en = {
   sleep: {
     sleep: "Sleep",
     duration: "hours",
+  },
+  training:{
+    training:"Training",
+    duration:["hours","minut"] 
+  },
+  calories:{
+    calories:"Calories",
+    kcal:"kcal"
   },
   welcome: "Welcome",
   logout: "Logout",
