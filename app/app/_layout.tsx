@@ -4,7 +4,8 @@ import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
 import "@/lib/global.css";
-
+// import { useEffect } from "react";
+// import * as NavigationBar from "expo-navigation-bar";
 // SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
@@ -13,11 +14,7 @@ const RootLayout = () => {
   // useEffect(() => {
   //   const setNavigationBar = async () => {
   //     if (Platform.OS === "android") {
-  //       // Set the navigation bar style
-  //       NavigationBar.setStyle("dark");
-  //       const visibility = await NavigationBar.getVisibilityAsync();
   //       await NavigationBar.setVisibilityAsync("hidden");
-  //       console.log(visibility);
   //     }
   //   };
   //   setNavigationBar();
@@ -45,7 +42,6 @@ const RootLayout = () => {
           >
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(meal)" />
             <Stack.Screen name="chatbot" />
           </Stack>
         </Providers>

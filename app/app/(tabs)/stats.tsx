@@ -157,7 +157,7 @@ const Blog = () => {
           <Text className="text-gray-500">120/304 cal</Text>
         </View>
         <Pressable
-          onPress={() => router.push("/(meal)")}
+          onPress={() => router.push("/(meal)/nemeh")}
           className="w-14 h-14 rounded-full bg-[#CBE4FC] justify-center items-center mt-3 ml-28"
         >
           <Feather name="plus" size={32} color="#136CF1" />

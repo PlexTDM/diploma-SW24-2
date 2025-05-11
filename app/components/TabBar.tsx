@@ -56,18 +56,23 @@ const TabBarButton = ({
   const isDark = theme === "dark";
 
   useEffect(() => {
-    scale.value = withSpring(isFocused ? 1 : 0, { duration: 300 });
+    scale.value = withSpring(isFocused ? 1 : 0, {
+      damping: 15,
+      stiffness: 120,
+      mass: 0.5,
+    });
   }, [scale, isFocused]);
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(scale.value, [0, 1], [1, 1]);
+    const opacity = interpolate(scale.value, [0, 1], [0, 1]);
     return {
       opacity,
+      width: interpolate(scale.value, [0, 1], [0, 45]),
     };
   });
 
   const inimatedIconStyle = useAnimatedStyle(() => {
-    const scaleValue = interpolate(scale.value, [0, 1], [1, 1.1]);
+    const scaleValue = interpolate(scale.value, [0, 1], [1, 1.2]);
     return {
       transform: [{ scale: scaleValue }],
     };
@@ -97,18 +102,10 @@ const TabBarButton = ({
           animatedTextStyle,
           {
             textTransform: "capitalize",
-            color: isFocused
-              ? isDark
-                ? "#fff"
-                : "#fff"
-              : isDark
-              ? "#fff"
-              : "#000",
-            display: isFocused ? "flex" : "none",
-            width: isFocused ? "auto" : "0%",
+            color: isFocused ? "#fff" : isDark ? "#fff" : "#000",
           },
         ]}
-        className={`font-semibold ${isFocused ? "opacity-100" : "opacity-0"}`}
+        className="font-semibold"
         numberOfLines={1}
         adjustsFontSizeToFit
       >
@@ -154,9 +151,9 @@ export default function TabBar({
     );
 
     tabPosition.value = withSpring(newPosition, {
-      duration: 900,
-      dampingRatio: 0.6,
-      overshootClamping: false,
+      damping: 15,
+      stiffness: 120,
+      mass: 0.5,
     });
   }, [state.index, btnWidth, dimensions.width, tabPosition]);
 
@@ -189,9 +186,9 @@ export default function TabBar({
               10
             ),
             {
-              duration: 900,
-              dampingRatio: 0.6,
-              overshootClamping: false,
+              damping: 15,
+              stiffness: 120,
+              mass: 0.5,
             }
           );
           const event = navigation.emit({

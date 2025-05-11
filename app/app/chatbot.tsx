@@ -3,41 +3,49 @@ import {
   Text,
   TextInput,
   Pressable,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
+  Animated,
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Image } from "expo-image";
 import { useAppTheme } from "@/lib/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeView } from "@/components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAnimatedKeyboard, useAnimatedStyle } from "react-native-reanimated";
 
 interface Message {
   id: string;
   text: string;
-  sender: "user" | "bot";
+  sender: "user" | "model" | "system";
   timestamp: Date;
 }
 
 const MessageBubble = ({ message }: { message: Message }) => {
-  const { theme } = useAppTheme();
   const isUser = message.sender === "user";
 
   return (
     <View
-      className={`flex-row ${isUser ? "justify-end" : "justify-start"} mb-4`}
+      className={`${
+        isUser ? "flex-row-reverse" : "flex-row"
+      } items-center mb-4 justify-start gap-2`}
     >
-      {!isUser && (
-        <View className="w-8 h-8 rounded-full bg-blue-500 mr-2 overflow-hidden">
-          <Image
-            source={require("@/assets/bluviSignup.png")}
-            className="w-full h-full"
-            contentFit="cover"
-          />
-        </View>
-      )}
+      <View className="w-[12%] aspect-square rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden items-center justify-center">
+        <Image
+          source={
+            isUser
+              ? require("@/assets/bluviSignup.png")
+              : require("@/assets/bluviSignup.png")
+          }
+          style={{ width: "100%", height: "100%" }}
+          transition={700}
+          cachePolicy="memory"
+          focusable={false}
+          contentFit="fill"
+        />
+      </View>
       <View
         className={`max-w-[80%] rounded-2xl px-4 py-2 ${
           isUser
@@ -70,9 +78,15 @@ const MessageBubble = ({ message }: { message: Message }) => {
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
-  const scrollViewRef = useRef<ScrollView>(null);
   const { theme } = useAppTheme();
   const insets = useSafeAreaInsets();
+
+  const { height } = useAnimatedKeyboard();
+  const translateStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: -height.value }],
+    };
+  });
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
@@ -92,7 +106,7 @@ export default function ChatScreen() {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm a helpful assistant. How can I help you today?",
-        sender: "bot",
+        sender: "model",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botResponse]);
@@ -104,8 +118,14 @@ export default function ChatScreen() {
     setMessages([
       {
         id: "1",
-        text: "Hello! I'm your AI assistant. How can I help you today?",
-        sender: "bot",
+        text: "Hello! I'm your AI assistant.",
+        sender: "model",
+        timestamp: new Date(),
+      },
+      {
+        id: "2",
+        text: "I'm a helpful",
+        sender: "user",
         timestamp: new Date(),
       },
     ]);
@@ -114,22 +134,20 @@ export default function ChatScreen() {
   return (
     <ThemeView className="flex-1">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
-        <ScrollView
-          ref={scrollViewRef}
-          className="flex-1 px-4"
-          onContentSizeChange={() =>
-            scrollViewRef.current?.scrollToEnd({ animated: true })
-          }
-        >
-          {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
-          ))}
-        </ScrollView>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        <FlatList
+          data={messages}
+          renderItem={({ item }) => (
+            <MessageBubble key={item.id} message={item} />
+          )}
+          className="flex-1 px-4 py-8"
+        />
 
+        {/* meow input */}
         <View
           className="flex-row items-center px-4 py-2 border-t border-gray-200 dark:border-gray-800"
           style={{ paddingBottom: insets.bottom + 8 }}
@@ -141,6 +159,10 @@ export default function ChatScreen() {
             value={inputText}
             onChangeText={setInputText}
             multiline
+            numberOfLines={4}
+            submitBehavior="blurAndSubmit"
+            returnKeyType="send"
+            onSubmitEditing={sendMessage}
           />
           <Pressable
             onPress={sendMessage}
@@ -162,6 +184,8 @@ export default function ChatScreen() {
             />
           </Pressable>
         </View>
+        {/* </TouchableWithoutFeedback> */}
+        <Animated.View style={translateStyle} />
       </KeyboardAvoidingView>
     </ThemeView>
   );

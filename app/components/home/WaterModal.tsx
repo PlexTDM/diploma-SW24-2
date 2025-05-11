@@ -5,7 +5,9 @@ import {
   Modal,
   TouchableOpacity,
   Switch,
-  ScrollView,
+  FlatList,
+  SafeAreaView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { ThemeView } from "@/components";
 import WaterAnimation from "@/components/home/WaterAnimation";
@@ -38,6 +40,9 @@ function WaterModal({
     { id: 3, time: "12:00 PM", enabled: false },
     { id: 4, time: "03:00 PM", enabled: true },
     { id: 5, time: "06:00 PM", enabled: false },
+    { id: 6, time: "06:00 PM", enabled: false },
+    { id: 7, time: "06:00 PM", enabled: false },
+    { id: 8, time: "06:00 PM", enabled: false },
   ]);
 
   const toggleAlarm = (id: number) => {
@@ -52,73 +57,98 @@ function WaterModal({
     <Modal
       visible={visible}
       onRequestClose={() => setVisible(false)}
-      presentationStyle="pageSheet"
+      // presentationStyle="formSheet"
+      transparent={true}
       animationType="slide"
+      statusBarTranslucent={true}
+      supportedOrientations={["portrait"]}
     >
-      <ScrollView>
-        <ThemeView className="flex-1 items-center pt-12 px-8 bg-white">
-          {/* Water progress */}
-          <View className="w-full h-60 overflow-hidden rounded-[40px] bg-white dark:bg-gray-900 justify-center items-start">
-            <View className="flex-row items-center mt-6 gap-2">
-              <Text className="text-[60px] ml-6">{percentage}</Text>
-              <Text className="text-[20px] font-bold mt-8">%</Text>
-            </View>
-            <Text className="text-center text-sm mb-2 ml-10">
-              {currentWater} ml of {waterGoal} ml
-            </Text>
-            <WaterAnimation
-              currentWater={currentWater}
-              waterGoal={waterGoal}
-              containerHeight={240}
-            />
-          </View>
-
-          {/* Add Water Section */}
-          <View className="w-full flex-row flex-wrap justify-between mt-6">
-            <Text className="text-xl text-black font-semibold ml-3">Add</Text>
-            <View className="w-full flex-row flex-wrap justify-between gap-4 px-2 mt-6">
-              {waterOptions.map((amount) => (
-                <TouchableOpacity
-                  key={amount}
-                  onPress={() => addWater(amount)}
-                  className="flex-row items-center bg-blue-200/50 rounded-xl px-4 py-2 mb-3 h-16"
-                  style={{ width: "45%" }}
-                >
-                  <Ionicons name="water" size={20} color="#2563EB" />
-                  <Text className="text-blue-800 font-semibold ml-2">
-                    {amount} ml
+      <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+        <SafeAreaView className="flex-1 items-center px-8 py-2 justify-end bg-black/50">
+          <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+            <ThemeView className="flex-1 max-h-[90%] w-full p-8 rounded-3xl">
+              {/* Water progress */}
+              <View className="w-full h-60 overflow-hidden rounded-[40px] justify-center items-start dark:border dark:border-t-0 dark:rounded-t-none dark:border-gray-100">
+                <View className="flex-row items-center mt-6 gap-2 z-10">
+                  <Text className="text-[60px] ml-6 dark:text-slate-300">
+                    {percentage}
                   </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Alarm Section */}
-          <View className="mt-6 w-full px-2">
-            <Text className="text-xl text-black font-semibold ml-1 mb-3">
-              Alarm
-            </Text>
-
-            {alarms.map((alarm) => (
-              <View
-                key={alarm.id}
-                className="flex-row justify-between items-center bg-gray-100 px-4 py-3 rounded-xl mb-2"
-              >
-                <View className="flex-row items-center space-x-2">
-                  <Ionicons name="alarm-outline" size={20} color="#2563EB" />
-                  <Text className="text-gray-800 text-base">{alarm.time}</Text>
+                  <Text className="text-[20px] font-bold mt-8 dark:text-slate-300">
+                    %
+                  </Text>
                 </View>
-                <Switch
-                  value={alarm.enabled}
-                  onValueChange={() => toggleAlarm(alarm.id)}
-                  thumbColor={alarm.enabled ? "#2563EB" : "#ccc"}
-                  trackColor={{ false: "#ccc", true: "#93c5fd" }}
+                <Text className="text-center text-sm mb-2 ml-10 z-10 dark:text-slate-300">
+                  {currentWater} ml of {waterGoal} ml
+                </Text>
+                <WaterAnimation
+                  currentWater={currentWater}
+                  waterGoal={waterGoal}
+                  containerHeight={240}
                 />
               </View>
-            ))}
-          </View>
-        </ThemeView>
-      </ScrollView>
+
+              {/* Add Water Section */}
+              <View className="w-full flex-row flex-wrap justify-between mt-6">
+                <Text className="text-xl text-black dark:text-white font-semibold ml-3">
+                  Add
+                </Text>
+                <View className="w-full flex-row flex-wrap justify-between gap-4 px-2 mt-6">
+                  {waterOptions.map((amount) => (
+                    <TouchableOpacity
+                      key={amount}
+                      onPress={() => addWater(amount)}
+                      className="flex-row items-center bg-blue-200/50 dark:bg-gray-300/10 rounded-xl px-4 py-2 mb-3 h-16"
+                      style={{ width: "45%" }}
+                    >
+                      <Ionicons name="water" size={20} color="#2563EB" />
+                      <Text className="text-blue-800 dark:text-blue-200 font-semibold ml-2">
+                        {amount} ml
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Alarm Section */}
+              <View className="mt-6 w-full px-2 flex-1">
+                <Text className="text-xl text-black dark:text-white font-semibold ml-1 mb-3">
+                  Alarm
+                </Text>
+
+                <FlatList
+                  data={alarms}
+                  scrollEnabled={true}
+                  showsVerticalScrollIndicator={true}
+                  className="h-full"
+                  renderItem={({ item: alarm }) => (
+                    <View
+                      key={alarm.id}
+                      className="flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-xl mb-2"
+                    >
+                      <View className="flex-row items-center gap-4">
+                        <Ionicons
+                          name="alarm-outline"
+                          size={20}
+                          color="#2563EB"
+                        />
+                        <Text className="text-gray-800 dark:text-gray-200 text-base">
+                          {alarm.time}
+                        </Text>
+                      </View>
+                      <Switch
+                        value={alarm.enabled}
+                        onValueChange={() => toggleAlarm(alarm.id)}
+                        thumbColor={alarm.enabled ? "#2563EB" : "#ccc"}
+                        trackColor={{ false: "#ccc", true: "#93c5fd" }}
+                      />
+                    </View>
+                  )}
+                />
+              </View>
+            </ThemeView>
+          </TouchableWithoutFeedback>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
