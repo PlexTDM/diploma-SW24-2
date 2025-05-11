@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { ThemeView } from "@/components";
-import WaterAnimation from "@/components/home2/WaterAnimation";
+import WaterAnimation from "@/components/home/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
 
 function WaterModal({
@@ -20,7 +20,6 @@ function WaterModal({
 }) {
   const waterGoal = 3500;
   const [currentWater, setCurrentWater] = useState(2100);
-  const [containerHeight, setContainerHeight] = useState(400);
 
   const percentage = Math.min(
     Math.round((currentWater / waterGoal) * 100),
@@ -57,10 +56,7 @@ function WaterModal({
       animationType="slide"
     >
       <ScrollView>
-        <ThemeView
-          className="flex-1 items-center pt-12 px-8 bg-white"
-          onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
-        >
+        <ThemeView className="flex-1 items-center pt-12 px-8 bg-white">
           {/* Water progress */}
           <View className="w-full h-60 overflow-hidden rounded-[40px] bg-white dark:bg-gray-900 justify-center items-start">
             <View className="flex-row items-center mt-6 gap-2">

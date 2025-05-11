@@ -61,7 +61,7 @@ export default function Training() {
         onPress={handlePress}
       >
         <View className="flex-row items-center justify-between">
-          <ThemeText className="flex-1 font-bold text-lg ">
+          <ThemeText className="flex-1 font-bold text-lg">
             {languages[language].training.workout}
           </ThemeText>
           <View className="w-[25px] h-[20px]">
@@ -74,7 +74,7 @@ export default function Training() {
 
         <View>
           <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
-            12,000
+            69
           </Text>
           <Text className="text-sm font-normal text-slate-400">
             {languages[language].training.duration}

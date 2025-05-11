@@ -1,10 +1,8 @@
-import { useLanguage ,languages} from "@/lib/language";
+import { useLanguage } from "@/lib/language";
 import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
-import { Modal } from 'react-native';
-
 import Animated, {
   Easing,
   interpolate,
@@ -16,7 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useAppTheme } from "@/lib/theme";
 import { useEffect, useState } from "react";
-import WaterModal from "@/components/home 2/WaterModal";
+import WaterModal from "./WaterModal";
 
 export default function Water() {
   const router = useRouter();
@@ -143,7 +141,7 @@ export default function Water() {
       className="dark:bg-gray-90000 rounded-[26px] flex-[2] relative overflow-hidden dark:border-gray-800 border-[1px] border-gray-200"
       style={[animatedStyle, { flex: 2 }]}
     >
-      <WaterModal visible={modalVisible} setVisible={setModalVisible}/>
+      <WaterModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 relative z-10"
         onPressIn={handlePressIn}
@@ -151,9 +149,7 @@ export default function Water() {
         onPress={handlePress}
       >
         <View className="flex-row items-center justify-between">
-          <ThemeText className="flex-1 font-bold text-lg ">
-            Water
-            </ThemeText>
+          <ThemeText className="flex-1 font-bold text-lg ">Water</ThemeText>
           <View className="w-[20px] h-[25px]">
             <Image
               source={require("@/assets/icons/waterDrop.svg")}
@@ -165,7 +161,7 @@ export default function Water() {
         {/* Text content */}
         <View className="relative">
           <ThemeText className="text-2xl font-bold">3500</ThemeText>
-          <ThemeText className="text-sm font-normal">17 oz </ThemeText>
+          <ThemeText className="text-sm font-normal">17 oz</ThemeText>
         </View>
       </Pressable>
 
