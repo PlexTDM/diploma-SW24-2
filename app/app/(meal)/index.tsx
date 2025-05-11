@@ -1,108 +1,54 @@
-import { View, Text, Pressable, TextInput } from 'react-native'
-import React, { useState } from 'react'
-import { Feather, MaterialIcons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
-import { useState } from 'react'
-import { TextInput } from 'react-native'
-import { Image } from 'expo-image'
-import { useColorScheme } from 'nativewind'
+import { View, Text, Pressable, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Image } from 'expo-image';
+import { useColorScheme } from 'nativewind';
 
 export default function Meal() {
-  const router = useRouter()
-  const { colorScheme } = useColorScheme()
-  const isDark = colorScheme === 'dark'
+  const router = useRouter();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-  const [selectedTab, setSelectedTab] = useState<'recent' | 'favorites'>('recent')
+  const [selectedTab, setSelectedTab] = useState<'recent' | 'favorites'>('recent');
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({
     'English breakfast': false,
     'Egg omlete': false,
-  })
+  });
 
   const meals = [
     { date: 'Өнөөдөр', title: 'English breakfast', calories: '120/304 kcal' },
     { date: 'Өчигдөр', title: 'Egg omlete', calories: '120/304 kcal' },
-  ]
+  ];
 
   const toggleFavorite = (title: string) => {
     setFavorites((prev) => ({
       ...prev,
       [title]: !prev[title],
-    }))
-  }
+    }));
+  };
 
   const renderMealCard = (title: string, calories: string) => (
-    <View className="border border-gray-300 dark:border-gray-600 rounded-2xl px-5 py-4 mb-4 flex-row justify-between items-center">
+    <View key={title} className="border border-gray-300 dark:border-gray-600 rounded-2xl px-5 py-4 mb-4 flex-row justify-between items-center">
       <View>
         <Text className="font-bold text-lg text-black dark:text-white">{title}</Text>
         <Text className="text-sm text-gray-500 dark:text-gray-400">{calories}</Text>
       </View>
-  
-      {/* Зүрх ба нэмэх тэмдгийн хэсэг */}
-      <View className="flex-row items-center">
-        <Pressable onPress={() => toggleFavorite(title)}>
-          {favorites[title] ? (
-            <MaterialIcons name="favorite" size={24} color="#EF4444" />
-          ) : (
-            <Feather name="heart" size={22} color={isDark ? 'white' : 'black'} />
-          )}
-        </Pressable>
-      </View>
-      <View className='flex-row justify-between items-center mt-8'>
-      <View className="w-[85%] h-14 justify-center">
-        <TextInput
-          placeholder="Search"
-          clearButtonMode="always"
-          autoCapitalize="none"
-          autoCorrect={false}
-          numberOfLines={1}
-          className="px-4 border flex-1 border-gray-800 rounded-full text-gray-500"
-          placeholderClassName="text-gray-500"
-        />
-      </View>
-        <View className='justify-center items-center w-12 h-12 bg-black rounded-full'>
-          <Feather name='mic' size={20} color='white' />
-        </View>
-      </View>
-      <View className='flex-row justify-between items-center mt-8'>
-        <Pressable onPress={() => router.push('/asuult')} className='p-4 w-[47%] border border-gray-400 rounded-full justify-center items-center'><Text className='text-lg font-bold'>Гараар оруулах</Text></Pressable>
-        <Pressable className='p-4 w-[47%] border border-gray-400 rounded-full justify-center items-center'><Text className='text-lg font-bold'>Орц оруулах</Text></Pressable>
-      </View>
-      <Pressable className='w-full p-4 bg-[#136CF1] rounded-full justify-center items-center mt-8'><Text className='text-lg text-white'>Scan your meals</Text></Pressable>
-      <Text className='text-xl font-bold mt-8'>More Scanners</Text>
-      <View className='flex-row items-center mt-8 gap-6'>
-        <View className='justify-center items-center'>
-          <View className='w-24 h-24 bg-blue-200 justify-center items-center border border-[#4C91F9] rounded-3xl'>
-            <Image source={require('@/assets/barcode.png')} 
-            style={{ width: "60%", height: "60%" }}
-            className='w-full h-full' />
-          </View>
-          <Text className='mt-2 font-bold'>Barcode</Text>
-        </View>
-        <View className='justify-center items-center'>
-          <View className='w-24 h-24 bg-blue-200 justify-center items-center border border-[#4C91F9] rounded-3xl'>
-          <Image source={require('@/assets/Menu.png')} 
-          style={{ width: "60%", height: "60%" }}
-          className='w-full h-full' />
-          </View>
-          <Text className='mt-2 font-bold'>Menu</Text>
-        </View>
-        <View className='justify-center items-center'>
-          <View className='w-24 h-24 justify-center items-center bg-blue-200 border border-[#4C91F9] rounded-3xl'>
-          <Image source={require('@/assets/fridge.png')}
-          style={{ width: "60%", height: "60%" }}
-           className='w-full h-full' />
-          </View>
-          <Text className='mt-2 font-bold'>Fridge</Text>
-  
-        <View className="ml-4">
-          <Pressable className="w-10 h-10 rounded-full bg-blue-100 justify-center items-center">
-            <Feather name="plus" size={20} color="#3B82F6" />
-          </Pressable>
-        </View>
-      </View>
+      <Pressable onPress={() => toggleFavorite(title)}>
+        {favorites[title] ? (
+          <MaterialIcons name="favorite" size={24} color="#EF4444" />
+        ) : (
+          <Feather name="heart" size={22} color={isDark ? 'white' : 'black'} />
+        )}
+      </Pressable>
     </View>
-  )
+  );
 
+  const scannerImages = [
+    { label: 'Barcode', source: require('@/assets/barcode.png') },
+    { label: 'Menu', source: require('@/assets/Menu.png') },
+    { label: 'Fridge', source: require('@/assets/fridge.png') },
+  ];
 
   return (
     <View className="p-6 pt-8 bg-white dark:bg-black flex-1">
@@ -120,13 +66,10 @@ export default function Meal() {
 
       {/* Search */}
       <View className="flex-row items-center mt-5">
-        {/* Search Input Container */}
         <View className="flex-row flex-1 items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-900">
-          {/* Search Icon in Circle */}
-          <View className="w-8 h-8 rounded-full  justify-center items-center mr-2">
-            <Feather name="search" size={18} color={isDark ? '#666' : '#666'} />
+          <View className="w-8 h-8 rounded-full justify-center items-center mr-2">
+            <Feather name="search" size={18} color="#666" />
           </View>
-          {/* Search TextInput */}
           <TextInput
             placeholder="Search for food"
             placeholderTextColor={isDark ? '#aaa' : '#888'}
@@ -137,7 +80,6 @@ export default function Meal() {
             className="flex-1 py-1 text-black dark:text-white"
           />
         </View>
-        {/* Microphone Button Outside */}
         <Pressable className="ml-3 w-12 h-12 rounded-full bg-black dark:bg-gray-600 justify-center items-center border border-gray-400 dark:border-gray-500">
           <Feather name="mic" size={16} color={isDark ? 'black' : 'white'} />
         </Pressable>
@@ -145,9 +87,7 @@ export default function Meal() {
 
       {/* Buttons */}
       <View className="flex-row justify-between items-center mt-5">
-        <Pressable
-          className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center"
-        >
+        <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
           <Text className="text-base font-bold text-black dark:text-white">Гараар оруулах</Text>
         </Pressable>
         <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
@@ -163,10 +103,12 @@ export default function Meal() {
       {/* More Scanners */}
       <Text className="text-lg font-bold mt-6 text-black dark:text-white">More Scanners</Text>
       <View className="flex-row items-center mt-5 gap-4">
-        {['Barcode', 'Menu', 'Fridge'].map((label, i) => (
+        {scannerImages.map((item, i) => (
           <View className="justify-center items-center" key={i}>
-            <View className="w-20 h-20 bg-blue-200 border border-[#4C91F9] rounded-2xl" />
-            <Text className="mt-1 font-bold text-black dark:text-white text-sm">{label}</Text>
+            <View className="w-20 h-20 bg-blue-200 border border-[#4C91F9] rounded-2xl justify-center items-center">
+              <Image source={item.source} style={{ width: '60%', height: '60%' }} />
+            </View>
+            <Text className="mt-1 font-bold text-black dark:text-white text-sm">{item.label}</Text>
           </View>
         ))}
       </View>
@@ -174,47 +116,37 @@ export default function Meal() {
       {/* Tabs */}
       <View className="flex-row justify-center mt-8 mb-2 space-x-8">
         {['Сүүлд нэмэгдсэн', 'Таалагдсан'].map((tab, index) => {
-          const active = (selectedTab === 'recent' && index === 0) || (selectedTab === 'favorites' && index === 1)
+          const active = (selectedTab === 'recent' && index === 0) || (selectedTab === 'favorites' && index === 1);
           return (
             <Pressable
               key={index}
               className="flex-1 items-center"
               onPress={() => setSelectedTab(index === 0 ? 'recent' : 'favorites')}
             >
-              <Text
-                className={`text-lg font-bold ${
-                  active ? 'text-blue-500' : 'text-black dark:text-white'
-                }`}
-              >
+              <Text className={`text-lg font-bold ${active ? 'text-blue-500' : 'text-black dark:text-white'}`}>
                 {tab}
               </Text>
-              {active && (
-                <View className="h-1 w-full bg-blue-500 mt-2 rounded-full" />
-              )}
+              {active && <View className="h-1 w-full bg-blue-500 mt-2 rounded-full" />}
             </Pressable>
-          )
+          );
         })}
       </View>
 
       {/* Meals */}
       <View className="mt-3">
         {['Өнөөдөр', 'Өчигдөр'].map((day) => {
-          const dayMeals = meals.filter((meal) => meal.date === day)
+          const dayMeals = meals.filter((meal) => meal.date === day);
           const visibleMeals =
-            selectedTab === 'recent'
-              ? dayMeals
-              : dayMeals.filter((meal) => favorites[meal.title])
+            selectedTab === 'recent' ? dayMeals : dayMeals.filter((meal) => favorites[meal.title]);
 
           return visibleMeals.length ? (
             <View key={day} className="mt-4">
               <Text className="text-gray-500 dark:text-gray-400 mb-2 text-sm">{day}</Text>
               {visibleMeals.map((meal) => renderMealCard(meal.title, meal.calories))}
             </View>
-          ) : null
+          ) : null;
         })}
       </View>
     </View>
-    
-  )
-  
+  );
 }

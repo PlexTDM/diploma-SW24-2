@@ -1,4 +1,4 @@
-import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
+import { Sleep, Water, Training, Steps, Calories } from "@/components/home 2";
 import { ThemeText, ThemeView } from "@/components";
 import Flame from "@/components/icons/Flame";
 import { languages, useLanguage } from "@/lib/language";
