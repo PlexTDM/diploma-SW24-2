@@ -6,6 +6,9 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-quicksand)"],
+      },
       colors: {
         blue1: "#708FFF",
         // blue1: "#FFF",
