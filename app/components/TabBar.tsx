@@ -1,4 +1,4 @@
-import { icons } from "@/constants/icons";
+import { BarChart, Book, Home, User } from "lucide-react-native";
 import { useAppTheme } from "@/lib/theme";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,8 @@ import Animated, {
 enum labelValues {
   home = "home",
   profile = "profile",
-  settings = "settings",
+  blogs = "blogs",
+  stats = "stats",
 }
 
 type TabButtonProps = {
@@ -22,6 +23,26 @@ type TabButtonProps = {
   isFocused: boolean;
   label: labelValues;
   btnWidth: number;
+};
+
+type IconProps = {
+  color: string;
+  label: labelValues;
+};
+
+const icons = (props: IconProps) => {
+  switch (props.label) {
+    case "home":
+      return <Home {...props} />;
+    case "profile":
+      return <User {...props} />;
+    case "blogs":
+      return <Book {...props} />;
+    case "stats":
+      return <BarChart {...props} />;
+    default:
+      return null;
+  }
 };
 
 const TabBarButton = ({
@@ -69,7 +90,7 @@ const TabBarButton = ({
       style={buttonStyle}
     >
       <Animated.View style={inimatedIconStyle}>
-        {icons[label]({ color: isFocused ? "#fff" : "gray" })}
+        {icons({ color: isFocused ? "#fff" : "gray", label })}
       </Animated.View>
       <Animated.Text
         style={[
@@ -150,16 +171,12 @@ export default function TabBar({
         style={[
           animatedStyle,
           {
-            position: "absolute",
             width: btnWidth + 15,
-            marginLeft: -5,
-            opacity: 1,
-            height: dimensions.height - 6,
+            height: dimensions.height - 12,
             backgroundColor: theme === "dark" ? "#4C91F9" : "#4C91F9",
-            borderRadius: 999,
-            zIndex: 1,
           },
         ]}
+        className="z-10 rounded-full -ml-[5px] absolute"
       />
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];

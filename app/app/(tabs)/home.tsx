@@ -1,5 +1,5 @@
 import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
-import { ThemeText, ThemeView } from "@/components";
+import { ThemeView } from "@/components";
 import Flame from "@/components/icons/Flame";
 import { languages, useLanguage } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
@@ -7,7 +7,6 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import { useRouter } from "expo-router";
-import { MeshGradientView } from "expo-mesh-gradient";
 
 export default function Tab() {
   const { theme } = useAppTheme();
@@ -17,7 +16,8 @@ export default function Tab() {
     <ThemeView className="items-center p-8">
       <View className="w-full flex-row items-center justify-between border-b gap-2 border-gray-200 dark:border-gray-800 pb-4">
         <Pressable
-          // onPress={() => router.push("/(chat)/chat")}
+          android_ripple={{ color: "white", radius: 20 }}
+          onPress={() => router.push("/chatbot")}
           className="rounded-full w-[40px] aspect-square items-center justify-center overflow-hidden"
         >
           <LinearGradient
