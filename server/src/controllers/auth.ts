@@ -68,6 +68,7 @@ class AuthController {
         message: "User logged in successfully",
         user: {
           id: user._id,
+          image: user.image,
           email: user.email,
           role: user.role,
           username: user.username,
@@ -129,6 +130,7 @@ class AuthController {
         message: "User registered successfully",
         user: {
           id: newUser[0]._id,
+          image: newUser[0].image,
           email: newUser[0].email,
           role: newUser[0].role,
           username: newUser[0].username,

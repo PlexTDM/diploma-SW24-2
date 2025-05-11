@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
-import { Modal } from 'react-native';
+import { Modal } from "react-native";
 import Animated, {
   Easing,
   interpolate,
@@ -142,7 +142,7 @@ export default function Water() {
       className="dark:bg-gray-90000 rounded-[26px] flex-[2] relative overflow-hidden dark:border-gray-800 border-[1px] border-gray-200"
       style={[animatedStyle, { flex: 2 }]}
     >
-      <WaterModal visible={modalVisible} setVisible={setModalVisible}/>
+      <WaterModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 relative z-10"
         onPressIn={handlePressIn}
