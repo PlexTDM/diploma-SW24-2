@@ -62,7 +62,7 @@ export default function Calories() {
       >
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg  ">
-            {languages[language].sleep.sleep}
+            {languages[language].calories.calories}
           </ThemeText>
           <View className="w-[25px] h-[25px]">
             <Image
@@ -77,7 +77,7 @@ export default function Calories() {
             12
           </Text>
           <Text className="text-sm font-normal text-slate-400">
-            {languages[language].sleep.duration}
+            {languages[language].calories.kcal}
           </Text>
         </View>
       </Pressable>

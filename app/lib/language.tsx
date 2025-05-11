@@ -49,6 +49,8 @@ export const mn = {
         choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
       },
       water: {
+        word:'Ус',
+        milliliter:'м/литр',
         title: "Та өдөрт хэдэн литр ус уудаг вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
         choices: ["4+ литр", "2-3 литр", "1 литр"],
@@ -103,12 +105,19 @@ export const mn = {
     sleep: "Нойр",
     duration: "цаг",
   },
+ 
+  calories:{
+    calorie:" Калори",
+    kcal:"ккал"
+  },
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
   back: "Өмнөх",
   next: "Дараах",
   training: {
+    workout:"Бэлтгэл",
+    duration:["цаг"||"минут"], 
     hi:"Сайн байна уу",
     hello:"Өнөөдөр хэр байна даа?",
     special: "Зөвхөн танд зориулсан",
@@ -165,6 +174,8 @@ export const en = {
         choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
       },
       water: {
+        word:'Water',
+        milliliter:'ml',
         title: "How much water do you drink per day?",
         desc: "Your choice will affect your workout plan",
         choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
@@ -219,12 +230,19 @@ export const en = {
     sleep: "Sleep",
     duration: "hours",
   },
+  
+  calories:{
+    calorie:"Calories",
+    kcal:"kcal"
+  },
   welcome: "Welcome",
   logout: "Logout",
   profile: "Profile",
   back: "Back",
   next: "Next",
   training: {
+    workout:"Training",
+    duration:["hours"||"min"] ,
     hi:"Hi there",
     hello:"Good day so far?",
     special: "Special for you",
