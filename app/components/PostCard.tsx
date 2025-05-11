@@ -44,7 +44,7 @@ export default function PostCard({ post }: PostCardProps) {
   
   return (
     <Pressable 
-      className="bg-white border border-gray-300 dark:bg-slate-800 p-10 rounded-3xl mb-5"
+      className=" border border-gray-300 p-10 rounded-3xl mb-5"
       onPress={navigateToDetail}
     >
       <View className="flex-row items-center mb-3">

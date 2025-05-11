@@ -116,6 +116,13 @@ export const mn = {
   profile: "Профайл",
   back: "Өмнөх",
   next: "Дараах",
+  training: {
+    hi:"Сайн байна уу",
+    hello:"Өнөөдөр хэр байна даа?",
+    special: "Зөвхөн танд зориулсан",
+    custom: "Өөрийн дасгал",
+    get: "Өөрийн Зорилгоо Тодорхойлох",
+  }
 };
 
 export const en = {
@@ -233,6 +240,13 @@ export const en = {
   profile: "Profile",
   back: "Back",
   next: "Next",
+  training: {
+    hi:"Hi there",
+    hello:"Good day so far?",
+    special: "Special for you",
+    custom: "Custom workout",
+    get: "Get a Strength Goal",
+  }
 };
 
 export const languages = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Modal, TouchableOpacity, Switch, FlatList, ScrollView } from "react-native";
 import { ThemeView } from "@/components";
-import WaterAnimation from "@/components/home/WaterAnimation";
+import WaterAnimation from "@/components/home 2/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
 
 function WaterModal({
