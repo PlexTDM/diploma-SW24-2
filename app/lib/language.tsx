@@ -117,7 +117,7 @@ export const mn = {
   next: "Дараах",
   training: {
     workout:"Бэлтгэл",
-    duration:["цаг","минут"] ,
+    duration:["цаг"||"минут"], 
     hi:"Сайн байна уу",
     hello:"Өнөөдөр хэр байна даа?",
     special: "Зөвхөн танд зориулсан",
@@ -242,7 +242,7 @@ export const en = {
   next: "Next",
   training: {
     workout:"Training",
-    duration:["hours","minut"] ,
+    duration:["hours"||"min"] ,
     hi:"Hi there",
     hello:"Good day so far?",
     special: "Special for you",

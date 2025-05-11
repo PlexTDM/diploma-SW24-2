@@ -43,16 +43,7 @@ export default function Tab() {
           <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
         </View>
       </View>
-      <View className="w-full flex-row items-center justify-between mt-12">
-        <ThemeText className="text-2xl font-bold">
-          {languages[language].home.title}
-        </ThemeText>
-        <Icon
-          source="chevron-right"
-          size={24}
-          color={theme === "light" ? "black" : "white"}
-        />
-      </View>
+      
 
       <View className="flex-col items-center justify-between mt-6 gap-3 h-[400px]">
         <View className="flex-1 flex-row gap-3">
