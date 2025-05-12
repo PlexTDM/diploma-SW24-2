@@ -28,8 +28,7 @@ const Asuult = () => {
   const buttonColor = "#00BFFF";
   const borderColor = isDarkMode ? "#444" : "#ccc";
   const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
-  const selectedBorderColor = "#136CF1";
-
+  const selectedBorderColor = isDarkMode ? "#ffffff" : "#2c2c2c";
   return (
     <View
       style={{
@@ -42,36 +41,61 @@ const Asuult = () => {
     >
       {/* Progress Bar */}
       <View style={styles.progressBar}>
-        <View style={[styles.progressStep, styles.activeStep]} />
-        <View style={styles.progressStep} />
-        <View style={styles.progressStep} />
-        <View style={styles.progressStep} />
-        <View style={styles.progressStep} />
-      </View>
+  {[0, 1, 2, 3, 4].map((_, i) => (
+    <View
+      key={i}
+      style={{
+        width: 46,
+        height: 8,
+        borderRadius: 8,
+        backgroundColor:
+          i === 0
+            ? isDarkMode
+              ? "#ffffff" // active step in dark mode
+              : "#2c2c2c" // active step in light mode
+            : isDarkMode
+              ? "#2c2c2c" // inactive step in dark mode
+              : "#D1D5DB", // inactive step in light mode
+      }}
+    />
+  ))}
+</View>
+
 
       {/* Асуулт */}
       <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
-        <View style={styles.questionContainer}>
-          <LottieView
-                        source={require("@/assets/icons/gem.json")}
-                        autoPlay
-                        loop
-                        style={{
-                          width: 80,
-                          height: 45,
-                        }}
-                      />
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-              color: textColor,
-            }}
-          >
-            {question1.tanid}
-          </Text>
-        </View>
+        <View
+  style={{
+    flexDirection: "row",
+    alignItems: "center", // "flex-start"-ыг "center" болгоно
+    paddingHorizontal: 10,
+    gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
+  }}
+>
+  <LottieView
+    source={require("@/assets/icons/gem.json")}
+    autoPlay
+    loop
+    style={{
+      width: 35, // хэмжээг багасгаж
+      height: 35,
+      marginRight: 1, // эсвэл gap оронд хэрэглэж болно
+    }}
+  />
+  <Text
+    style={{
+      fontSize: 24, // багасгаж болно
+      fontWeight: "bold",
+      textAlign: "left",
+      color: textColor,
+      flexShrink: 1,
+    }}
+  >
+    {question1.tanid}
+  </Text>
+</View>
+
+
       </View>
 
       {/* Сонголтууд */}
@@ -99,8 +123,10 @@ const Asuult = () => {
             >
               <Text style={{ color: textColor, fontSize: 16 }}>{item}</Text>
               {isSelected && (
-                <Text style={{ color: selectedBorderColor, fontSize: 20 }}>✓</Text>
-              )}
+  <Text style={{ color: isDarkMode ? "#ffffff" : "#2c2c2c", fontSize: 20 }}>
+    ✓
+  </Text>
+)}
             </TouchableOpacity>
           );
         }}

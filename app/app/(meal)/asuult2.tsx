@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { languages, useLanguage } from "@/lib/language";
-
+import LottieView from "lottie-react-native";
 const Asuult2 = () => {
   const { language } = useLanguage();
   const router = useRouter();
@@ -27,7 +27,7 @@ const Asuult2 = () => {
   const textColor = isDarkMode ? "#ffffff" : "#000000";
   const borderColor = isDarkMode ? "#444" : "#ccc";
   const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
-  const selectedBorderColor = "#136CF1";
+  const selectedBorderColor = isDarkMode ? "#ffffff" : "#2c2c2c";
 
   return (
     <View
@@ -40,31 +40,62 @@ const Asuult2 = () => {
       }}
     >
       {/* Progress Bar */}
-      <View style={styles.progressBar}>
-        <View style={[styles.progressStep]} />
-        <View style={[styles.progressStep, styles.activeStep]} />
-        <View style={styles.progressStep} />
-        <View style={styles.progressStep} />
-        <View style={styles.progressStep} />
+            <View style={styles.progressBar}>
+        {[0, 1, 2, 3, 4].map((_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 46,
+              height: 8,
+              borderRadius: 8,
+              backgroundColor:
+                i === 1
+                  ? isDarkMode
+                    ? "#ffffff" // active step in dark mode
+                    : "#2c2c2c" // active step in light mode
+                  : isDarkMode
+                    ? "#2c2c2c" // inactive step in dark mode
+                    : "#D1D5DB", // inactive step in light mode
+            }}
+          />
+        ))}
       </View>
 
       {/* Асуулт */}
-      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 10 }}>
-        <View style={styles.questionContainer}>
-          <Text style={[styles.bullet, { color: "#136CF1" }]}>◆</Text>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              textAlign: "center",
-              color: textColor,
-              marginLeft: 5, // Bullet тэмдгээс асуултнаас зай гаргах
-            }}
-          >
-            {question2.songo}
-          </Text>
-        </View>
+      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
+              <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center", // "flex-start"-ыг "center" болгоно
+          paddingHorizontal: 10,
+          gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
+        }}
+      >
+        <LottieView
+          source={require("@/assets/icons/gem.json")}
+          autoPlay
+          loop
+          style={{
+            width: 35, // хэмжээг багасгаж
+            height: 35,
+            marginRight: 1, // эсвэл gap оронд хэрэглэж болно
+          }}
+        />
+        <Text
+          style={{
+            fontSize: 24, // багасгаж болно
+            fontWeight: "bold",
+            textAlign: "left",
+            color: textColor,
+            flexShrink: 1,
+          }}
+        >
+          {question2.songo}
+        </Text>
       </View>
+      
+      
+            </View>
 
       {/* Сонголтууд */}
       <FlatList
