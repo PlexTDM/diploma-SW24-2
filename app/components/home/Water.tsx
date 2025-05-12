@@ -1,10 +1,10 @@
 import { useLanguage } from "@/lib/language";
 import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Image } from "expo-image";
-import { Modal } from 'react-native';
 import Animated, {
+  cancelAnimation,
   Easing,
   interpolate,
   interpolateColor,
@@ -14,7 +14,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useAppTheme } from "@/lib/theme";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import WaterModal from "./WaterModal";
 
 export default function Water() {
@@ -26,15 +26,55 @@ export default function Water() {
   const animateHeight = useSharedValue<number>(0);
   const waterGoal = 3500;
   const [currentWater, setCurrentWater] = useState(100);
-
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    animateHeight.value = withTiming(Math.min(currentWater / waterGoal, 1), {
-      duration: 300,
-      easing: Easing.inOut(Easing.ease),
-    });
-  }, [currentWater, animateHeight, waterGoal]);
+  // wave animation
+  const [imgWidth] = useState<number>(1000);
+  const wave1 = useSharedValue<number>(0);
+  const wave2 = useSharedValue<number>(0);
+  const wave3 = useSharedValue<number>(0);
+  const wave4 = useSharedValue<number>(0);
+
+  // start the animation when the component is focused and stop when it is not to save resources
+  useFocusEffect(
+    useCallback(() => {
+      // start the animation
+      console.log("starting animation");
+      animateHeight.value = withTiming(Math.min(currentWater / waterGoal, 1), {
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
+      });
+
+      // Start wave animations
+      const config = { duration: 8000, easing: Easing.linear };
+      wave1.value = withRepeat(withTiming(1, config), -1, true);
+      wave2.value = withRepeat(
+        withTiming(1, { ...config, duration: 9000 }),
+        -1,
+        true
+      );
+      wave3.value = withRepeat(
+        withTiming(1, { ...config, duration: 10000 }),
+        -1,
+        true
+      );
+      wave4.value = withRepeat(
+        withTiming(1, { ...config, duration: 11000 }),
+        -1,
+        true
+      );
+
+      return () => {
+        // stop the animation
+        cancelAnimation(animateHeight);
+        cancelAnimation(wave1);
+        cancelAnimation(wave2);
+        cancelAnimation(wave3);
+        cancelAnimation(wave4);
+        console.log("cancelled");
+      };
+    }, [currentWater, animateHeight, waterGoal, wave1, wave2, wave3, wave4])
+  );
 
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
@@ -68,34 +108,6 @@ export default function Water() {
       ],
     };
   });
-
-  // wave animation
-  const [imgWidth] = useState<number>(1000);
-
-  const wave1 = useSharedValue<number>(0);
-  const wave2 = useSharedValue<number>(0);
-  const wave3 = useSharedValue<number>(0);
-  const wave4 = useSharedValue<number>(0);
-
-  useEffect(() => {
-    const config = { duration: 8000, easing: Easing.linear };
-    wave1.value = withRepeat(withTiming(1, config), -1, true);
-    wave2.value = withRepeat(
-      withTiming(1, { ...config, duration: 9000 }),
-      -1,
-      true
-    );
-    wave3.value = withRepeat(
-      withTiming(1, { ...config, duration: 10000 }),
-      -1,
-      true
-    );
-    wave4.value = withRepeat(
-      withTiming(1, { ...config, duration: 11000 }),
-      -1,
-      true
-    );
-  }, [wave1, wave2, wave3, wave4]);
 
   // Wave styles: 1 & 2 move left, 3 & 4 move right
   const wave1Style = useAnimatedStyle(() => {
@@ -142,7 +154,7 @@ export default function Water() {
       className="dark:bg-gray-90000 rounded-[26px] flex-[2] relative overflow-hidden dark:border-gray-800 border-[1px] border-gray-200"
       style={[animatedStyle, { flex: 2 }]}
     >
-      <WaterModal visible={modalVisible} setVisible={setModalVisible}/>
+      <WaterModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 relative z-10"
         onPressIn={handlePressIn}
@@ -181,6 +193,7 @@ export default function Water() {
             <Image
               source={require("@/assets/water/1.svg")}
               style={{ width: "100%", height: "100%" }}
+              renderToHardwareTextureAndroid
             />
           </Animated.View>
 
@@ -193,6 +206,7 @@ export default function Water() {
             <Image
               source={require("@/assets/water/2.svg")}
               style={{ width: "100%", height: "100%" }}
+              renderToHardwareTextureAndroid
             />
           </Animated.View>
 
@@ -205,6 +219,7 @@ export default function Water() {
             <Image
               source={require("@/assets/water/3.svg")}
               style={{ width: "100%", height: "100%" }}
+              renderToHardwareTextureAndroid
             />
           </Animated.View>
 
@@ -217,6 +232,7 @@ export default function Water() {
             <Image
               source={require("@/assets/water/4.svg")}
               style={{ width: "100%", height: "100%" }}
+              renderToHardwareTextureAndroid
             />
           </Animated.View>
         </Animated.View>

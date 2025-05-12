@@ -7,16 +7,15 @@
     "icon": "./assets/img/logo.png",
     "scheme": "coolfitness",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.unnamed0631.coolfitness"
     },
     "web": {
@@ -38,7 +37,8 @@
       "expo-font"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "reactCanary": true
     },
     "extra": {
       "router": {},
