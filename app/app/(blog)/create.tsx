@@ -22,7 +22,7 @@ export default function create() {
 
     
     
-    router.replace('/(tabs)/chatbot');
+    router.replace('/(tabs)/blogs');
   };
 
   const isSubmitDisabled = !title.trim() || !content.trim();

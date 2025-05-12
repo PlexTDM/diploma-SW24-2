@@ -1,9 +1,14 @@
-import { ThemeText, ThemeView } from "@/components";
+import { View, Text, ScrollView } from "react-native";
+import { ThemeView } from "@/components";
 
-export default function Screen1() {
+function Screen1() {
   return (
-    <ThemeView>
-      <ThemeText>Screen1</ThemeText>
-    </ThemeView>
+    <ScrollView>
+      <ThemeView className="">
+        <Text></Text>
+      </ThemeView>
+    </ScrollView>
   );
 }
+
+export default Screen1;
