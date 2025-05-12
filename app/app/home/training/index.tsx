@@ -74,7 +74,7 @@ export default function Training() {
         />
 
         {/* Main Content */}
-        <View className="p-8 flex-1">
+        <View className="p-6 flex-1">
           {/* Calendar */}
           <View className="p-2">
             <View className="flex-row justify-between mt-8">

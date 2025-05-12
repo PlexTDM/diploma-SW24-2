@@ -58,7 +58,7 @@ export default function Training() {
     {/* Background Gradient */}
     <View className="absolute top-0 w-full left-0 right-0 bottom-0">
     <Image
-      source={require("@/assets/img/gradientBlue.png")}
+      source={require("@/assets/img/gradient.png")}
       style={[StyleSheet.absoluteFillObject, { zIndex: -1 }]}
       contentFit="cover"
     />
@@ -70,7 +70,7 @@ export default function Training() {
       onPress={handlePress}
     >
       <View className="flex-row items-center justify-between absolute top-4 left-5">
-        <ThemeText className="flex-1 font-bold text-lg dark:text-black">
+        <ThemeText className="flex-1 font-bold text-lg dark:text-black ">
           {languages[language].training.workout}
         </ThemeText>
         <View className="w-[25px] h-[20px]">
@@ -84,7 +84,7 @@ export default function Training() {
         <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold mt-16">
           69
         </Text>
-        <Text className="text-sm font-normal text-slate-400">
+        <Text className="text-sm font-normal text-gray-600 dark:text-gray-200">
           {languages[language].training.duration}
         </Text>
       </View>
