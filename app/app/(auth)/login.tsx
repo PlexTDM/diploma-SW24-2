@@ -28,7 +28,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/home");
+      router.replace("/(tabs)");
     }
   }, [user, router]);
 
@@ -52,66 +52,6 @@ const Login = () => {
           style={{ width: "100%", height: "100%" }}
           contentFit="cover"
         />
-<<<<<<< Updated upstream
-=======
-        <Text className="text-3xl text-center mb-6 font-bold">Login</Text>
-
-        {/* Email */}
-        <View className="w-3/4 mb-4">
-          <TextInput
-            placeholder="Enter your email"
-            autoCapitalize="none"
-            className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-full px-4 py-6 border border-gray-300"
-            onChangeText={setUsername}
-            placeholderTextColor={theme === "dark" ? "#ccc" : "#666"}
-          />
-        </View>
-
-        {/* Password */}
-        <View className="w-3/4 mb-1">
-          <TextInput
-            placeholder="Enter your password"
-            secureTextEntry
-            autoCapitalize="none"
-            autoCorrect={false}
-            className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-full px-4 py-6 border border-gray-300"
-            onChangeText={setPassword}
-            placeholderTextColor={theme === "dark" ? "#ccc" : "#666"}
-          />
-        </View>
-
-        {/* Forgot Password */}
-        <View className="w-3/4 items-end mb-6">
-          <TouchableOpacity onPress={() => router.push("/(auth)/ForgotPassword")}>
-            <Text className="text-blue-700 text-sm">Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Login button */}
-        <View className="flex-row w-3/4 justify-center mb-4 space-x-4 mt-5">
-          <TouchableOpacity
-            onPress={logIn}
-            className="bg-black rounded-full w-full py-6 items-center"
-          >
-            <Text className="text-white font-bold">Нэвтрэх</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Divider */}
-        <View className="flex-row justify-center items-center gap-2 mt-5">
-          <Text className="bg-gray-300 w-28 h-0.5 flex justify-center items-center"></Text>
-          <Text className="text-gray-500">or login with</Text>
-          <Text className="bg-gray-300 w-28 h-0.5 flex justify-center items-center"></Text>
-        </View>
-      </View>
-
-      {/* Register link */}
-      <View className="flex-row justify-center bottom-8">
-        <Text>Don't have an account? </Text>
-        <Text className="text-blue-800" onPress={signUp}>
-          Register Now
-        </Text>
->>>>>>> Stashed changes
       </View>
 
       {/* Main login content */}

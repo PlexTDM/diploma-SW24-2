@@ -40,7 +40,7 @@ const Asuult5 = () => {
     }, 1000);
 
     const timer = setTimeout(() => {
-      router.push("/blog");
+      router.push("/stats");
     }, 6000);
 
     return () => {
