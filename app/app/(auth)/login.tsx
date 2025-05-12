@@ -28,7 +28,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/home");
+      router.replace("/(tabs)");
     }
   }, [user, router]);
 
@@ -174,3 +174,4 @@ const Login = () => {
 };
 
 export default Login;
+

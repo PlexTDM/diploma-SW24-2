@@ -34,7 +34,7 @@ const Mnkv = () => {
         onPress={handleNext}
         className="w-[90%] h-14 bg-[#136CF1] rounded-full items-center justify-center mt-10"
       >
-        <Text className="text-white font-bold text-lg">Дараах</Text>
+        <Text className="text-white font-bold text-lg">Continue</Text>
       </TouchableOpacity>
     </ThemeView>
   );

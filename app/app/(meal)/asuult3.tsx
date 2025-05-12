@@ -2,33 +2,34 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
+  TouchableOpacity,
   useColorScheme,
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { languages, useLanguage } from "@/lib/language";
 import LottieView from "lottie-react-native";
-const Asuult = () => {
+
+const Asuult3 = () => {
   const { language } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const question3 = languages[language].question3;
 
-  const question1 = languages[language].question1;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  if (!question1) {
+  if (!question3) {
     return <Text>Ачааллаж байна...</Text>;
   }
 
   const isDarkMode = colorScheme === "dark";
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
   const textColor = isDarkMode ? "#ffffff" : "#000000";
-  const buttonColor = "#00BFFF";
   const borderColor = isDarkMode ? "#444" : "#ccc";
-  const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
   const selectedBorderColor = isDarkMode ? "#ffffff" : "#2c2c2c";
+  const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
+
   return (
     <View
       style={{
@@ -41,66 +42,64 @@ const Asuult = () => {
     >
       {/* Progress Bar */}
       <View style={styles.progressBar}>
-  {[0, 1, 2, 3, 4].map((_, i) => (
-    <View
-      key={i}
-      style={{
-        width: 46,
-        height: 8,
-        borderRadius: 8,
-        backgroundColor:
-          i === 0
-            ? isDarkMode
-              ? "#ffffff" // active step in dark mode
-              : "#2c2c2c" // active step in light mode
-            : isDarkMode
-              ? "#2c2c2c" // inactive step in dark mode
-              : "#D1D5DB", // inactive step in light mode
-      }}
-    />
-  ))}
-</View>
-
-
+              {[0, 1, 2, 3, 4].map((_, i) => (
+                <View
+                  key={i}
+                  style={{
+                    width: 46,
+                    height: 8,
+                    borderRadius: 8,
+                    backgroundColor:
+                      i === 2
+                        ? isDarkMode
+                          ? "#ffffff" // active step in dark mode
+                          : "#2c2c2c" // active step in light mode
+                        : isDarkMode
+                          ? "#2c2c2c" // inactive step in dark mode
+                          : "#D1D5DB", // inactive step in light mode
+                  }}
+                />
+              ))}
+            </View>
       {/* Асуулт */}
-      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
-        <View
-  style={{
-    flexDirection: "row",
-    alignItems: "center", // "flex-start"-ыг "center" болгоно
-    paddingHorizontal: 10,
-    gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
-  }}
->
-  <LottieView
-    source={require("@/assets/icons/gem.json")}
-    autoPlay
-    loop
-    style={{
-      width: 35, // хэмжээг багасгаж
-      height: 35,
-      marginRight: 1, // эсвэл gap оронд хэрэглэж болно
-    }}
-  />
-  <Text
-    style={{
-      fontSize: 24, // багасгаж болно
-      fontWeight: "bold",
-      textAlign: "left",
-      color: textColor,
-      flexShrink: 1,
-    }}
-  >
-    {question1.tanid}
-  </Text>
-</View>
-
-
-      </View>
+       <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
+                    <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center", // "flex-start"-ыг "center" болгоно
+                paddingHorizontal: 10,
+                gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
+              }}
+            >
+              <LottieView
+                source={require("@/assets/icons/gem.json")}
+                autoPlay
+                loop
+                style={{
+                  width: 35, // хэмжээг багасгаж
+                  height: 35,
+                  marginRight: 1, // эсвэл gap оронд хэрэглэж болно
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 24, // багасгаж болно
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  color: textColor,
+                  flexShrink: 1,
+                }}
+              >
+                {question3.ta}
+              </Text>
+            </View>
+            
+            
+                  </View>
 
       {/* Сонголтууд */}
       <FlatList
-        data={question1.suun}
+        data={question3.ogloo}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
         renderItem={({ item, index }) => {
@@ -123,10 +122,8 @@ const Asuult = () => {
             >
               <Text style={{ color: textColor, fontSize: 16 }}>{item}</Text>
               {isSelected && (
-  <Text style={{ color: isDarkMode ? "#ffffff" : "#2c2c2c", fontSize: 20 }}>
-    ✓
-  </Text>
-)}
+                <Text style={{ color: selectedBorderColor, fontSize: 20 }}>✓</Text>
+              )}
             </TouchableOpacity>
           );
         }}
@@ -142,9 +139,9 @@ const Asuult = () => {
           width: 340,
         }}
       >
-        {/* Буцах */}
+        {/* Буцах товч */}
         <TouchableOpacity
-          onPress={() => router.push("/mnkv")}
+          onPress={() => router.push("/asuult2")}
           style={{
             padding: 8,
             borderRadius: 8,
@@ -161,9 +158,9 @@ const Asuult = () => {
           </Text>
         </TouchableOpacity>
 
-        {/* Дараах */}
+        {/* Дараах товч */}
         <TouchableOpacity
-          onPress={() => router.push("/(meal)/asuult2")}
+          onPress={() => router.push("/(meal)/asuult4")}
           disabled={selectedIndex === null}
           style={{
             padding: 16,
@@ -176,7 +173,7 @@ const Asuult = () => {
           }}
         >
           <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-            {question1.daraah}
+            {question3.daraah}
           </Text>
         </TouchableOpacity>
       </View>
@@ -209,23 +206,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
   },
+  bullet: {
+    fontSize: 16,
+    marginRight: 5, // Bullet тэмдэгийн зайг багасгаж, асуулттай ойртуулна
+  },
   question: {
     fontSize: 20,
     fontWeight: "bold",
   },
 });
 
-export default Asuult;
-
-
-
-
-
-
-
-
-
-
+export default Asuult3;
 
 
 
