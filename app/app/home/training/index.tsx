@@ -20,6 +20,7 @@ import {
   DumbbellIcon,
   Flag,
 } from "lucide-react-native";
+import { Image } from "expo-image";
 
 export default function Training() {
   const [dates, setDates] = useState<Moment[]>([]);
@@ -57,118 +58,152 @@ export default function Training() {
   };
 
   return (
-    <ThemeView className="p-8">
-      {/* Calendar */}
-      <View style={styles.container}>
-        {dates.map((date) => {
-          const isSelected = selectedDate === date.format("YYYY-MM-DD");
-          return (
-            <TouchableOpacity
-              key={date.format("YYYY-MM-DD")}
-              onPress={() => handleSelectDate(date)}
-              style={styles.dayContainer}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.dayText, isDark && { color: "#ccc" }]}>
-                {date.format("dd").charAt(0)}
-              </Text>
-              <Text
-                style={[
-                  styles.dateText,
-                  isSelected && styles.selectedDate,
-                  isDark && !isSelected && { color: "#fff" },
-                ]}
-              >
-                {date.format("D")}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-      <ThemeText className="text-3xl text-start font-semibold mt-4">
-        {languages[language].training.hi}, Galbadrakh!
-      </ThemeText>
-      <ThemeText className="text-lg text-start mt-2 text-gray-500">
-        {languages[language].training.hello}
-      </ThemeText>
-      <View className="w-full bg-gray-200 rounded-3xl mt-4 p-8">
-        <View className="flex-row items-start gap-4">
-          <View className="p-2 bg-blue-600 rounded-full items-center">
-            <Text className="text-white text-sm font-medium">
-              {languages[language].training.special}
+    <ThemeView className="flex-1 relative">
+      <View className="h-[65%] ">
+        <Image
+          source={require("@/assets/img/lightEffect.jpg")}
+          style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]}
+          contentFit="fill"
+
+        />
+        <View
+          style={[
+            StyleSheet.absoluteFillObject,
+            { backgroundColor: isDark ? "#00000000" : "#ffffff00" },
+          ]}
+        />
+
+        {/* Main Content */}
+        <View className="p-8 flex-1">
+          {/* Calendar */}
+          <View className="p-2">
+            <View className="flex-row justify-between mt-8">
+              {dates.map((date) => {
+                const isSelected = selectedDate === date.format("YYYY-MM-DD");
+                return (
+                  <TouchableOpacity
+                    key={date.format("YYYY-MM-DD")}
+                    onPress={() => handleSelectDate(date)}
+                    activeOpacity={0.7}
+                    className={`items-center px-3 py-2 rounded-2xl ${isSelected ? " bg-gray-200/40" : "bg-none"
+                      }`}
+                  >
+                    <Text className="text-xs text-slate-300">
+                      {date.format("dd").charAt(0)}
+                    </Text>
+                    <Text className="text-white font-bold text-base">
+                      {date.format("D")}
+                    </Text>
+                    {isSelected && (
+                      <View className="flex flex-row mt-1">
+                        <View className="w-1 h-1 bg-white rounded-full mx-0.5" />
+                        <View className="w-1 h-1 bg-white rounded-full mx-0.5" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+
+            <Text className="text-3xl text-start font-semibold mt-4 text-white">
+              {languages[language].training.hi}, Galbadrakh!
             </Text>
+            <Text className="text-lg text-start mt-2 text-gray-200 ">
+              {languages[language].training.hello}
+            </Text>
+
+            {/* Highlight Workout Block */}
+            <View className="w-full bg-blue-200/30 relative rounded-3xl mt-4 p-6">
+              <View className="flex-row items-start gap-4">
+                <View className="p-2 bg-blue-700 rounded-full items-center">
+                  <Text className="text-white text-[11px] font-semibold p-1">
+                    {languages[language].training.special}
+                  </Text>
+                </View>
+                <View className="p-2 px-4 bg-gray-300/40 rounded-full items-center">
+                  <Text className="text-white p-1 text-[11px] font-semibold">Gym</Text>
+                </View>
+              </View>
+
+              <Text className="text-black font-bold text-4xl mt-8">
+                75 min
+              </Text>
+              <Text className=" text-base text-black">
+                Dasgaliin ner
+              </Text>
+
+              <View className="flex-row mt-6 gap-2">
+                <View className="w-16 h-16 rounded-2xl bg-white" />
+                <View className="w-16 h-16 rounded-2xl bg-white" />
+                <View className="w-16 h-16 rounded-2xl bg-white" />
+                <View className="w-16 h-16 rounded-2xl bg-white" />
+                <Pressable
+                  className="w-16 h-16 rounded-2xl bg-white items-center justify-center"
+                  onPress={handleArrow}
+                >
+                  <ArrowRight size={32} color="black" />
+                </Pressable>
+              </View>
+            </View>
+
+
+            {/* Custom Workouts Block */}
+            <Pressable
+              className="flex-row border rounded-3xl border-gray-400 w-full mt-10 p-4 items-center justify-between gap-4"
+              onPress={handleMyWorkouts}
+            >
+              <View className="flex-row gap-4 items-center">
+                <View className="w-16 h-16 bg-gray-200 rounded-3xl justify-center items-center">
+                  <Feather name="sliders" size={20} color="black" />
+                </View>
+                <Text className="font-semibold text-lg text-white">
+                  {languages[language].training.custom}
+                </Text>
+              </View>
+              <ChevronRight size={20} color="black" />
+            </Pressable>
           </View>
-          <View className="p-2 px-4 bg-blue-600 rounded-full items-center">
-            <Text className="text-white text-sm font-medium">Gym</Text>
-          </View>
-        </View>
-        <ThemeText className="text-black font-bold text-4xl mt-8">
-          75 min
-        </ThemeText>
-        <ThemeText className="text-slate-600 text-base">
-          Dasgaliin ner
-        </ThemeText>
-        <View className="flex-row mt-6 gap-2">
-          <View className="w-16 h-16 rounded-2xl bg-white"></View>
-          <View className="w-16 h-16 rounded-2xl bg-white"></View>
-          <View className="w-16 h-16 rounded-2xl bg-white"></View>
-          <View className="w-16 h-16 rounded-2xl bg-white"></View>
+          {/* Gym Challenge */}
           <Pressable
-            className="w-16 h-16 rounded-2xl bg-white items-center justify-center"
-            onPress={handleArrow}
+            className="w-full bg-gray-200 rounded-3xl mt-16 p-8"
+            onPress={handleCustomWorkout}
           >
-            <ArrowRight size={32} color="black" />
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row gap-2">
+                <Dumbbell size={30} color="black" />
+                <View>
+                  <ThemeText className="text-sm font-bold">
+                    {languages[language].training.get}
+                  </ThemeText>
+                  <ThemeText className="text-sm">
+                    Complete 2 gym workouts
+                  </ThemeText>
+                </View>
+              </View>
+              <ChevronRight size={20} color="black" />
+            </View>
+            <View className="mt-6 flex-row items-center justify-between">
+              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
+                <DumbbellIcon size={15} color="black" />
+              </View>
+              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
+                <DumbbellIcon size={15} color="black" />
+              </View>
+              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
+                <Flag size={15} color="black" />
+              </View>
+            </View>
+            <ThemeText className="mt-3">
+              Preliminary Strength Score: 350-650
+            </ThemeText>
           </Pressable>
         </View>
       </View>
-      <Pressable
-        className="flex-row border rounded-3xl border-gray-400 w-full mt-5 p-4 items-center justify-between gap-4"
-        onPress={handleMyWorkouts}
-      >
-        <View className="flex-row gap-4 items-center">
-          <View className="w-16 h-16 bg-gray-200 rounded-3xl justify-center items-center">
-            <Feather name="sliders" size={20} color="black" />
-          </View>
-          <ThemeText className="font-semibold text-lg">
-            {languages[language].training.custom}
-          </ThemeText>
-        </View>
-        <ChevronRight size={20} color="black" />
-      </Pressable>
-      <Pressable
-        className="w-full bg-gray-200 rounded-3xl mt-4 p-8"
-        onPress={handleCustomWorkout}
-      >
-        <View className="flex-row justify-between items-center">
-          <View className="flex-row gap-2">
-            <Dumbbell size={30} color="black" />
-            <View className="">
-              <ThemeText className="text-sm font-bold ">
-                {languages[language].training.get}
-              </ThemeText>
-              <ThemeText className="text-sm">Complete 2 gym workouts</ThemeText>
-            </View>
-          </View>
-          <ChevronRight size={20} color="black" />
-        </View>
-        <View className="mt-6 flex-row items-center justify-between">
-          <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-            <DumbbellIcon size={15} color="black" />
-          </View>
-          <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-            <DumbbellIcon size={15} color="black" />
-          </View>
-          <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-            <Flag size={15} color="black" />
-          </View>
-        </View>
-        <ThemeText className="mt-3">
-          Preliminary Strength Score: 350-650
-        </ThemeText>
-      </Pressable>
     </ThemeView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
