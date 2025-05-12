@@ -9,23 +9,22 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { languages, useLanguage } from "@/lib/language";
-import LottieView from "lottie-react-native";
-const Asuult = () => {
+
+const Asuult2 = () => {
   const { language } = useLanguage();
   const router = useRouter();
   const colorScheme = useColorScheme();
 
-  const question1 = languages[language].question1;
+  const question2 = languages[language].question2;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  if (!question1) {
+  if (!question2) {
     return <Text>Ачааллаж байна...</Text>;
   }
 
   const isDarkMode = colorScheme === "dark";
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
   const textColor = isDarkMode ? "#ffffff" : "#000000";
-  const buttonColor = "#00BFFF";
   const borderColor = isDarkMode ? "#444" : "#ccc";
   const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
   const selectedBorderColor = "#136CF1";
@@ -42,41 +41,34 @@ const Asuult = () => {
     >
       {/* Progress Bar */}
       <View style={styles.progressBar}>
+        <View style={[styles.progressStep]} />
         <View style={[styles.progressStep, styles.activeStep]} />
-        <View style={styles.progressStep} />
         <View style={styles.progressStep} />
         <View style={styles.progressStep} />
         <View style={styles.progressStep} />
       </View>
 
       {/* Асуулт */}
-      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
+      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 10 }}>
         <View style={styles.questionContainer}>
-          <LottieView
-                        source={require("@/assets/icons/gem.json")}
-                        autoPlay
-                        loop
-                        style={{
-                          width: 80,
-                          height: 45,
-                        }}
-                      />
+          <Text style={[styles.bullet, { color: "#136CF1" }]}>◆</Text>
           <Text
             style={{
               fontSize: 24,
               fontWeight: "bold",
               textAlign: "center",
               color: textColor,
+              marginLeft: 5, // Bullet тэмдгээс асуултнаас зай гаргах
             }}
           >
-            {question1.tanid}
+            {question2.songo}
           </Text>
         </View>
       </View>
 
       {/* Сонголтууд */}
       <FlatList
-        data={question1.suun}
+        data={question2.bi}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
         renderItem={({ item, index }) => {
@@ -118,7 +110,7 @@ const Asuult = () => {
       >
         {/* Буцах */}
         <TouchableOpacity
-          onPress={() => router.push("/mnkv")}
+          onPress={() => router.push("/asuult")}
           style={{
             padding: 8,
             borderRadius: 8,
@@ -137,7 +129,7 @@ const Asuult = () => {
 
         {/* Дараах */}
         <TouchableOpacity
-          onPress={() => router.push("/(meal)/asuult2")}
+          onPress={() => router.push("/(meal)/asuult3")}
           disabled={selectedIndex === null}
           style={{
             padding: 16,
@@ -150,7 +142,7 @@ const Asuult = () => {
           }}
         >
           <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-            {question1.daraah}
+            {question2.daraah}
           </Text>
         </TouchableOpacity>
       </View>
@@ -183,24 +175,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
   },
+  bullet: {
+    fontSize: 16,
+    marginRight: -20, // Bullet тэмдэгтэй асуултны текстийн зайг багасгах
+  },
   question: {
     fontSize: 20,
     fontWeight: "bold",
   },
 });
 
-export default Asuult;
-
-
-
-
-
-
-
-
-
-
-
+export default Asuult2;
 
 
 
