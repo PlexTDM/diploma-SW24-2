@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
-import { register } from "./data";
 
 
 
@@ -52,9 +51,10 @@ export const mn = {
   },
   register: {
     age: "Таны Төрсөн өдөр?",
+    username: "Нэр",
     register: "Бүртгүүлэх",
-    email: "Имэйл хаягаа оруулна уу",
-    password: "Нууц үгээ оруулна уу",
+    email: "Имэйл",
+    password: "Нууц үг",
     button: {
       button1: "Өмнөх",
       button2: "Дараах",
@@ -86,6 +86,8 @@ export const mn = {
         choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
       },
       water: {
+        word: "Ус",
+        milliliter: "м/литр",
         title: "Та өдөрт хэдэн литр ус уудаг вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
         choices: ["4+ литр", "2-3 литр", "1 литр"],
@@ -140,11 +142,25 @@ export const mn = {
     sleep: "Нойр",
     duration: "цаг",
   },
+
+  calories: {
+    calorie: " Калори",
+    kcal: "ккал",
+  },
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
   back: "Өмнөх",
   next: "Дараах",
+  training: {
+    workout: "Бэлтгэл",
+    duration: ["минут"],
+    hi: "Сайн байна уу",
+    hello: "Өнөөдөр хэр байна даа?",
+    special: "Зөвхөн танд зориулсан",
+    custom: "Өөрийн дасгал",
+    get: "Өөрийн Зорилгоо Тодорхойлох",
+  },
 };
 
 export const en = {
@@ -193,9 +209,10 @@ export const en = {
     button2: "Sign Up",
   },
   register: {
+    username: "Username",
     age: "How old are you?",
-    email: "Enter your email",
-    password: "Enter your password",
+    email: "Email",
+    password: "Password",
     register: "Register",
     button: {
       button1: "Back",
@@ -229,6 +246,8 @@ export const en = {
         choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
       },
       water: {
+        word: "Water",
+        milliliter: "ml",
         title: "How much water do you drink per day?",
         desc: "Your choice will affect your workout plan",
         choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
@@ -283,11 +302,25 @@ export const en = {
     sleep: "Sleep",
     duration: "hours",
   },
+
+  calories: {
+    calorie: "Calories",
+    kcal: "kcal",
+  },
   welcome: "Welcome",
   logout: "Logout",
   profile: "Profile",
   back: "Back",
   next: "Next",
+  training: {
+    workout: "Training",
+    duration: ["minutes"],
+    hi: "Hi there",
+    hello: "Good day so far?",
+    special: "Special for you",
+    custom: "Custom workout",
+    get: "Get a Strength Goal",
+  },
 };
 
 export const languages = {

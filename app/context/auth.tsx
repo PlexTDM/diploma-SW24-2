@@ -6,22 +6,24 @@ import {
   useEffect,
   useState,
 } from "react";
-import { login, logout, register } from "@/lib/data";
+import { login, logout } from "@/lib/data";
 
 type AuthContextType = {
   user: any;
   loggedIn: boolean;
   loading: boolean;
-  login: (email?: string, password?: string) => Promise<LoginResponse | null>;
+  login: (email?: string, password?: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (formData: registerFormType) => Promise<void>;
 };
+
+const api = process.env.EXPO_PUBLIC_API_URL as string;
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loggedIn: false,
   loading: true,
-  login: async () => null,
+  login: async () => {},
   logout: async () => {},
   register: async () => {},
 });
@@ -56,9 +58,47 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const registerUser = async (formData: registerFormType) => {
+    setLoading(true);
     console.log(formData);
-    const data = await register(formData);
-    console.log("data", data);
+    try {
+      const res = await fetch(`${api}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        return res.text().then((text: any) => {
+          console.log("Error response:", text);
+          throw new Error("Registration failed");
+        });
+      }
+      const data = await res.json();
+      setUser(data);
+      setLoggedIn(true);
+      await AsyncStorage.setItem("accessToken", data.accessToken);
+      await AsyncStorage.setItem("refreshToken", data.refreshToken);
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginUser = async (email?: string, password?: string) => {
+    setLoading(true);
+    const response = await login(email, password);
+    if (!response?.user) {
+      setLoggedIn(false);
+      setLoading(false);
+      return;
+    }
+    setUser(response.user);
+    setLoggedIn(true);
+    setLoading(false);
   };
 
   return (
@@ -67,7 +107,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         user,
         loggedIn,
         loading,
-        login,
+        login: loginUser,
         logout: logoutUser,
         register: registerUser,
       }}

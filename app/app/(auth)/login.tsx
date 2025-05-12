@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -10,38 +10,58 @@ import {
 import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
-import { ThemeView, BlurEllipse } from "@/components";
+import { ThemeView } from "@/components";
+import { AuthContext } from "@/context/auth";
+
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
+  const { login, user, loading } = use(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
-  const [loading, setLoading] = useState(false);
 
-  const logIn = async () => {
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    // router.push("Home");
+  const logIn = () => {
+    login(username, password);
   };
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/home");
+    }
+  }, [user, router]);
 
   const signUp = () => router.push("/(auth)/signup");
 
   return (
-    <ThemeView className="relative">
-      <View className="flex-1 bg-white dark:bg-gray-900 relative justify-center items-center pt-24 p-6">
-        <BlurEllipse left={-175} top={-400} size={250} />
+    <ThemeView className="flex-1 relative">
+      {/* Gradient at the top only */}
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 250, 
+          zIndex: 0,
+        }}
+      >
+        <Image
+          source={require("@/assets/img/gradient.png")}
+          style={{ width: "100%", height: "100%" }}
+          contentFit="cover"
+        />
+      </View>
+
+      {/* Main login content */}
+      <View className="flex-1 z-10 justify-center items-center pt-24 p-6">
         <View className="w-full h-full">
           <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-1/2 w-[330px] h-10 -translate-x-1/2 rounded-t-3xl items-center justify-center z-10" />
           <View className="flex-1 absolute bg-white dark:bg-gray-900 rounded-3xl inset-0 items-center justify-start pt-10 z-20">
             <Image
               source={require("@/assets/img/logoLarge.png")}
               style={{ width: 100, height: 100 }}
-              cachePolicy={"memory-disk"}
-              contentFit={"contain"}
-              focusable={false}
             />
             <Text className="text-3xl text-center mb-6 font-semibold">
               Login
@@ -69,10 +89,7 @@ const Login = () => {
                 />
                 <Pressable
                   className="w-[50px] h-full"
-                  android_ripple={{
-                    color: "#00000020",
-                    radius: 25,
-                  }}
+                  android_ripple={{ color: "#00000020", radius: 25 }}
                   onPress={() => setPasswordHidden(!passwordHidden)}
                 >
                   <Image
@@ -89,7 +106,6 @@ const Login = () => {
                 </Pressable>
               </View>
 
-              {/* Forgot Password */}
               <View className="items-end">
                 <TouchableOpacity
                   onPress={() => router.push("/(auth)/ForgotPassword")}
@@ -110,11 +126,13 @@ const Login = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
+
               <View className="flex-row justify-center w-full items-center gap-2">
                 <View className="bg-gray-300 h-[1px] flex-1" />
                 <Text className="text-gray-500">or login with</Text>
                 <View className="bg-gray-300 h-[1px] flex-1" />
               </View>
+
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
                 <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
                   <Image
@@ -139,6 +157,7 @@ const Login = () => {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View className="flex-row justify-center mt-8">
               <Text>Don&apos;t have an account? </Text>
               <Text className="text-blue-700 font-semibold" onPress={signUp}>

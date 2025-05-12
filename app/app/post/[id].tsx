@@ -7,6 +7,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeft, Heart, MessageCircle, Share, Bookmark } from 'lucide-react-native';
 import CommentItem from '@/components/CommentItem';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { ThemeView } from '@/components';
+import {ThemeText} from '@/components';
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -50,16 +52,16 @@ export default function PostDetailScreen() {
   
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white p-6"
+      className="flex-1 bg-white p-6 dark:bg-gray-800"
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       style={{ paddingTop: insets.top }}
     >
-      <View className="p-4 border-b border-neutral-100 flex-row items-center">
-        <Pressable onPress={() => router.back()} className="mr-4">
-          <ArrowLeft size={24} color="#1F2937" />
+      <View className="p-4 flex-row items-center">
+        <Pressable onPress={() => router.back()} className="mr-4 dark:text-white">
+          <ArrowLeft size={24} color="#1F2937" className='dark:bg-white' />
         </Pressable>
-        <Text className="text-xl font-bold text-neutral-800">Post</Text>
+        <Text className="text-xl font-bold text-neutral-800 dark:text-white">Post</Text>
       </View>
       
       <ScrollView className="flex-1">
@@ -71,15 +73,15 @@ export default function PostDetailScreen() {
               className="w-10 h-10 rounded-full mr-3"
             />
             <View>
-              <Text className="font-bold text-neutral-800">{post.author.name}</Text>
+              <Text className="font-bold text-neutral-800 dark:text-white">{post.author.name}</Text>
               <Text className="text-neutral-500 text-xs">
                 {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
               </Text>
             </View>
           </View>
           
-          <Text className="text-xl font-bold text-neutral-800 mb-2">{post.title}</Text>
-          <Text className="text-base text-neutral-700 mb-4 leading-6">{post.content}</Text>
+          <Text className="text-xl font-bold text-neutral-800 mb-2 dark:text-white">{post.title}</Text>
+          <Text className="text-base text-neutral-700 mb-4 leading-6 dark:text-neutral-100">{post.content}</Text>
           
           {post.imageUrl && (
             <Image
@@ -121,7 +123,7 @@ export default function PostDetailScreen() {
           </View>
           </View>
           
-          <Text className="font-bold text-neutral-800 mt-4 mb-2">
+          <Text className="font-bold text-neutral-800 mt-4 mb-2 dark:text-white">
             Comments ({post.comments.length})
           </Text>
           
@@ -154,7 +156,7 @@ export default function PostDetailScreen() {
           onPress={handleComment}
           disabled={!comment.trim()}
         >
-          <Text className="text-primary-500 font-bold">Post</Text>
+          <ThemeText className="text-primary-500 font-bold ">Post</ThemeText>
         </Pressable>
       </View>
     </KeyboardAvoidingView>

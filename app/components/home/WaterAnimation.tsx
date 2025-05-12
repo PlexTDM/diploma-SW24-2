@@ -32,7 +32,7 @@ export default function WaterAnimation({
       duration: 300,
       easing: Easing.inOut(Easing.ease),
     });
-  }, [currentWater, waterGoal]);
+  }, [currentWater, waterGoal, animateHeight]);
 
   useEffect(() => {
     const config = { duration: 8000, easing: Easing.linear };
@@ -52,7 +52,7 @@ export default function WaterAnimation({
       -1,
       true
     );
-  }, []);
+  }, [wave1, wave2, wave3, wave4]);
 
   const wave1Style = useAnimatedStyle(() => {
     const translateX = interpolate(wave1.value, [0, 1], [0, -imgWidth]);

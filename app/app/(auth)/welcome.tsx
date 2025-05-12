@@ -1,6 +1,6 @@
 import { ThemeText, ThemeView } from "@/components";
 import { languages, useLanguage } from "@/lib/language";
-import { useRegisterStore } from "@/lib/store";
+import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { useFocusEffect, useNavigation, useRouter } from "expo-router";
@@ -62,7 +62,7 @@ export default function LoginOrRegister() {
       <View>
         <ThemeText className="text-3xl mb-[40%] text-center ">
           {/* {languages[language].login.title2} */}
-          {languages[language].mascot.desc}\
+          {languages[language].mascot.desc}
         </ThemeText>
       </View>
       <View className="w-3/4 mx-auto flex flex-row items-center justify-center gap-4">

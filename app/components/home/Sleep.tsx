@@ -11,6 +11,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useEffect, useState } from "react";
+import SleepModal from "./SleepModal";
 
 export default function Sleep() {
   const router = useRouter();
@@ -18,7 +20,7 @@ export default function Sleep() {
   const { language } = useLanguage();
 
   const pressed = useSharedValue(0);
-
+  const [modalVisible, setModalVisible] = useState(false);
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
   };
@@ -28,7 +30,9 @@ export default function Sleep() {
   };
 
   const handlePress = () => {
-    router.push("/home/sleep");
+    // router.push("/home/water");
+    setModalVisible(true);
+    // setCurrentWater((p) => Math.max(p + 500));
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -54,6 +58,7 @@ export default function Sleep() {
       className="bg-white dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
       style={animatedStyle}
     >
+      <SleepModal visible={modalVisible} setVisible={setModalVisible}/>
       <Pressable
         className="flex-1 justify-between p-4 px-6"
         onPressIn={handlePressIn}

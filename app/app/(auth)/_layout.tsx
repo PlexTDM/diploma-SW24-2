@@ -11,7 +11,7 @@ export default function AuthLayout() {
       <Stack.Screen name="otp-verification" />
       <Stack.Screen name="VerificationSuccess" />
       <Stack.Screen name="EmailRegister" />
-      <Stack.Screen name="EmailVerification" />
+      {/* <Stack.Screen name="EmailVerification" /> */}
     </Stack>
   );
 }
