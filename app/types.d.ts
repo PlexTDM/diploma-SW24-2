@@ -49,3 +49,9 @@ type LoginResponse = {
   refreshToken: string;
   user: any;
 };
+
+type DataType = {
+  label: string;
+  date: string;
+  value: number;
+};

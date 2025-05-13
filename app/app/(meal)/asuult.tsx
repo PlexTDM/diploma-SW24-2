@@ -100,6 +100,7 @@ const Asuult = () => {
 
       {/* Сонголтууд */}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={question1.suun}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
