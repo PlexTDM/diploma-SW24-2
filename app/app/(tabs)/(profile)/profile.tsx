@@ -4,7 +4,7 @@ import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
-import { useLanguage } from "@/lib/language";
+import { useLanguage,languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Button, Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
@@ -97,9 +97,9 @@ const Tabs = () => {
   return (
     <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
-        <TabButton tab={0}>Timeline</TabButton>
-        <TabButton tab={1}>Stats</TabButton>
-        <TabButton tab={2}>Duels</TabButton>
+        <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
+        <TabButton tab={1}>{languages[language].profile1.stats}</TabButton>
+        <TabButton tab={2}>{languages[language].profile1.duels}</TabButton>
       </View>
       <FlatList
         ref={tabRef}
@@ -123,6 +123,7 @@ const Tabs = () => {
 };
 
 export default function Tab() {
+  const { language } = useLanguage();
   const router = useRouter();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
@@ -152,7 +153,7 @@ export default function Tab() {
           </Button>
         </View>
         <ThemeText className="text-2xl text-center font-semibold">
-          Your Profile
+          {languages[language].profile1.title}
         </ThemeText>
         <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
@@ -190,7 +191,7 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">247</ThemeText>
-          <ThemeText className="color-gray-400">Total colories</ThemeText>
+          <ThemeText className="color-gray-400">{languages[language].profile1.calories}</ThemeText>
         </View>
         <View className="items-center">
           <Icon
@@ -199,7 +200,7 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">682</ThemeText>
-          <ThemeText className="color-gray-400">Followers</ThemeText>
+          <ThemeText className="color-gray-400">{languages[language].profile1.followers}</ThemeText>
         </View>
       </View>
       <Tabs />

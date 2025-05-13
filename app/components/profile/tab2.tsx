@@ -24,6 +24,7 @@ const data: DataType[] = [
 ];
 
 const LineChartScreen = () => {
+  const { theme } = useAppTheme();
   const CHART_MARGIN = 20;
   const CHART_HEIGHT = 180;
   const [selectedDate, setSelectedDate] = useState<string>("Total");
@@ -61,8 +62,8 @@ const LineChartScreen = () => {
   );
 };
 
-export default function tab2() {
-  const {theme} = useAppTheme();
+export default function Tab2() {
+  const { theme } = useAppTheme();
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <LineChartScreen />
