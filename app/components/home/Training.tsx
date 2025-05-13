@@ -1,5 +1,5 @@
 import { useLanguage, languages } from "@/lib/language";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
 import { useRouter } from "expo-router";
@@ -50,37 +50,45 @@ export default function Training() {
   });
 
   return (
+    
     <Animated.View
-      className="dark:bg-black-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
-      style={animatedStyle}
+    className="dark:bg-black-900 rounded-[26px] flex-1  overflow-hidden"
+    style={animatedStyle}
+  >
+    {/* Background Gradient */}
+    <View className="absolute top-0 w-full left-0 right-0 bottom-0">
+    <Image
+      source={require("@/assets/img/gradient.png")}
+      style={[StyleSheet.absoluteFillObject, { zIndex: -1 }]}
+      contentFit="cover"
+    />
+     </View>
+    <Pressable
+      className="flex-1 justify-between p-4 px-6"
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={handlePress}
     >
-      <Pressable
-        className="flex-1 justify-between p-4 px-6"
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        onPress={handlePress}
-      >
-        <View className="flex-row items-center justify-between">
-          <ThemeText className="flex-1 font-bold text-lg">
-            {languages[language].training.workout}
-          </ThemeText>
-          <View className="w-[25px] h-[20px]">
-            <Image
-              source={require("@/assets/icons/dumbbell.svg")}
-              style={{ width: "100%", height: "100%" }}
-            />
-          </View>
+      <View className="flex-row items-center justify-between absolute top-4 left-5">
+        <ThemeText className="flex-1 font-bold text-lg dark:text-black ">
+          {languages[language].training.workout}
+        </ThemeText>
+        <View className="w-[25px] h-[20px]">
+          <Image
+            source={require("@/assets/icons/dumbbell.svg")}
+            style={{ width: "100%", height: "100%" }}
+          />
         </View>
-
-        <View>
-          <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
-            69
-          </Text>
-          <Text className="text-sm font-normal text-slate-400">
-            {languages[language].training.duration}
-          </Text>
-        </View>
-      </Pressable>
-    </Animated.View>
+      </View>
+      <View>
+        <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold mt-16">
+          69
+        </Text>
+        <Text className="text-sm font-normal text-gray-600 dark:text-gray-200">
+          {languages[language].training.duration}
+        </Text>
+      </View>
+    </Pressable>
+  </Animated.View>
   );
 }

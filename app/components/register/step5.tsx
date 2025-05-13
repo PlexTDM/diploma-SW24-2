@@ -24,19 +24,20 @@ export default function Step5() {
   return (
     <View className="flex-1 gap-auto justify-center items-center">
       <View className="flex items-center">
-        <View className="flex-row px-6 relative">
-          <View className="w-10 h-10 absolute left-0 -top-1.5">
-            <LottieView
-              source={require("@/assets/icons/gem.json")}
-              autoPlay
-              loop
-              style={{
-                width: 80,
-                height: 45,
-              }}
-            />
-          </View>
-          <ThemeText className="text-3xl w-[95%] font-bold text-center">
+        <View className="flex-row px-6 items-center ">
+
+            <View className="w-[55px] h-12">
+              <LottieView
+                source={require("@/assets/icons/gem.json")}
+                autoPlay
+                loop
+                style={{
+                  width: 80,
+                  height: 45,
+                }}
+              />
+            </View>
+          <ThemeText className="text-3xl font-bold text-center">
             {languages[language].register.steps.water.title}
           </ThemeText>
         </View>
@@ -49,11 +50,10 @@ export default function Step5() {
           <Pressable
             key={i}
             onPress={() => handlePress(i)}
-            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${
-              selectedIndex === i
+            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${selectedIndex === i
                 ? "border-black dark:border-white"
                 : "border-gray-200 dark:border-gray-700"
-            }`}
+              }`}
           >
             {i === selectedIndex && (
               <View className="absolute -right-2 -top-2 rounded-full dark:text-black bg-black dark:bg-white p-1 items-center justify-center">
@@ -61,11 +61,10 @@ export default function Step5() {
               </View>
             )}
             <Text
-              className={`font-semibold text-lg ${
-                selectedIndex === i
+              className={`font-semibold text-lg ${selectedIndex === i
                   ? "text-black dark:text-white"
                   : "text-slate-500 dark:text-gray-300"
-              }`}
+                }`}
             >
               {choice}
             </Text>

@@ -1,7 +1,44 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
 
+
+
 export const mn = {
+ question1: {
+    tanid: "Танд анхаарах ёстой хоолны ямар нэгэн хорио цээр, дэглэм байгаа юу? ",
+    suun: ["Сүүн сахар", "сахар", "Глютен", "Самар", "Дэглэм байхгүй"],
+    daraah: "Дараах",
+  },
+  question2: {
+    songo: "Та ямар хоолны дэглэм баримталдаг вэ?",
+    bi: [
+      "Би бүхнийг иддэг",
+      "Цагаан хоол ",
+      "Кето хоол",
+      "Палео хоол",
+      "Климатариан хоол",
+      "Шүлтлэг хоол",
+      "Загасны хоол",
+    ],
+    daraah: "Дараах",
+  },
+  question3: {
+    ta: "Та өдөртөө ямар хоол идэх нь хэвшил болсон байдаг вэ?",
+    ogloo: ["Өглөөний хоол", "Өдрийн хоол ", "Оройн хоол", "Амттан"],
+    daraah: "Дараах",
+  },
+  question4: {
+    chi: "Та ямар өдрүүдийн хоолыг төлөвлөж байна вэ?",
+    ene: "Энэ долоо хоног",
+    dar: "Дараа долоо хоног",
+    daraah: "Дараах",
+    nemeh:"Нэмэх",
+  },
+  question5: {
+    zori: "Таньд зориулсан хоолны цэсийг бэлдэж байна.....",
+  },
+
+
   mascot: {
     name: "Блуви",
     desc: "Хамтдаа эрүүл, чийрэг биетэй болцгооё!",
@@ -127,6 +164,40 @@ export const mn = {
 };
 
 export const en = {
+
+   question1: {
+    tanid: "Do you have any dietary restrictions we should know about?",
+    suun: ["Lactose Free", "Sugar Free", "Gluten free", "Nut Free", "None"],
+    daraah: "Continue"
+  },
+  question2: {
+    songo: "What's your preferred eating style?",
+    bi: [
+      "I eat everything",
+      "Vegan",
+      "Vegetarian",
+      "Keto",
+      "Paleo",
+      "Climatarian",
+      "Alkaline",
+    ],
+    daraah: "Continue"
+  },
+  question3: {
+    ta: "Which meals do you usually have in a day?",
+    ogloo: ["Breakfast", "Lunch", "Dinner", "Snacks"],
+    daraah: "Continue"
+  },
+  question4: {
+    chi: "Which days are you planning meals for?",
+    ene: "This week",
+    dar: "Next week",
+    daraah: "Continue",
+    nemeh:"Add",
+  },
+  question5: {
+    zori: "Preparing your personalized menu...."
+  },
   mascot: {
     name: "Bluvi",
     desc: "Let's Get Fit Together",
@@ -168,6 +239,7 @@ export const en = {
           "Inactive (exercises once a week or not at all)",
         ],
       },
+      
       meals: {
         title: "How many meals do you have per day?",
         desc: "Your choice will affect your workout plan",

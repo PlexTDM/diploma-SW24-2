@@ -4,6 +4,7 @@ import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
 import "@/lib/global.css";
+
 // import { useEffect } from "react";
 // import * as NavigationBar from "expo-navigation-bar";
 // SplashScreen.preventAutoHideAsync();
