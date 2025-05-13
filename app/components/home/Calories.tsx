@@ -11,6 +11,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import {Zap} from "lucide-react-native";
 
 export default function Calories() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function Calories() {
   };
 
   const handlePress = () => {
-    router.push("/home/calories");
+    
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -51,7 +52,7 @@ export default function Calories() {
 
   return (
     <Animated.View
-      className="dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
+      className="dark:bg-gray-900 rounded-[26px] flex-1  bg-white"
       style={animatedStyle}
     >
       <Pressable
@@ -65,10 +66,7 @@ export default function Calories() {
             {languages[language].calories.calorie}
           </ThemeText>
           <View className="w-[25px] h-[25px]">
-            <Image
-              source={require("@/assets/icons/energy.svg")}
-              style={{ width: "100%", height: "100%" }}
-            />
+            <Zap color={theme === "dark" ? "#ffffff" : "#000000"} size={25} />
           </View>
         </View>
 

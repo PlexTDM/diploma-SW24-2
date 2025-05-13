@@ -13,6 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useEffect, useState } from "react";
 import SleepModal from "./SleepModal";
+import {MoonStar} from "lucide-react-native";
 
 export default function Sleep() {
   const router = useRouter();
@@ -70,10 +71,7 @@ export default function Sleep() {
             {languages[language].sleep.sleep}
           </ThemeText>
           <View className="w-[25px] h-[25px]">
-            <Image
-              source={require("@/assets/icons/half-moon.svg")}
-              style={{ width: "100%", height: "100%" }}
-            />
+            <MoonStar size={25} color={theme === "dark" ? "#fff" : "#000"} />
           </View>
         </View>
 

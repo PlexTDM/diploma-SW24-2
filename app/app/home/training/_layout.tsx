@@ -2,11 +2,14 @@ import { Stack } from "expo-router";
 
 export default function TrainingLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="screen1" options={{ headerShown: false }} />
-      <Stack.Screen name="screen2" options={{ headerShown: false }} />
-      <Stack.Screen name="screen3" options={{ headerShown: false }} />
+    <Stack screenOptions={{
+      animation: "fade",
+      headerShown: false
+    }}>
+      <Stack.Screen name="index"/>
+      <Stack.Screen name="screen1" />
+      <Stack.Screen name="screen2" />
+      <Stack.Screen name="screen3" />
     </Stack>
   );
 }

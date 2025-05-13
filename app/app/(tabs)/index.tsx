@@ -1,20 +1,22 @@
 import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
-import { ThemeView } from "@/components";
+import { ThemeView, ThemeText } from "@/components";
 import Flame from "@/components/icons/Flame";
 import { languages, useLanguage } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, View } from "react-native";
+import { Pressable, View, Text } from "react-native";
 import { useRouter } from "expo-router";
-
+import { SectionTitle } from '@/components/ui/SectionTitle';
 
 export default function Tab() {
   const { theme } = useAppTheme();
   const { language } = useLanguage();
   const router = useRouter();
+
   return (
     <ThemeView className="items-center p-8">
+
       <View className="w-full flex-row items-center justify-between border-b gap-2 border-gray-200 dark:border-gray-800 pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
@@ -59,6 +61,16 @@ export default function Tab() {
           <Training />
           <Calories />
         </View>
+
+      </View>
+
+      <View className="p-4 font-sans">
+
+        <SectionTitle
+          title="Tasks"
+          colors={['#116CFD', 'transparent']}
+        />
+        <Text className="font-quicksand">Hello, world!</Text>
       </View>
     </ThemeView>
   );
