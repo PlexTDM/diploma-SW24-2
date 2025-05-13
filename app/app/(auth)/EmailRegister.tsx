@@ -31,7 +31,7 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/home");
+      router.replace("/(tabs)");
     }
   }, [user, router]);
 

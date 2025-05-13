@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import { useRouter } from "expo-router";
 
+
 export default function Tab() {
   const { theme } = useAppTheme();
   const { language } = useLanguage();
