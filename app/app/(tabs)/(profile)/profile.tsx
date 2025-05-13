@@ -4,7 +4,7 @@ import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
-import { useLanguage } from "@/lib/language";
+import { useLanguage,languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Button, Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
@@ -32,9 +32,10 @@ const Tabs = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: { key: string; component: React.ComponentType } }) => (
-      <View style={{ width: width }} key={item.key}>
+      <View style={{ width: width, height: 400 }} key={item.key}>
         <item.component />
       </View>
+      //ene hesgiin unduriig uur hun ashiglah uyd ni tengis zasna geseen utsandaa taaruulad 350 iig uurchlurui ahh
     ),
     [width]
   );
@@ -94,11 +95,11 @@ const Tabs = () => {
   };
 
   return (
-    <View className="flex-1 w-[85%] my-4" onLayout={setDimensions}>
+    <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
-        <TabButton tab={0}>Timeline</TabButton>
-        <TabButton tab={1}>Stats</TabButton>
-        <TabButton tab={2}>Duels</TabButton>
+        <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
+        <TabButton tab={1}>{languages[language].profile1.stats}</TabButton>
+        <TabButton tab={2}>{languages[language].profile1.duels}</TabButton>
       </View>
       <FlatList
         ref={tabRef}
@@ -122,6 +123,7 @@ const Tabs = () => {
 };
 
 export default function Tab() {
+  const { language } = useLanguage();
   const router = useRouter();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
@@ -139,7 +141,7 @@ export default function Tab() {
   };
 
   return (
-    <ThemeView className="items-center justify-center pt-4">
+    <ThemeView className="items-center justify-center pt-0">
       <View className="flex-row items-center px-6 justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
           <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
@@ -151,7 +153,7 @@ export default function Tab() {
           </Button>
         </View>
         <ThemeText className="text-2xl text-center font-semibold">
-          Your Profile
+          {languages[language].profile1.title}
         </ThemeText>
         <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
@@ -178,10 +180,10 @@ export default function Tab() {
           }}
         />
       </Pressable>
-      <ThemeText className="text-2xl font-bold mt-4">
+      <ThemeText className="text-2xl font-bold mt-2">
         {user?.username}
       </ThemeText>
-      <View className="flex-row items-center justify-between w-1/2 mt-4">
+      <View className="flex-row items-center justify-between w-1/2 my-4">
         <View className="items-center">
           <Icon
             source="flash-outline"
@@ -189,7 +191,7 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">247</ThemeText>
-          <ThemeText className="color-gray-400">Total colories</ThemeText>
+          <ThemeText className="color-gray-400">{languages[language].profile1.calories}</ThemeText>
         </View>
         <View className="items-center">
           <Icon
@@ -198,7 +200,7 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">682</ThemeText>
-          <ThemeText className="color-gray-400">Followers</ThemeText>
+          <ThemeText className="color-gray-400">{languages[language].profile1.followers}</ThemeText>
         </View>
       </View>
       <Tabs />

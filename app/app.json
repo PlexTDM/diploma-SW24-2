@@ -8,7 +8,8 @@
     "scheme": "coolfitness",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.unnamed0631.coolfitness"
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
@@ -16,12 +17,13 @@
         "foregroundImage": "./assets/img/logo.png",
         "backgroundColor": "#ffffff"
       },
+      "edgeToEdgeEnabled": true,
       "package": "com.unnamed0631.coolfitness"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/img/logo.svg"
+      "favicon": "./assets/img/logo.png"
     },
     "plugins": [
       "expo-router",

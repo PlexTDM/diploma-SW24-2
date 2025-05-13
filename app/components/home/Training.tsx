@@ -11,6 +11,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { Dumbbell } from "lucide-react-native";
 
 export default function Training() {
   const { language } = useLanguage();
@@ -74,10 +75,7 @@ export default function Training() {
           {languages[language].training.workout}
         </ThemeText>
         <View className="w-[25px] h-[20px]">
-          <Image
-            source={require("@/assets/icons/dumbbell.svg")}
-            style={{ width: "100%", height: "100%" }}
-          />
+          <Dumbbell size={25} color={theme === "dark" ? "white" : "black"} />
         </View>
       </View>
       <View>

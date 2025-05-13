@@ -1,16 +1,37 @@
 import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
 import "@/lib/global.css";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 
 // import { useEffect } from "react";
 // import * as NavigationBar from "expo-navigation-bar";
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const { theme } = useAppTheme();
+
+  const [loaded, error] = useFonts({
+    Quicksand: require("../assets/fonts/Quicksand-Variable.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   // useEffect(() => {
   //   const setNavigationBar = async () => {
@@ -38,11 +59,20 @@ const RootLayout = () => {
           <Stack
             screenOptions={{
               headerShown: false,
+              presentation: "modal",
+              animation: "flip",
             }}
             initialRouteName="(tabs)"
           >
-            <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="(tabs)"
+              options={{ animation: "flip", presentation: "modal" }}
+            />
             <Stack.Screen name="(auth)" />
+            <Stack.Screen
+              name="home"
+              options={{ animation: "default", presentation: "card" }}
+            />
             <Stack.Screen name="chatbot" />
           </Stack>
         </Providers>

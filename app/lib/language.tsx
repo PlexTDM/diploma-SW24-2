@@ -1,3 +1,4 @@
+import Calories from "@/app/home/calories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -147,6 +148,7 @@ export const mn = {
     calorie: " Калори",
     kcal: "ккал",
   },
+  Login: "Та нэвтэрч орно уу!",
   welcome: "Тавтай морил",
   logout: "Гарах",
   profile: "Профайл",
@@ -168,6 +170,14 @@ export const mn = {
     muscle1: "Дасгалынхаа голчлон ажиллуулах булчинг сонгоно уу. Бусад булчингууд мөн тодорхой хэмжээгээр ажиллах боломжтой",
     inten: "Дасгалын эрчим"
   },
+  profile1:{
+    title:"Таны мэдээлэл",
+    calories:"Калори",
+    followers:"Дагагчид",
+    timeline:"Түүх",
+    stats:"Статистик",
+    duels:"Өрсөлдөөн",
+  }
 };
 
 export const en = {
@@ -314,6 +324,7 @@ export const en = {
     calorie: "Calories",
     kcal: "kcal",
   },
+  Login: "Please login to continue",
   welcome: "Welcome",
   logout: "Logout",
   profile: "Profile",
@@ -335,6 +346,14 @@ export const en = {
     muscle1: "Pick your workout's maiin muscles. It may include a few more. ",
     inten: "Intensity",
   },
+  profile1:{
+    title:"Your Profile",
+    calories:"Total Calories",
+    followers:"Followers",
+    timeline:"Timeline",
+    stats:"Stats",
+    duels:"Duels",
+  }
 };
 
 export const languages = {

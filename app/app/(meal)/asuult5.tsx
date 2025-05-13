@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  useColorScheme,
-  StyleSheet,
-  Animated,
-} from "react-native";
+import { View, Text, useColorScheme, StyleSheet, Animated } from "react-native";
 import { languages, useLanguage } from "@/lib/language";
 import { useRouter } from "expo-router";
 
@@ -87,12 +81,12 @@ export default Asuult5;
 
 const styles = StyleSheet.create({
   wrapper: {
-  flex: 1,
-  justifyContent: "flex-end", // ← Доош төвлөрүүлэх
-  alignItems: "center",
-  padding: 20,
-  paddingBottom: 160, // ← Доош арай зайтай болгох бол энэ нэмэлт тохиргоо
-},
+    flex: 1,
+    justifyContent: "flex-end", // ← Доош төвлөрүүлэх
+    alignItems: "center",
+    padding: 20,
+    paddingBottom: 160, // ← Доош арай зайтай болгох бол энэ нэмэлт тохиргоо
+  },
 
   textContainer: {
     alignItems: "center",
@@ -123,10 +117,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
-
-
-
-
-
-

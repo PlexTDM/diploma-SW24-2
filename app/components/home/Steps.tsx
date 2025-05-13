@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import {Footprints} from "lucide-react-native";
 
 export default function Steps() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function Steps() {
   };
 
   const handlePress = () => {
-    router.push("/home/steps");
+    
   };
 
   const pressed = useSharedValue(0);
@@ -65,9 +66,9 @@ export default function Steps() {
             {languages[language].walk.steps}
           </ThemeText>
           <View className="w-[25px] h-[20px]">
-            <Image
-              source={require("@/assets/icons/Shoe.svg")}
-              style={{ width: "100%", height: "100%" }}
+            <Footprints
+              color={theme === "dark" ? "#ffffff" : "#000000"}
+              size={25}
             />
           </View>
         </View>

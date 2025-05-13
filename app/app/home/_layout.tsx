@@ -7,12 +7,9 @@ export default function TabLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
+          animation: "fade",
         }}
       >
-        <Stack.Screen name="water" />
-        <Stack.Screen name="steps" />
-        <Stack.Screen name="sleep" />
-        <Stack.Screen name="calories" />
         <Stack.Screen name="training" />
       </Stack>
     </ThemeView>

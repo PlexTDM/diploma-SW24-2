@@ -51,7 +51,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [checkLogin]);
 
   const logoutUser = async () => {
-    await AsyncStorage.removeItem("token");
     logout();
     setUser(null);
     setLoggedIn(false);
@@ -76,7 +75,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         });
       }
       const data = await res.json();
-      setUser(data);
+      setUser(data.user);
       setLoggedIn(true);
       await AsyncStorage.setItem("accessToken", data.accessToken);
       await AsyncStorage.setItem("refreshToken", data.refreshToken);
