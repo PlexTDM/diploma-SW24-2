@@ -14,3 +14,10 @@ interface UserPayload {
   id: string;
   role: "ADMIN" | "USER";
 }
+
+interface AuthenticatedRequest extends Request {
+  user: {
+    id: string;
+    role: "ADMIN" | "USER";
+  };
+}

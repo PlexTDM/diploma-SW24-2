@@ -110,6 +110,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     image: {
       type: String,
       default: null,
+      required: false,
     },
     posts: {
       type: [Schema.Types.ObjectId],
