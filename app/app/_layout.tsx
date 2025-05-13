@@ -1,9 +1,11 @@
 import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
 import "@/lib/global.css";
+import { useEffect } from "react";
+import * as NavigationBar from "expo-navigation-bar";
 
 // import { useEffect } from "react";
 // import * as NavigationBar from "expo-navigation-bar";
@@ -12,14 +14,14 @@ import "@/lib/global.css";
 const RootLayout = () => {
   const { theme } = useAppTheme();
 
-  // useEffect(() => {
-  //   const setNavigationBar = async () => {
-  //     if (Platform.OS === "android") {
-  //       await NavigationBar.setVisibilityAsync("hidden");
-  //     }
-  //   };
-  //   setNavigationBar();
-  // }, []);
+  useEffect(() => {
+    const setNavigationBar = async () => {
+      if (Platform.OS === "android") {
+        await NavigationBar.setVisibilityAsync("hidden");
+      }
+    };
+    setNavigationBar();
+  }, []);
 
   return (
     <ThemeView>
@@ -38,6 +40,7 @@ const RootLayout = () => {
           <Stack
             screenOptions={{
               headerShown: false,
+              // presentation: "modal",
             }}
             initialRouteName="(tabs)"
           >

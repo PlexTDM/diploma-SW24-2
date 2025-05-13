@@ -4,17 +4,17 @@ import { chatbotService } from "@/services/chatbot";
 import { AuthenticatedRequest } from "@/types";
 
 class ChatbotController {
-  public static async sendMessage(req: Request, res: Response): Promise<void> {
+  public static async sendMessage(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
     try {
-      const { message, userId }: { message?: string; userId?: string } =
-        req.body;
+      const { message }: { message?: string } = req.body;
 
-      if (!message || !userId) {
-        res.status(400).json({ error: "Message and userId are required" });
-        return;
-      }
+      if (!message)
+        return res.status(400).json({ error: "Message is required" });
 
-      const result = await chatbotService.sendMessage(userId, message);
+      const result = await chatbotService.sendMessage(req.user.id, message);
       res.json(result);
     } catch (error: any) {
       console.error("Error in sendMessage:", error.message);

@@ -70,7 +70,6 @@ const TabBarButton = ({
       width: interpolate(scale.value, [0, 1], [0, 45]),
     };
   });
-
   const inimatedIconStyle = useAnimatedStyle(() => {
     const scaleValue = interpolate(scale.value, [0, 1], [1, 1.2]);
     return {
@@ -79,7 +78,7 @@ const TabBarButton = ({
   });
 
   const buttonStyle = {
-    width: isFocused ? 80 : 60,
+    width: 60,
     marginHorizontal: isFocused ? 10 : 5,
   };
 
@@ -87,11 +86,9 @@ const TabBarButton = ({
     <Pressable
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      // accessibilityLabel={options.tabBarAccessibilityLabel}
-      // testID={options.tabBarButtonTestID}
       onPress={onPress}
       onLongPress={onLongPress}
-      className="flex-1 items-center justify-center relative z-10 flex-row gap-1"
+      className="flex-1 items-center justify-center relative z-10 h-[50px] flex-row gap-1"
       style={buttonStyle}
     >
       <Animated.View style={inimatedIconStyle}>
@@ -152,7 +149,7 @@ export default function TabBar({
 
     tabPosition.value = withSpring(newPosition, {
       damping: 15,
-      stiffness: 120,
+      stiffness: 150,
       mass: 0.5,
     });
   }, [state.index, btnWidth, dimensions.width, tabPosition]);
@@ -180,17 +177,6 @@ export default function TabBar({
         const isFocused = state.index === index;
 
         const onPress = () => {
-          tabPosition.value = withSpring(
-            Math.max(
-              Math.min(index * btnWidth + 5, dimensions.width - btnWidth - 5),
-              10
-            ),
-            {
-              damping: 15,
-              stiffness: 120,
-              mass: 0.5,
-            }
-          );
           const event = navigation.emit({
             type: "tabPress",
             target: route.key,

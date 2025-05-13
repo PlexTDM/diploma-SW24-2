@@ -1,4 +1,5 @@
 import { RedisService } from "@/services/redis";
+import { Request } from "express";
 
 declare global {
   namespace Express {

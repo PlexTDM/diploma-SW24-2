@@ -61,6 +61,7 @@ function WaterModal({
       transparent={true}
       animationType="slide"
       statusBarTranslucent={true}
+      navigationBarTranslucent={true}
       supportedOrientations={["portrait"]}
     >
       <TouchableWithoutFeedback onPress={() => setVisible(false)}>

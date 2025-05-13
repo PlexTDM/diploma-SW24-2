@@ -14,12 +14,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useAppTheme } from "@/lib/theme";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import WaterModal from "./WaterModal";
 
 export default function Water() {
-  const router = useRouter();
-  const { language } = useLanguage();
   const { theme } = useAppTheme();
   const [componentHeight, setComponentHeight] = useState<number>(0);
 
@@ -39,7 +37,6 @@ export default function Water() {
   useFocusEffect(
     useCallback(() => {
       // start the animation
-      console.log("starting animation");
       animateHeight.value = withTiming(Math.min(currentWater / waterGoal, 1), {
         duration: 300,
         easing: Easing.inOut(Easing.ease),
@@ -71,7 +68,6 @@ export default function Water() {
         cancelAnimation(wave2);
         cancelAnimation(wave3);
         cancelAnimation(wave4);
-        console.log("cancelled");
       };
     }, [currentWater, animateHeight, waterGoal, wave1, wave2, wave3, wave4])
   );

@@ -1,8 +1,7 @@
 import { ThemeView, ThemeText } from "@/components";
-import { useLanguage } from "@/lib/language";
 import { Icon } from "react-native-paper";
 
-import { LayoutChangeEvent, ScrollView, StyleSheet, Text } from "react-native";
+import { LayoutChangeEvent, ScrollView, Text } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LineChart from "@/components/graph/LineChart";
@@ -10,7 +9,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AnimatedText from "@/components/graph/AnimatedText";
 import { useSharedValue } from "react-native-reanimated";
 import { useFont } from "@shopify/react-native-skia";
-import { SystemBars } from "react-native-edge-to-edge";
 import { useAppTheme } from "@/lib/theme";
 
 const data: DataType[] = [
@@ -24,7 +22,6 @@ const data: DataType[] = [
 ];
 
 const LineChartScreen = () => {
-  const { theme } = useAppTheme();
   const CHART_MARGIN = 20;
   const CHART_HEIGHT = 180;
   const [selectedDate, setSelectedDate] = useState<string>("Total");
@@ -46,7 +43,6 @@ const LineChartScreen = () => {
       className="items-center justify-center text-center w-full"
     >
       <SafeAreaView className="bg-white dark:bg-gray-900 text-center">
-        <SystemBars style={"light"} />
         <Text className="text-black dark:text-white">{selectedDate}</Text>
         <AnimatedText selectedValue={selectedValue} font={font} />
         <LineChart
@@ -75,19 +71,37 @@ export default function Tab2() {
 
       <ThemeView className="justify-evenly flex-row mt-8 mb-20">
         <ThemeView className="items-center">
-          <Icon source="heart-outline" size={30} color={theme === "dark" ? "#fff" : "#000"} />
+          <Icon
+            source="heart-outline"
+            size={30}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
           <ThemeText className="text-xl font-semibold mt-2">246 Kcal</ThemeText>
-          <ThemeText className="text-gray-400 dark:text-gray-500">Last 7 days</ThemeText>
+          <ThemeText className="text-gray-400 dark:text-gray-500">
+            Last 7 days
+          </ThemeText>
         </ThemeView>
         <ThemeView className="items-center">
-          <Icon source="fire" size={30} color={theme === "dark" ? "#fff" : "#000"} />
+          <Icon
+            source="fire"
+            size={30}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
           <ThemeText className="text-xl font-semibold mt-2">24k Kcal</ThemeText>
-          <ThemeText className="text-gray-400 dark:text-gray-500">All time</ThemeText>
+          <ThemeText className="text-gray-400 dark:text-gray-500">
+            All time
+          </ThemeText>
         </ThemeView>
         <ThemeView className="items-center">
-          <Icon source="flash" size={30} color={theme === "dark" ? "#fff" : "#000"} />
+          <Icon
+            source="flash"
+            size={30}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
           <ThemeText className="text-xl font-semibold mt-2">246 Kcal</ThemeText>
-          <ThemeText className="text-gray-400 dark:text-gray-500">Avarage</ThemeText>
+          <ThemeText className="text-gray-400 dark:text-gray-500">
+            Avarage
+          </ThemeText>
         </ThemeView>
       </ThemeView>
     </ScrollView>
