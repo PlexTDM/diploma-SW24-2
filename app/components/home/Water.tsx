@@ -16,6 +16,7 @@ import Animated, {
 import { useAppTheme } from "@/lib/theme";
 import { useCallback, useEffect, useState } from "react";
 import WaterModal from "./WaterModal";
+import { Droplets} from "lucide-react-native";
 
 export default function Water() {
   const router = useRouter();
@@ -164,10 +165,7 @@ export default function Water() {
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg ">Water</ThemeText>
           <View className="w-[20px] h-[25px]">
-            <Image
-              source={require("@/assets/icons/waterDrop.svg")}
-              style={{ width: "100%", height: "100%" }}
-            />
+          <Droplets size={25} color={theme === "dark" ? "#fff" : "#000"} />
           </View>
         </View>
 

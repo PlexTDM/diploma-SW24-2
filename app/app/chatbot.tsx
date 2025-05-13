@@ -132,11 +132,11 @@ export default function ChatScreen() {
   }, []);
 
   return (
-    <ThemeView className="flex-1">
+    <ThemeView className="flex-1 pb-12">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
         className="flex-1"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
       >
         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
         <FlatList
@@ -153,7 +153,7 @@ export default function ChatScreen() {
           style={{ paddingBottom: insets.bottom + 8 }}
         >
           <TextInput
-            className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 mr-2 text-gray-900 dark:text-gray-100"
+            className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full px-5 py-5 mr-2 text-gray-900 dark:text-gray-100"
             placeholder="Type a message..."
             placeholderTextColor={theme === "dark" ? "#9CA3AF" : "#6B7280"}
             value={inputText}
