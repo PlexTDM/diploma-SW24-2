@@ -3,8 +3,8 @@ import { Stack } from "expo-router/stack";
 import { use } from "react";
 
 const RootLayout = () => {
-  const { loggedIn } = use(AuthContext);
-  // const loggedIn = true;
+  // const { loggedIn } = use(AuthContext);
+  const loggedIn = true;
   return (
     <Stack
       screenOptions={{
