@@ -59,7 +59,7 @@ export default function Training() {
 
   return (
     <ThemeView className="flex-1 relative">
-      <View className="h-[65%] ">
+      <View className="h-[65%] p-6">
         <Image
           source={require("@/assets/img/lightEffect.jpg")}
           style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]}
@@ -74,7 +74,7 @@ export default function Training() {
         />
 
         {/* Main Content */}
-        <View className="p-6 flex-1">
+        <View className="flex-1">
           {/* Calendar */}
           <View className="p-2">
             <View className="flex-row justify-between mt-8">
@@ -161,7 +161,7 @@ export default function Training() {
                   {languages[language].training.custom}
                 </Text>
               </View>
-              <ChevronRight size={20} color="black" />
+              <ChevronRight size={20} color="white" />
             </Pressable>
           </View>
           {/* Gym Challenge */}
