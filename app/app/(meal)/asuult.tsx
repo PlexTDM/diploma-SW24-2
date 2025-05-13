@@ -41,65 +41,65 @@ const Asuult = () => {
     >
       {/* Progress Bar */}
       <View style={styles.progressBar}>
-  {[0, 1, 2, 3, 4].map((_, i) => (
-    <View
-      key={i}
-      style={{
-        width: 46,
-        height: 8,
-        borderRadius: 8,
-        backgroundColor:
-          i === 0
-            ? isDarkMode
-              ? "#ffffff" // active step in dark mode
-              : "#2c2c2c" // active step in light mode
-            : isDarkMode
-              ? "#2c2c2c" // inactive step in dark mode
-              : "#D1D5DB", // inactive step in light mode
-      }}
-    />
-  ))}
-</View>
-
+        {[0, 1, 2, 3, 4].map((_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 46,
+              height: 8,
+              borderRadius: 8,
+              backgroundColor:
+                i === 0
+                  ? isDarkMode
+                    ? "#ffffff" // active step in dark mode
+                    : "#2c2c2c" // active step in light mode
+                  : isDarkMode
+                  ? "#2c2c2c" // inactive step in dark mode
+                  : "#D1D5DB", // inactive step in light mode
+            }}
+          />
+        ))}
+      </View>
 
       {/* Асуулт */}
-      <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
+      <View
+        style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}
+      >
         <View
-  style={{
-    flexDirection: "row",
-    alignItems: "center", // "flex-start"-ыг "center" болгоно
-    paddingHorizontal: 10,
-    gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
-  }}
->
-  <LottieView
-    source={require("@/assets/icons/gem.json")}
-    autoPlay
-    loop
-    style={{
-      width: 35, // хэмжээг багасгаж
-      height: 35,
-      marginRight: 1, // эсвэл gap оронд хэрэглэж болно
-    }}
-  />
-  <Text
-    style={{
-      fontSize: 24, // багасгаж болно
-      fontWeight: "bold",
-      textAlign: "left",
-      color: textColor,
-      flexShrink: 1,
-    }}
-  >
-    {question1.tanid}
-  </Text>
-</View>
-
-
+          style={{
+            flexDirection: "row",
+            alignItems: "center", // "flex-start"-ыг "center" болгоно
+            paddingHorizontal: 10,
+            gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
+          }}
+        >
+          <LottieView
+            source={require("@/assets/icons/gem.json")}
+            autoPlay
+            loop
+            style={{
+              width: 35, // хэмжээг багасгаж
+              height: 35,
+              marginRight: 1, // эсвэл gap оронд хэрэглэж болно
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 24, // багасгаж болно
+              fontWeight: "bold",
+              textAlign: "left",
+              color: textColor,
+              flexShrink: 1,
+            }}
+          >
+            {question1.tanid}
+          </Text>
+        </View>
       </View>
 
       {/* Сонголтууд */}
       <FlatList
+      showsVerticalScrollIndicator={false}
         data={question1.suun}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
@@ -123,10 +123,15 @@ const Asuult = () => {
             >
               <Text style={{ color: textColor, fontSize: 16 }}>{item}</Text>
               {isSelected && (
-  <Text style={{ color: isDarkMode ? "#ffffff" : "#2c2c2c", fontSize: 20 }}>
-    ✓
-  </Text>
-)}
+                <Text
+                  style={{
+                    color: isDarkMode ? "#ffffff" : "#2c2c2c",
+                    fontSize: 20,
+                  }}
+                >
+                  ✓
+                </Text>
+              )}
             </TouchableOpacity>
           );
         }}
@@ -156,7 +161,9 @@ const Asuult = () => {
             backgroundColor: isDarkMode ? "transparent" : "#FFFFFF",
           }}
         >
-          <Text style={{ color: backButtonColor, fontWeight: "bold", fontSize: 28 }}>
+          <Text
+            style={{ color: backButtonColor, fontWeight: "bold", fontSize: 28 }}
+          >
             {"<"}
           </Text>
         </TouchableOpacity>
@@ -216,20 +223,3 @@ const styles = StyleSheet.create({
 });
 
 export default Asuult;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
