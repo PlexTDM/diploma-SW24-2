@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { SectionTitle } from '@/components/ui/SectionTitle';
+import FortuneCookie from '@/components/home/FortuneCookie';
 
 export default function Tab() {
   const { theme } = useAppTheme();
@@ -17,7 +18,7 @@ export default function Tab() {
   return (
     <ThemeView className="items-center p-8">
 
-      <View className="w-full flex-row items-center justify-between border-b gap-2 border-gray-200 dark:border-gray-800 pb-4">
+      <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
           onPress={() => router.push("/chatbot")}
@@ -45,9 +46,13 @@ export default function Tab() {
           <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
         </View>
       </View>
-
+      <View className="flex-row items-center justify-between w-full">
+        <FortuneCookie />
+      </View>
       <View className="flex-col items-center justify-between mt-6 gap-3 h-[400px]">
+        
         <View className="flex-1 flex-row gap-3">
+          
           <View className="flex-1 gap-3">
             <Steps />
             <Sleep />
