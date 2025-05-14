@@ -14,8 +14,13 @@ import { useAppTheme } from "@/lib/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeView } from "@/components";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAnimatedKeyboard, useAnimatedStyle } from "react-native-reanimated";
-
+import {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { sendMessage } from "@/lib/data";
 interface Message {
   id: string;
   text: string;
@@ -26,13 +31,17 @@ interface Message {
 const MessageBubble = ({ message }: { message: Message }) => {
   const isUser = message.sender === "user";
 
+  const animatedTextStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(isUser ? 1 : 0, { duration: 300 }),
+  }));
+
   return (
     <View
       className={`${
         isUser ? "flex-row-reverse" : "flex-row"
-      } items-center mb-4 justify-start gap-2`}
+      } items-start mb-4 justify-start gap-2`}
     >
-      <View className="w-[12%] aspect-square rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden items-center justify-center">
+      <View className="w-[12%] aspect-square rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
         <Image
           source={
             isUser
@@ -53,13 +62,16 @@ const MessageBubble = ({ message }: { message: Message }) => {
             : "bg-gray-200 dark:bg-gray-800"
         }`}
       >
-        <Text
-          className={`text-base ${
-            isUser ? "text-white" : "text-gray-900 dark:text-gray-100"
-          }`}
-        >
-          {message.text}
-        </Text>
+        {isUser ? (
+          <Text className={`text-base text-white`}>{message.text}</Text>
+        ) : (
+          <Animated.Text
+            className="text-base text-gray-900 dark:text-gray-100"
+            style={animatedTextStyle}
+          >
+            {message.text}
+          </Animated.Text>
+        )}
         <Text
           className={`text-xs mt-1 ${
             isUser ? "text-blue-100" : "text-gray-500 dark:text-gray-400"
@@ -88,44 +100,55 @@ export default function ChatScreen() {
     };
   });
 
-  const sendMessage = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return;
 
-    const newMessage: Message = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       text: inputText.trim(),
       sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    const botMessageId = (Date.now() + 1).toString();
+    const newBotMessage: Message = {
+      id: botMessageId,
+      text: "",
+      sender: "model",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
     setInputText("");
 
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "I'm a helpful assistant. How can I help you today?",
-        sender: "model",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, botResponse]);
-    }, 1000);
+    setMessages((prev) => [...prev, newBotMessage]);
+
+    try {
+      await sendMessage(userMessage.text, (chunk) => {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === botMessageId ? { ...msg, text: msg.text + chunk } : msg
+          )
+        );
+      });
+    } catch (error) {
+      console.error("AI stream error:", error);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === botMessageId
+            ? { ...msg, text: "[Error getting response.]" }
+            : msg
+        )
+      );
+    }
   };
 
   useEffect(() => {
-    // Add initial bot message
     setMessages([
       {
         id: "1",
         text: "Hello! I'm your AI assistant.",
         sender: "model",
-        timestamp: new Date(),
-      },
-      {
-        id: "2",
-        text: "I'm a helpful",
-        sender: "user",
         timestamp: new Date(),
       },
     ]);
@@ -134,9 +157,9 @@ export default function ChatScreen() {
   return (
     <ThemeView className="flex-1 pb-12">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 20}
       >
         {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
         <FlatList
@@ -162,10 +185,10 @@ export default function ChatScreen() {
             numberOfLines={4}
             submitBehavior="blurAndSubmit"
             returnKeyType="send"
-            onSubmitEditing={sendMessage}
+            onSubmitEditing={handleSend}
           />
           <Pressable
-            onPress={sendMessage}
+            onPress={handleSend}
             disabled={!inputText.trim()}
             className={`w-10 h-10 rounded-full items-center justify-center ${
               inputText.trim() ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
