@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { View, Text, ScrollView, Switch } from "react-native";
-import { ThemeView, ThemeText } from "@/components";
+import { View, Text, ScrollView } from "react-native";
+import { ThemeView } from "@/components";
 import { Image, ImageBackground } from "expo-image";
 import { languages, useLanguage } from "@/lib/language";
 import { Share, Bookmark, X, Sun, Star } from "lucide-react-native";
 import { Button } from "react-native-paper";
+import { ThemeText } from "@/components";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -14,6 +14,8 @@ import Animated, {
 import { useAppTheme } from "@/lib/theme";
 
 const IMAGE_HEIGHT = 320;
+import { Switch } from "react-native";
+import { useState } from "react";
 
 function Screen1() {
   const { language } = useLanguage();
@@ -24,7 +26,6 @@ function Screen1() {
   const scrollOffset = useScrollViewOffset(scrollRef);
   const deedHeight = 500;
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((prev) => !prev);
 
   const deedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -197,17 +198,12 @@ function Screen1() {
       <View className="absolute bottom-5 left-5 right-5">
         <Button
           mode="contained"
-          onPress={() => console.log("Start Workout")}
+          onPress={() => console.log("Create New Session")}
           className="rounded-xl"
-          contentStyle={{
-            paddingVertical: 12,
-            backgroundColor: isDark ? "white" : "black",
-          }}
-          labelStyle={{ color: isDark ? "black" : "white" }}
+          contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
         >
-          {languages[language].training.start}
+          Start Workout
         </Button>
-
         <View className="absolute bottom-20 left-5 right-5">
           <Button
             mode="contained"
