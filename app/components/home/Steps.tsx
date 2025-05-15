@@ -12,10 +12,17 @@ import Animated, {
 import { useState } from "react";
 import { Footprints } from "lucide-react-native";
 import StepsModal from "./StepsModal";
+import { usePedometer } from "@/hooks/usePedometer";
 export default function Steps() {
   const { language } = useLanguage();
   const { theme } = useAppTheme();
   const [modalVisible, setModalVisible] = useState(false);
+
+  const { isPedometerAvailable, pastStepCount, currentStepCount } =
+    usePedometer();
+
+  console.log(currentStepCount, pastStepCount, isPedometerAvailable);
+
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
   };
