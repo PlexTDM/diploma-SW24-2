@@ -1,6 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import EventSource from "react-native-sse";
-
 const api = process.env.EXPO_PUBLIC_API_URL as string;
 
 if (!api) {
@@ -105,56 +103,4 @@ export async function logout() {
   } catch (err) {
     console.warn("Failed to notify server of logout", err);
   }
-}
-
-export async function sendMessage(
-  message: string,
-  onChunk: (chunk: string) => void
-) {
-  const accessToken = await AsyncStorage.getItem("accessToken");
-
-  return new Promise((resolve, reject) => {
-    const es = new EventSource(`${api}/chatbot/message`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message }),
-    });
-
-    let result = "";
-
-    es.addEventListener("message", (event) => {
-      if (!event.data) return;
-      if (event.data === "end") {
-        es.close();
-        return resolve(result);
-      }
-      try {
-        const data = JSON.parse(event.data);
-        if (data.text) {
-          result += data.text;
-          onChunk(data.text);
-        }
-      } catch (err) {
-        console.warn("Failed to parse SSE chunk:", event.data, err);
-      }
-    });
-    es.addEventListener("error", (err) => {
-      console.error("Connection error:", err);
-      es.close();
-      reject(err);
-    });
-
-    es.addEventListener("close", () => {
-      es.close();
-      resolve(result);
-    });
-
-    return () => {
-      es.removeAllEventListeners();
-      es.close();
-    };
-  });
 }

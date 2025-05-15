@@ -1,7 +1,5 @@
-// src/controllers/ChatbotController.ts
-import { Request, Response } from "express";
+import { Response } from "express";
 import { chatbotService } from "@/services/chatbot";
-import { AuthenticatedRequest } from "@/types";
 
 class ChatbotController {
   public static async sendMessage(
@@ -36,9 +34,14 @@ class ChatbotController {
     res: Response
   ): Promise<void> {
     try {
-      const { id } = req.user;
-      const history = await chatbotService.getConversationHistory(id);
-      res.json({ history });
+      const id = req.user.id;
+      const history = await req.redis.get(`chatbot-${id}`);
+      if (!history) {
+        const history = await chatbotService.getConversationHistory(id);
+        res.json({ history });
+        await req.redis.set(`chatbot-${id}`, JSON.stringify(history));
+      }
+      res.json({ history: JSON.parse(history) });
     } catch (error: any) {
       console.error("Error in getConversationHistory:", error.message);
       res.status(500).json({ error: "Failed to get conversation history" });
@@ -46,14 +49,13 @@ class ChatbotController {
   }
 
   public static async getRecentConversations(
-    req: Request<{ userId: string }, any, any, { limit?: string }>,
+    req: AuthenticatedRequest,
     res: Response
   ): Promise<void> {
     try {
-      const { userId } = req.params;
-      const limit = parseInt(req.query.limit || "10", 10);
+      const limit = parseInt((req.query.limit as string) || "10", 10);
       const conversations = await chatbotService.getRecentConversations(
-        userId,
+        req.user.id,
         limit
       );
       res.json({ conversations });
@@ -64,12 +66,11 @@ class ChatbotController {
   }
 
   public static async clearConversation(
-    req: Request<{ userId: string }>,
+    req: AuthenticatedRequest,
     res: Response
   ): Promise<void> {
     try {
-      const { userId } = req.params;
-      const messages = await chatbotService.clearConversation(userId);
+      const messages = await chatbotService.clearConversation(req.user.id);
       res.json({ messages });
     } catch (error: any) {
       console.error("Error in clearConversation:", error.message);

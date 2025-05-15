@@ -21,8 +21,6 @@ export default function Steps() {
   const { isPedometerAvailable, pastStepCount, currentStepCount } =
     usePedometer();
 
-  console.log(currentStepCount, pastStepCount, isPedometerAvailable);
-
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
   };
@@ -79,9 +77,15 @@ export default function Steps() {
         </View>
 
         <View>
-          <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
-            {pastStepCount ? pastStepCount : currentStepCount}
-          </Text>
+          {isPedometerAvailable === "granted" ? (
+            <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
+              {pastStepCount ? pastStepCount : currentStepCount}
+            </Text>
+          ) : (
+            <Text className="text-xs text-gray-700 dark:text-gray-200">
+              Allow permission in settings
+            </Text>
+          )}
           <Text className="text-sm font-normal text-slate-400">
             {languages[language].walk.stepsCount}
           </Text>

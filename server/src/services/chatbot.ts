@@ -40,7 +40,7 @@ Restricted topics include:
 - Entertainment and media
 - Personal matters not connected to fitness or health
 
-Please remain focused on fitness and health topics at all times.`;
+Please remain focused on fitness and health topics..`;
   }
 
   async getConversationHistory(userId: string): Promise<IChat["messages"]> {
@@ -123,7 +123,6 @@ Please remain focused on fitness and health topics at all times.`;
 
       for await (const chunk of resultStream.stream) {
         const text = chunk.text();
-        process.stdout.write(text);
         aiMessage += text;
         res.write(`data: ${JSON.stringify({ text })}\n\n`);
       }

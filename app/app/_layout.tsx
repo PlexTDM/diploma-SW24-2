@@ -52,10 +52,10 @@ const RootLayout = () => {
             hidden={true}
           />
 
-          <View className="flex flex-row w-full justify-between">
+          {/* <View className="flex flex-row w-full justify-between">
             <ThemeSwitch />
             <LangSwitch />
-          </View>
+          </View> */}
           <Stack
             screenOptions={{
               headerShown: false,

@@ -9,7 +9,7 @@ import {
 import { login, logout } from "@/lib/data";
 
 type AuthContextType = {
-  user: any;
+  user: User | null;
   loggedIn: boolean;
   loading: boolean;
   login: (email?: string, password?: string) => Promise<void>;
@@ -29,7 +29,7 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
