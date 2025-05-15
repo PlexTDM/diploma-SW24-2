@@ -174,7 +174,7 @@ export default function Tab() {
               : require("@/assets/img/profile.png")
           }
           style={{
-            width: 100,
+            width: 101,
             height: 100,
             marginTop: 20,
           }}

@@ -17,11 +17,10 @@ const XAxisText = ({x, y, text}: Props) => {
   }
 
   const fontSize = font.measureText(text);
-  const color = theme === 'dark' ? '#fff' : '#000';
 
   return (
     <Text
-      color={color}
+      color='#359BFB'
       font={font}
       x={x - fontSize.width / 2}
       y={y}

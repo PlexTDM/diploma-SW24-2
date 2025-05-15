@@ -12,7 +12,6 @@ export default function Tab() {
   return (
     <ScrollView
       className="p-8 dark:bg-gray-900 bg-white flex-1"
-      showsVerticalScrollIndicator={false}
     >
       <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
