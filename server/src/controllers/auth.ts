@@ -47,18 +47,16 @@ class AuthController {
         });
       }
 
-      const { password, email } = req.body;
+      const { password, email } = req?.body;
+      if (!password || !email)
+        return res.status(400).json({ message: "Missing password or email" });
+
       const user = await User.findOne({ email });
-      if (!user) {
-        res.status(404).json({ message: "User not found" });
-        return;
-      }
+      if (!user) return res.status(404).json({ message: "User not found" });
 
       const match = compareSync(password, user.password);
-      if (!match) {
-        res.status(401).json({ message: "Password does not match" });
-        return;
-      }
+      if (!match)
+        return res.status(401).json({ message: "Password does not match" });
 
       const accessToken = generateAccessToken(user);
       const refreshToken = await generateRefreshToken(user);
