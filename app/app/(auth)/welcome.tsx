@@ -25,7 +25,7 @@ export default function LoginOrRegister() {
     if (navigation.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)/home");
+      router.push("/(tabs)");
     }
   };
   useFocusEffect(
