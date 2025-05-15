@@ -12,13 +12,14 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import {  useState } from "react";
 import {Footprints} from "lucide-react-native";
-
+import StepsModal from "./StepsModal";
 export default function Steps() {
   const router = useRouter();
   const { language } = useLanguage();
   const { theme } = useAppTheme();
-
+  const [modalVisible, setModalVisible] = useState(false);
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
   };
@@ -28,7 +29,7 @@ export default function Steps() {
   };
 
   const handlePress = () => {
-    
+    setModalVisible(true);
   };
 
   const pressed = useSharedValue(0);
@@ -55,6 +56,7 @@ export default function Steps() {
       className="dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
       style={animatedStyle}
     >
+      <StepsModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 px-6"
         onPressIn={handlePressIn}

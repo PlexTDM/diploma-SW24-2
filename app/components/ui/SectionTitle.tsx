@@ -11,8 +11,10 @@ export function SectionTitle({ title, colors }: SectionTitleProps) {
   const gradientColors = ['#4f46e5', 'rgba(79, 70, 229, 0)']; // fade into indigo transparent
 
   return (
-    <View style={{ position: 'relative', marginBottom: 16 }}>
-      <Text style={{ fontSize: 18, fontWeight: '600', letterSpacing: -0.5 }}>
+    <View className="relative mb-4"
+>
+      <Text className="text-[18px] font-semibold tracking-[-0.5px] font-quicksand "
+>
         {title}
       </Text>
 
