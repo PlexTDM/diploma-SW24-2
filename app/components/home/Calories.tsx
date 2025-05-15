@@ -3,6 +3,7 @@ import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Image } from "expo-image";
 import Animated, {
   interpolate,
@@ -12,12 +13,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import {Zap} from "lucide-react-native";
-
+import CaloriesModal from "./CaloriesModal";
 export default function Calories() {
   const router = useRouter();
   const { theme } = useAppTheme();
   const { language } = useLanguage();
-
+  const [modalVisible, setModalVisible] = useState(false);
   const pressed = useSharedValue(0);
 
   const handlePressIn = () => {
@@ -29,7 +30,7 @@ export default function Calories() {
   };
 
   const handlePress = () => {
-    
+    setModalVisible(true);
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -55,6 +56,7 @@ export default function Calories() {
       className="dark:bg-gray-900 rounded-[26px] flex-1  bg-white"
       style={animatedStyle}
     >
+      <CaloriesModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 px-6 "
         onPressIn={handlePressIn}

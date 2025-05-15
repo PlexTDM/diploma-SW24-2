@@ -5,11 +5,11 @@ import { languages, useLanguage } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text , ScrollView} from "react-native";
 import { useRouter } from "expo-router";
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import FortuneCookie from '@/components/home/FortuneCookie';
-
+import DailyTasks from "@/components/home/DailyTasks";
 export default function Tab() {
   const { theme } = useAppTheme();
   const { language } = useLanguage();
@@ -17,7 +17,7 @@ export default function Tab() {
 
   return (
     <ThemeView className="items-center p-8">
-
+     <ScrollView>
       <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
@@ -69,14 +69,11 @@ export default function Tab() {
 
       </View>
 
-      <View className="p-4 font-sans">
-
-        <SectionTitle
-          title="Tasks"
-          colors={['#116CFD', 'transparent']}
-        />
-        <Text className="font-quicksand">Hello, world!</Text>
-      </View>
+      <View className="mt-3 w-full">
+        <DailyTasks />
+        </View>
+        
+      </ScrollView>
     </ThemeView>
   );
 }
