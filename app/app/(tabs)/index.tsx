@@ -1,5 +1,4 @@
 import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
-import { ThemeView } from "@/components";
 import Flame from "@/components/icons/Flame";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,7 +10,10 @@ export default function Tab() {
   const router = useRouter();
 
   return (
-    <ScrollView className="p-8 dark:bg-gray-900 bg-white flex-1">
+    <ScrollView
+      className="p-8 dark:bg-gray-900 bg-white flex-1"
+      showsVerticalScrollIndicator={false}
+    >
       <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
