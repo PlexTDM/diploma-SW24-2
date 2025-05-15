@@ -54,13 +54,12 @@ export default function DailyTasks() {
             <View className="space-y-3 gap-3">
                 {tasks.map((task) => {
                     const containerClasses = `
-            p-4 rounded-3xl flex flex-col border-2 transition-all duration-300
+            p-4 rounded-3xl  flex-col border-1 transition-all duration-300
             ${task.completed
-                            ? "border-l-3 border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+                            ? " border-blue-300 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
                             : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
 
           `;
-
                     return (
                         <Pressable
                             key={task.id}
@@ -78,7 +77,7 @@ export default function DailyTasks() {
 
                                     <View className="h-1.5 bg-gray-200 dark:bg-zinc-600 rounded-full mb-2 w-full">
                                         <View
-                                            className={`h-full rounded-full ${task.completed ? "bg-blue-500" : "bg-cyan-300 dark:bg-cyan-400"}`}
+                                            className={`h-full rounded-full ${task.completed ? "bg-blue-500" : "bg-cyan-100 dark:bg-cyan-400"}`}
                                             style={{ width: `${(task.current / task.max) * 100}%` }}
                                         />
                                     </View>
@@ -90,7 +89,7 @@ export default function DailyTasks() {
 
                                 <View className="items-center justify-center">
                                     {task.completed ? (
-                                        <View className="rounded-full bg-blue-100 dark:bg-blue-600/40">
+                                        <View className="rounded-full p-1 bg-blue-100 dark:bg-blue-600/40">
                                             <CheckCircle2
                                                 size={18}
                                                 color={theme === "dark" ? "#5FBFFF" : "#136CF1"}
