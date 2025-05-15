@@ -7,11 +7,13 @@ import {
   Dimensions,
   Pressable,
   useColorScheme,
+  ScrollView
 } from "react-native";
 import moment, { Moment } from "moment";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-
+import { ThemeView , ThemeText} from "@/components";
+import { Image } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
 const Blog = () => {
@@ -37,9 +39,11 @@ const Blog = () => {
   };
 
   return (
+    <ScrollView>
+    <ThemeView className="flex-1">
     <View className="p-6 items-center">
       <View className="flex-row justify-between items-center gap-80">
-        <Text className="font-bold text-2xl">Calories</Text>
+        <ThemeText className="font-bold text-2xl">Calories</ThemeText>
         <Feather name="bell" size={20} color="black" />
       </View>
 
@@ -118,17 +122,27 @@ const Blog = () => {
       </View>
 
       {/* AI Suggestion Box */}
-      <View className="w-full h-[200px] bg-[#FB793C] rounded-3xl mt-6 p-7">
-        <Text className="text-2xl font-bold text-center text-white w-40">
-          Not sure what to eat? Let AI decide for you
-        </Text>
-        <TouchableOpacity
-          className="w-44 h-12 bg-gray-300 rounded-full items-center justify-center mt-6 border border-white"
-          onPress={() => router.push("/mnkv")}
-        >
-          <Text className="font-bold text-black">Take Quiz</Text>
-        </TouchableOpacity>
-      </View>
+        <View className="w-full h-[200px] mt-6 relative rounded-3xl overflow-hidden ">
+          <Image
+            source={require("@/assets/img/foodPoster.png")}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
+
+          {/* Overlay */}
+          <View className="absolute  p-2 justify-center items-center top-6 left-5">
+            <Text className="text-white text-2xl font-bold text-center mb-4 w-44">
+              Not sure what to eat? Let AI decide for you
+            </Text>
+            <TouchableOpacity
+              className="bg-white px-6 py-2 rounded-full items-center justify-center"
+              onPress={() => router.push("/mnkv")}
+            >
+              <Text className="text-black font-semibold w-28 p-1 items-center justify-center">Take Quiz</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
 
       {/* Meals Section */}
       <Text
@@ -139,12 +153,12 @@ const Blog = () => {
         Meals
       </Text>
       <View className="w-full h-24 border border-gray-300 rounded-3xl mt-6 flex-row p-2">
-        <View className="w-20 h-20 border border-gray-300 rounded-full justify-center">
-          <Text
-            className={`text-center ${isDark ? "text-white" : "text-black"}`}
-          >
-            Hool zurag
-          </Text>
+        <View className="w-20 h-20  rounded-full justify-center">
+          <Image
+            source={require("@/assets/food/breakfast.png")}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
         </View>
         <View className="ml-10 justify-center">
           <Text
@@ -163,7 +177,10 @@ const Blog = () => {
           <Feather name="plus" size={32} color="#136CF1" />
         </Pressable>
       </View>
+      
     </View>
+    </ThemeView>
+    </ScrollView>
   );
 };
 
