@@ -1,4 +1,4 @@
-import Calories from "@/app/home/calories";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -170,9 +170,14 @@ export const mn = {
     timeline:"Түүх",
     stats:"Статистик",
     duels:"Өрсөлдөөн",
+  } ,
+  fortune:{
+    title:"",
+    desc:"Таны зорилгоо тодорхойлно",
   }
 };
 
+ 
 export const en = {
 
    question1: {
