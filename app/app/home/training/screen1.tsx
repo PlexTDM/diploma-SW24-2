@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import { ThemeView } from "@/components";
 import { Image, ImageBackground } from "expo-image";
 import { languages, useLanguage } from "@/lib/language";
@@ -12,6 +12,7 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 import { useAppTheme } from "@/lib/theme";
+import { useRouter } from "expo-router";
 
 const IMAGE_HEIGHT = 320;
 import { Switch } from "react-native";
@@ -19,13 +20,15 @@ import { useState } from "react";
 
 function Screen1() {
   const { language } = useLanguage();
-  const {theme} = useAppTheme(); // 'dark' or 'light'
+  const { theme } = useAppTheme();
   const isDark = theme === "dark";
+  const router = useRouter();
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const deedHeight = 500;
   const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const deedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -46,19 +49,17 @@ function Screen1() {
   return (
     <ThemeView className="flex-1 relative pt-[100px]">
       <View className="flex-row items-center gap-3 absolute top-4 right-4 z-10">
-        {[
-          { icon: Share },
-          { icon: Bookmark },
-          { icon: X },
-        ].map(({ icon: Icon }, i) => (
-          <View
-            key={i}
-            className="p-4 rounded-2xl"
-            style={{ backgroundColor: isDark ? "#333" : "#e5e5e5" }}
-          >
-            <Icon size={20} color={isDark ? "white" : "black"} />
-          </View>
-        ))}
+        {[{ icon: Share }, { icon: Bookmark }, { icon: X }].map(
+          ({ icon: Icon }, i) => (
+            <View
+              key={i}
+              className="p-4 rounded-2xl"
+              style={{ backgroundColor: isDark ? "#333" : "#e5e5e5" }}
+            >
+              <Icon size={20} color={isDark ? "white" : "black"} />
+            </View>
+          )
+        )}
       </View>
 
       <Animated.View
@@ -85,11 +86,15 @@ function Screen1() {
             </ThemeText>
             <View className="flex-row items-center mt-4 gap-3">
               <Sun size={15} color="white" />
-              <ThemeText className="text-white font-quicksand">{languages[language].training.dund}</ThemeText>
+              <ThemeText className="text-white font-quicksand">
+                {languages[language].training.dund}
+              </ThemeText>
             </View>
             <View className="flex-row items-center mt-4 gap-3">
               <Star size={15} color="white" />
-              <ThemeText className="text-white font-quicksand">{languages[language].training.str}</ThemeText>
+              <ThemeText className="text-white font-quicksand">
+                {languages[language].training.str}
+              </ThemeText>
             </View>
           </Animated.View>
         </ImageBackground>
@@ -109,12 +114,17 @@ function Screen1() {
               style={{ width: 53, height: 50 }}
             />
             <View>
-              <ThemeText className="text-gray-500 font-quicksand ">{languages[language].training.vid}</ThemeText>
+              <ThemeText className="text-gray-500 font-quicksand ">
+                {languages[language].training.vid}
+              </ThemeText>
               <ThemeText className="font-semibold text-lg">Mnkv</ThemeText>
             </View>
           </View>
 
-          <ThemeText className="mt-10 text-sm" style={{ color: isDark ? "#9ca3af" : "#6b7280" }}>
+          <ThemeText
+            className="mt-10 text-sm"
+            style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
+          >
             {languages[language].training.hog}
           </ThemeText>
 
@@ -122,8 +132,12 @@ function Screen1() {
             className="flex-row items-center py-4 justify-between mt-4 border-b"
             style={{ borderColor: isDark ? "#374151" : "#d1d5db" }}
           >
-            <ThemeText className="font-bold text-lg font-quicksand">{languages[language].training.aud}</ThemeText>
-            <ThemeText className="font-bold text-lg font-quicksand">{languages[language].training.hugjim}</ThemeText>
+            <ThemeText className="font-bold text-lg font-quicksand">
+              {languages[language].training.aud}
+            </ThemeText>
+            <ThemeText className="font-bold text-lg font-quicksand">
+              {languages[language].training.hugjim}
+            </ThemeText>
           </View>
 
           <View className="flex-row items-center mt-14 gap-3">
@@ -147,7 +161,7 @@ function Screen1() {
             className="uppercase mt-14"
             style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
           >
-           {languages[language].training.need}
+            {languages[language].training.need}
           </ThemeText>
 
           <View className="flex-row mt-4 gap-4 font-quicksand">
@@ -196,32 +210,30 @@ function Screen1() {
       </ScrollView>
 
       <View className="absolute bottom-5 left-5 right-5">
-        <Button
-          mode="contained"
-          onPress={() => console.log("Create New Session")}
-          className="rounded-xl"
-          contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
-        >
-          Start Workout
-        </Button>
-        <View className="absolute bottom-20 left-5 right-5">
+        <Pressable onPress={() => router.push("/home/training/screen2")}>
           <Button
             mode="contained"
-            onPress={() => console.log("Adapt Workout")}
             className="rounded-xl"
-            contentStyle={{
-              paddingVertical: 12,
-              backgroundColor: isDark ? "#6b7280" : "gray",
-            }}
-            labelStyle={{ color: "white" }}
+            contentStyle={{ paddingVertical: 12, backgroundColor: "gray" }}
           >
-             {languages[language].training.adapt}
+            Adapt Workout
           </Button>
+        </Pressable>
         </View>
-      </View>
+        <View className="absolute bottom-28 left-5 right-5">
+          <Pressable onPress={() => router.push("/home/training/start")}>
+            <Button
+              mode="contained"
+              className="rounded-xl"
+              contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
+            >
+              Start Workout
+            </Button>
+          </Pressable>
+        </View>
+      
     </ThemeView>
   );
 }
 
 export default Screen1;
-

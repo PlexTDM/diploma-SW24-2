@@ -45,8 +45,11 @@ export default function FeedScreen() {
   return (
     <SafeAreaView className="flex-1">
       <ThemeView className="flex-1 bg-white p-6 pt-0">
+        <Text className="text-2xl font-bold mb-6 text-gray-900 dark:text-white  ">
+          Social
+        </Text>
         <View
-          className={`flex-row w-full justify-start items-center rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${isFocused ? "border-blue-200" : "border-gray-200"
+          className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${isFocused ? "border-blue-200" : "border-gray-200"
             }`}
         >
           <Search size={18} color="#B6B7BC" />
