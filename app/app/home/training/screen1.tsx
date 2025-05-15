@@ -1,63 +1,64 @@
-import { View, Text, ScrollView } from "react-native";
-import { ThemeView } from "@/components";
+import { View, Text, ScrollView, useColorScheme, Switch } from "react-native";
+import { ThemeView, ThemeText } from "@/components";
 import { Image, ImageBackground } from "expo-image";
-import { StyleSheet } from "react-native";
-import { languages, useLanguage } from "@/lib/language";
 import { Share, Bookmark, X, Sun, Star } from "lucide-react-native";
 import { Button } from "react-native-paper";
-import { ThemeText } from "@/components";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
   useScrollViewOffset,
   interpolate,
 } from "react-native-reanimated";
-import { transform } from "@babel/core";
-const IMAGE_HEIGHT = 320;
-import { Switch } from "react-native";
 import { useState } from "react";
+import { languages, useLanguage } from "@/lib/language";
+
+const IMAGE_HEIGHT = 320;
 
 function Screen1() {
   const { language } = useLanguage();
+  const scheme = useColorScheme(); // 'dark' or 'light'
+  const isDark = scheme === "dark";
+
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const deedHeight = 500;
   const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((prev) => !prev);
 
-  const toggleSwitch = () => setIsEnabled((previous) => !previous);
-  const deedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: interpolate(
-            scrollOffset.value,
-            [0, deedHeight / 2, deedHeight],
-            [0, -150, -200]
-          ),
-        },
-      ],
-    };
-  });
+  const deedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: interpolate(
+          scrollOffset.value,
+          [0, deedHeight / 2, deedHeight],
+          [0, -150, -200]
+        ),
+      },
+    ],
+  }));
 
-  const deedContentStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(scrollOffset.value, [0, deedHeight / 2], [1, 0]),
-    };
-  });
+  const deedContentStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(scrollOffset.value, [0, deedHeight / 2], [1, 0]),
+  }));
 
   return (
     <ThemeView className="flex-1 relative pt-[100px]">
       <View className="flex-row items-center gap-3 absolute top-4 right-4 z-10">
-        <View className="p-4 bg-gray-200 rounded-2xl">
-          <Share size={20} color="black" />
-        </View>
-        <View className="p-4 bg-gray-200 rounded-2xl">
-          <Bookmark size={20} color="black" />
-        </View>
-        <View className="p-4 bg-gray-200 rounded-2xl">
-          <X size={20} color="black" />
-        </View>
+        {[
+          { icon: Share },
+          { icon: Bookmark },
+          { icon: X },
+        ].map(({ icon: Icon }, i) => (
+          <View
+            key={i}
+            className="p-4 rounded-2xl"
+            style={{ backgroundColor: isDark ? "#333" : "#e5e5e5" }}
+          >
+            <Icon size={20} color={isDark ? "white" : "black"} />
+          </View>
+        ))}
       </View>
+
       <Animated.View
         style={[deedStyle, { height: IMAGE_HEIGHT }]}
         className="absolute top-0 left-0 right-0 w-full"
@@ -65,12 +66,7 @@ function Screen1() {
         <ImageBackground
           source={require("@/assets/img/lightEffect.jpg")}
           style={{ width: "100%", height: "100%", padding: 12 }}
-          // resizeMode={"cover"}
         >
-          {/* <Animated.Image            source={require("@/assets/img/lightEffect.jpg")}
-            style={[ {width: "100%", height: "100%" }]}
-            resizeMode={"cover"}
-          /> */}
           <Animated.View style={[deedContentStyle]} className="flex-1">
             <View className="flex-row items-center justify-between">
               <View className="p-2 bg-blue-700 rounded-full items-center">
@@ -79,119 +75,150 @@ function Screen1() {
                 </Text>
               </View>
             </View>
-            <ThemeText className="text-5xl font-bold text-white mt-9">
-              74 min
+            <ThemeText className="text-5xl font-bold text-white mt-9 font-quicksand">
+              {languages[language].training.min}
             </ThemeText>
-            <ThemeText className="text-2xl font-semibold text-white mt-1">
-              Back, Hamstrrings, Chest
+            <ThemeText className="text-2xl font-semibold text-white mt-1 font-quicksand">
+              {languages[language].training.bul}
             </ThemeText>
             <View className="flex-row items-center mt-4 gap-3">
               <Sun size={15} color="white" />
-              <ThemeText className="text-white">Medium intensity</ThemeText>
+              <ThemeText className="text-white font-quicksand">{languages[language].training.dund}</ThemeText>
             </View>
             <View className="flex-row items-center mt-4 gap-3">
               <Star size={15} color="white" />
-              <ThemeText className="text-white">Stenrgth</ThemeText>
+              <ThemeText className="text-white font-quicksand">{languages[language].training.str}</ThemeText>
             </View>
           </Animated.View>
         </ImageBackground>
       </Animated.View>
+
       <ScrollView ref={scrollRef} style={{ paddingTop: IMAGE_HEIGHT - 100 }}>
-        <Animated.View className="h-[1200px] bg-white rounded-3xl z-10 p-6">
+        <Animated.View
+          className="rounded-3xl z-10 p-6"
+          style={{
+            backgroundColor: isDark ? "#111827" : "white",
+            minHeight: 1200,
+          }}
+        >
           <View className="flex-row items-center gap-4">
             <Image
               source={require("@/assets/img/duel1.png")}
               style={{ width: 53, height: 50 }}
             />
-            <View className="">
-              <ThemeText className="text-gray-500 ">Video Coach</ThemeText>
+            <View>
+              <ThemeText className="text-gray-500 font-quicksand ">{languages[language].training.vid}</ThemeText>
               <ThemeText className="font-semibold text-lg">Mnkv</ThemeText>
             </View>
           </View>
-          <ThemeText className="text-gray-500 mt-10 text-sm">
-            MUSIC & VOICE
+
+          <ThemeText className="mt-10 text-sm" style={{ color: isDark ? "#9ca3af" : "#6b7280" }}>
+            {languages[language].training.hog}
           </ThemeText>
-          <View className="flex-row items-center py-4 justify-between mt-4 border-b border-gray-300">
-            <ThemeText className="font-bold text-lg ">Audio Settings</ThemeText>
-            <ThemeText className="font-bold text-lg ">Connect Music</ThemeText>
+
+          <View
+            className="flex-row items-center py-4 justify-between mt-4 border-b"
+            style={{ borderColor: isDark ? "#374151" : "#d1d5db" }}
+          >
+            <ThemeText className="font-bold text-lg font-quicksand">{languages[language].training.aud}</ThemeText>
+            <ThemeText className="font-bold text-lg font-quicksand">{languages[language].training.hugjim}</ThemeText>
           </View>
+
           <View className="flex-row items-center mt-14 gap-3">
             <Image
               source={require("@/assets/img/duel2.png")}
               style={{ width: 43, height: 40 }}
             />
-            <ThemeText className="uppercase text-sm font-bold">
-              why this workout?
+            <ThemeText className="uppercase text-sm font-bold font-quicksand">
+              {languages[language].training.dasgal}
             </ThemeText>
           </View>
-          <ThemeText className="text-gray-500 mt-4">
-            Upper body, lower body, and core working together in today's gym
-            session-build serious strength and muscle mass. Each set gets you
-            closer to your muscle gain goal.
+
+          <ThemeText
+            className="mt-4 font-quicksand"
+            style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
+          >
+            {languages[language].training.gejuu}
           </ThemeText>
-          <ThemeText className="uppercase text-gray-500 mt-14">
-            what you'll need
+
+          <ThemeText
+            className="uppercase mt-14"
+            style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
+          >
+           {languages[language].training.need}
           </ThemeText>
-          <View className="flex-row mt-4 gap-4">
-            <View className="py-8 px-4 bg-gray-200 rounded-2xl">
-              <ThemeText className="font-semibold">Dumbbells</ThemeText>
-            </View>
-            <View className="py-8 px-4 bg-gray-200 rounded-2xl">
-              <ThemeText className="font-semibold">
-                Crossover Cable Machine
-              </ThemeText>
-            </View>
+
+          <View className="flex-row mt-4 gap-4 font-quicksand">
+            {["Dumbbells", "Crossover Cable Machine"].map((item, i) => (
+              <View
+                key={i}
+                className="py-8 px-4 rounded-2xl"
+                style={{ backgroundColor: isDark ? "#374151" : "#e5e5e5" }}
+              >
+                <ThemeText className="font-semibold">{item}</ThemeText>
+              </View>
+            ))}
           </View>
-          <ThemeText className="uppercase text-gray-500 mt-14">
-            what you'll do
+
+          <ThemeText
+            className="uppercase mt-14 font-quicksand"
+            style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
+          >
+            {languages[language].training.hiih}
           </ThemeText>
-          <View className="flex-row items-center justify-between mt-4 border-b border-gray-300">
-            <View className="flex-row items-center gap-1 py-4">
-              <ThemeText className="text-2xl font-bold ">Warm-Up</ThemeText>
-              <ThemeText className="text-xl text-purple-400">(+3min)</ThemeText>
+
+          {[
+            { title: "Warm-Up", time: "+3min" },
+            { title: "Cooldown", time: "+5min" },
+          ].map(({ title, time }, i) => (
+            <View
+              key={i}
+              className="flex-row items-center justify-between mt-4 border-b"
+              style={{ borderColor: isDark ? "#374151" : "#d1d5db" }}
+            >
+              <View className="flex-row items-center gap-1 py-4">
+                <ThemeText className="text-2xl font-bold">{title}</ThemeText>
+                <ThemeText className="text-xl text-purple-400">
+                  ({time})
+                </ThemeText>
+              </View>
+              <Switch
+                value={isEnabled}
+                onValueChange={toggleSwitch}
+                thumbColor={isEnabled ? "#2563EB" : "#ccc"}
+                trackColor={{ false: "#ccc", true: "#93c5fd" }}
+              />
             </View>
-            <Switch
-              value={isEnabled}
-              onValueChange={toggleSwitch}
-              thumbColor={isEnabled ? "#2563EB" : "#ccc"}
-              trackColor={{ false: "#ccc", true: "#93c5fd" }}
-            />
-          </View>
-          <View className="flex-row items-center justify-between mt-4 border-b border-gray-300">
-            <View className="flex-row items-center gap-1 py-4">
-              <ThemeText className="text-2xl font-bold ">Cooldown</ThemeText>
-              <ThemeText className="text-xl text-purple-400">(+5min)</ThemeText>
-            </View>
-            <Switch
-              value={isEnabled}
-              onValueChange={toggleSwitch}
-              thumbColor={isEnabled ? "#2563EB" : "#ccc"}
-              trackColor={{ false: "#ccc", true: "#93c5fd" }}
-            />
-          </View>
+          ))}
         </Animated.View>
       </ScrollView>
+
       <View className="absolute bottom-5 left-5 right-5">
         <Button
           mode="contained"
-          onPress={() => console.log("Create New Session")}
+          onPress={() => console.log("Start Workout")}
           className="rounded-xl"
-          contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
+          contentStyle={{
+            paddingVertical: 12,
+            backgroundColor: isDark ? "white" : "black",
+          }}
+          labelStyle={{ color: isDark ? "black" : "white" }}
         >
-          Start Workout
+          {languages[language].training.start}
         </Button>
+
         <View className="absolute bottom-20 left-5 right-5">
           <Button
             mode="contained"
-            onPress={() => console.log("Create New Session")}
+            onPress={() => console.log("Adapt Workout")}
             className="rounded-xl"
             contentStyle={{
               paddingVertical: 12,
-              backgroundColor: "gray",
-              width: "100%",
+              backgroundColor: isDark ? "#6b7280" : "gray",
             }}
+            labelStyle={{ color: "white" }}
           >
-            Adapt Workout
+             {languages[language].training.adapt}
           </Button>
         </View>
       </View>
@@ -200,3 +227,4 @@ function Screen1() {
 }
 
 export default Screen1;
+
