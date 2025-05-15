@@ -20,7 +20,7 @@ const XAxisText = ({x, y, text}: Props) => {
 
   return (
     <Text
-      color='#2447A4'
+      color='#359BFB'
       font={font}
       x={x - fontSize.width / 2}
       y={y}
