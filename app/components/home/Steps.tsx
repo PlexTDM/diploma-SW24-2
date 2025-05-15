@@ -80,7 +80,7 @@ export default function Steps() {
 
         <View>
           <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
-            12,000
+            {pastStepCount ? pastStepCount : currentStepCount}
           </Text>
           <Text className="text-sm font-normal text-slate-400">
             {languages[language].walk.stepsCount}
