@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { CheckCircle2, Circle } from "lucide-react-native";
 import { useColorScheme } from "react-native";
 
@@ -54,15 +54,15 @@ export default function DailyTasks() {
             <View className="space-y-3 gap-3">
                 {tasks.map((task) => {
                     const containerClasses = `
-            w-full p-4 rounded-3xl flex flex-col border transition-all duration-300
+            p-4 rounded-3xl flex flex-col border-2 transition-all duration-300
             ${task.completed
-                        ? "border-l-2 border-blue-400 border border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
-                            : "border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
+                            ? "border-l-3 border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+                            : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
 
           `;
 
                     return (
-                        <TouchableOpacity
+                        <Pressable
                             key={task.id}
                             onPress={() => incrementProgress(task.id)}
                             className={containerClasses}
@@ -72,7 +72,7 @@ export default function DailyTasks() {
                                     <View className="flex-row items-center space-x-2 mb-1 gap-2">
                                         <Text className="text-sm font-semibold text-black dark:text-white">{task.title}</Text>
                                         <Text className="text-xl">{task.icon}</Text>
-                                        
+
                                     </View>
                                     <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{task.target}</Text>
 
@@ -90,10 +90,10 @@ export default function DailyTasks() {
 
                                 <View className="items-center justify-center">
                                     {task.completed ? (
-                                        <View className="rounded-full bg-blue-100 dark:bg-blue-600/40 p-1">
+                                        <View className="rounded-full bg-blue-100 dark:bg-blue-600/40">
                                             <CheckCircle2
                                                 size={18}
-                                                color={theme === "dark" ? "#5FBFFF" : "#136CF1"} 
+                                                color={theme === "dark" ? "#5FBFFF" : "#136CF1"}
                                             />
                                         </View>
                                     ) : (
@@ -102,7 +102,7 @@ export default function DailyTasks() {
                                 </View>
 
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                     );
                 })}
             </View>
