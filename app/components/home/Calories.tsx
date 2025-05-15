@@ -30,7 +30,7 @@ export default function Calories() {
   };
 
   const handlePress = () => {
-    setModalVisible(true);
+    // setModalVisible(true);
   };
 
   const animatedStyle = useAnimatedStyle(() => {
