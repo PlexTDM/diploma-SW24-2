@@ -1,6 +1,8 @@
-import { View, Text, ScrollView, useColorScheme, Switch } from "react-native";
+import { useState } from "react";
+import { View, Text, ScrollView, Switch } from "react-native";
 import { ThemeView, ThemeText } from "@/components";
 import { Image, ImageBackground } from "expo-image";
+import { languages, useLanguage } from "@/lib/language";
 import { Share, Bookmark, X, Sun, Star } from "lucide-react-native";
 import { Button } from "react-native-paper";
 import Animated, {
@@ -9,15 +11,14 @@ import Animated, {
   useScrollViewOffset,
   interpolate,
 } from "react-native-reanimated";
-import { useState } from "react";
-import { languages, useLanguage } from "@/lib/language";
+import { useAppTheme } from "@/lib/theme";
 
 const IMAGE_HEIGHT = 320;
 
 function Screen1() {
   const { language } = useLanguage();
-  const scheme = useColorScheme(); // 'dark' or 'light'
-  const isDark = scheme === "dark";
+  const {theme} = useAppTheme(); // 'dark' or 'light'
+  const isDark = theme === "dark";
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);

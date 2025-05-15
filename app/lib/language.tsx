@@ -1,8 +1,5 @@
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
-
-
 
 export const mn = {
  question1: {
@@ -194,7 +191,10 @@ export const mn = {
     timeline:"Түүх",
     stats:"Статистик",
     duels:"Өрсөлдөөн",
-  } ,
+  },
+  settings: {
+    title: "Тохиргоо",
+  },
   fortune:{
     title:"",
     desc:"Таны зорилгоо тодорхойлно",
@@ -392,6 +392,9 @@ export const en = {
     timeline:"Timeline",
     stats:"Stats",
     duels:"Duels",
+  },
+  settings: {
+    title: "Settings",
   }
 };
 

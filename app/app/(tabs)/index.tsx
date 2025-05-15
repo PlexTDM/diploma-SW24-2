@@ -1,23 +1,18 @@
 import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
-import { ThemeView, ThemeText } from "@/components";
 import Flame from "@/components/icons/Flame";
-import { languages, useLanguage } from "@/lib/language";
-import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, View, Text , ScrollView} from "react-native";
+import { Pressable, View, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { SectionTitle } from '@/components/ui/SectionTitle';
-import FortuneCookie from '@/components/home/FortuneCookie';
+import FortuneCookie from "@/components/home/FortuneCookie";
 import DailyTasks from "@/components/home/DailyTasks";
 export default function Tab() {
-  const { theme } = useAppTheme();
-  const { language } = useLanguage();
   const router = useRouter();
 
   return (
-    <ThemeView className="items-center p-8">
-     <ScrollView>
+    <ScrollView
+      className="p-8 dark:bg-gray-900 bg-white flex-1"
+    >
       <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
@@ -50,9 +45,7 @@ export default function Tab() {
         <FortuneCookie />
       </View>
       <View className="flex-col items-center justify-between mt-6 gap-3 h-[400px]">
-        
         <View className="flex-1 flex-row gap-3">
-          
           <View className="flex-1 gap-3">
             <Steps />
             <Sleep />
@@ -66,14 +59,11 @@ export default function Tab() {
           <Training />
           <Calories />
         </View>
-
       </View>
 
       <View className="mt-3 w-full">
         <DailyTasks />
-        </View>
-        
-      </ScrollView>
-    </ThemeView>
+      </View>
+    </ScrollView>
   );
 }

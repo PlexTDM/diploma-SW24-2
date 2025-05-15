@@ -137,7 +137,7 @@ export default function Tab() {
   const { user } = use(AuthContext);
 
   const handlePfp = () => {
-    // router.push("/settings");
+    router.push("/settings/Edit");
   };
 
   return (
@@ -174,7 +174,7 @@ export default function Tab() {
               : require("@/assets/img/profile.png")
           }
           style={{
-            width: 100,
+            width: 101,
             height: 100,
             marginTop: 20,
           }}
@@ -182,6 +182,7 @@ export default function Tab() {
       </Pressable>
       <ThemeText className="text-2xl font-bold mt-2">
         {user?.username}
+        {/* Gerelt-Od */}
       </ThemeText>
       <View className="flex-row items-center justify-between w-1/2 my-4">
         <View className="items-center">
