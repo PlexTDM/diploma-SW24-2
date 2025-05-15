@@ -1,4 +1,4 @@
-import { View, Pressable, Switch } from "react-native";
+import { View, Pressable, Switch, SafeAreaView } from "react-native";
 import { use, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { ThemeView, ThemeText } from "@/components";
@@ -27,7 +27,7 @@ export default function Settings() {
   };
 
   return (
-    <ThemeView className="pt-4 px-8 flex-1">
+    <ThemeView className="pt-8 px-8 flex-1">
       <View className="flex-row items-center justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
           <Button mode="text" rippleColor="#ddd" onPress={handleBack}>

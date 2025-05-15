@@ -17,7 +17,7 @@ export default function Tab() {
 
   return (
     <ThemeView className="items-center p-8">
-     <ScrollView>
+     <ScrollView showsVerticalScrollIndicator={false}>
       <View className="w-full flex-row items-center justify-between  gap-2  pb-4">
         <Pressable
           android_ripple={{ color: "white", radius: 20 }}
