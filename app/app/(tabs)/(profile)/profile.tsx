@@ -141,7 +141,7 @@ export default function Tab() {
   };
 
   return (
-    <ThemeView className="items-center justify-center pt-0">
+    <ThemeView className="items-center justify-center pt-8">
       <View className="flex-row items-center px-6 justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
           <Button mode="text" rippleColor="#ddd" onPress={handleBack}>

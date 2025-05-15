@@ -37,6 +37,7 @@ export default function TabLayout() {
           options={{
             tabBarLabel: "stats",
             lazy: false,
+            animation:'fade'
           }}
         />
         <Tabs.Screen

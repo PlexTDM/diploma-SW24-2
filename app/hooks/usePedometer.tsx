@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+  import { useState, useEffect } from "react";
 import { Pedometer } from "expo-sensors";
 import { Platform } from "react-native";
 

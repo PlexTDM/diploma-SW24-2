@@ -5,6 +5,7 @@ import { Heart, MessageCircle, Bookmark } from 'lucide-react-native';
 import { useBlogStore, Post } from '@/stores/blogStore';
 import Animated, { useAnimatedStyle, withSequence, withTiming, useSharedValue } from 'react-native-reanimated';
 import Text from "@/components/FonttoiText";
+import ThemeView from './ui/ThemeView';
 
 interface PostCardProps {
   post: Post;
@@ -37,9 +38,10 @@ export default function PostCard({ post }: PostCardProps) {
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), { addSuffix: true });
 
   return (
+    <ThemeView className='flex-1'>
     <Pressable
       onPress={navigateToDetail}
-      className="border border-gray-300 dark:border-gray-700 p-6 rounded-3xl mb-5 bg-white dark:bg-black"
+      className="border border-gray-300 dark:border-gray-700 p-6 rounded-3xl mb-5 bg-white dark:bg-gray-800/40"
       accessibilityLabel={`Open post titled ${post.title}`}
     >
       {/* Author */}
@@ -79,7 +81,7 @@ export default function PostCard({ post }: PostCardProps) {
       )}
 
       {/* Actions */}
-      <View className="flex-row gap-10 items-center">
+      <View className="flex-row gap-10 items-center  mt-3">
         <Pressable
           className="flex-row items-center"
           onPress={handleLike}
@@ -88,8 +90,8 @@ export default function PostCard({ post }: PostCardProps) {
           <Animated.View style={animatedStyle}>
             <Heart
               size={20}
-              color={isLiked ? "#FF7256" : "#6B7280"}
-              fill={isLiked ? "#FF7256" : "transparent"}
+                color={isLiked ? "#E9509F" : "#6B7280"}
+                fill={isLiked ? "#E9509F" : "transparent"}
             />
           </Animated.View>
           <Text className="ml-1 text-neutral-600 dark:text-gray-300">
@@ -102,7 +104,7 @@ export default function PostCard({ post }: PostCardProps) {
           onPress={navigateToDetail}
           accessibilityLabel="View comments"
         >
-          <MessageCircle size={20} color="#6B7280" />
+            <MessageCircle size={20} color="#20FFB8" />
           <Text className="ml-1 text-neutral-600 dark:text-gray-300">
             {post.comments.length}
           </Text>
@@ -117,5 +119,6 @@ export default function PostCard({ post }: PostCardProps) {
         </Pressable>
       </View>
     </Pressable>
+    </ThemeView>
   );
 }

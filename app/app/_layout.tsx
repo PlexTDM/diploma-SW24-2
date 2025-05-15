@@ -66,14 +66,16 @@ const RootLayout = () => {
           >
             <Stack.Screen
               name="(tabs)"
-              // options={{ animation: "flip", presentation: "modal" }}
+              options={{ animation: "default", presentation: "card" }}
             />
             <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(meal)" />
             <Stack.Screen
               name="home"
               options={{ animation: "default", presentation: "card" }}
             />
             <Stack.Screen name="chatbot" />
+            <Stack.Screen name="mnkv" options={{animation:'default', presentation:'card'}} />
           </Stack>
         </Providers>
       </ThemeProvider>

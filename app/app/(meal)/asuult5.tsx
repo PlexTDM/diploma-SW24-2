@@ -34,7 +34,7 @@ const Asuult5 = () => {
     }, 1000);
 
     const timer = setTimeout(() => {
-      router.push("/stats");
+      router.replace("/(tabs)/stats");
     }, 6000);
 
     return () => {

@@ -270,7 +270,6 @@ export default function Screen1() {
       <View className="absolute bottom-5 left-5 right-5">
         <Button
           mode="contained"
-          onPress={() => console.log("Create New Session")}
           className="rounded-xl"
           contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
         >
