@@ -61,10 +61,10 @@ const LineChartScreen = () => {
 export default function Tab2() {
   const { theme } = useAppTheme();
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false} className="pt-8">
       <LineChartScreen />
 
-      <ThemeView className="items-center justify-between flex-row">
+      <ThemeView className="items-center justify-between flex-row mt-8">
         <ThemeText className="text-xl font-semibold">Active Calories</ThemeText>
         <ThemeText className="text-xl font-semibold">7 days</ThemeText>
       </ThemeView>
