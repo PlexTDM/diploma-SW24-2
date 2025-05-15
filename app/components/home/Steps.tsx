@@ -2,9 +2,6 @@ import { useLanguage, languages } from "@/lib/language";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
-import { useRouter } from "expo-router";
-import { Image } from "expo-image";
-import React from "react";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -12,11 +9,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {  useState } from "react";
-import {Footprints} from "lucide-react-native";
+import { useState } from "react";
+import { Footprints } from "lucide-react-native";
 import StepsModal from "./StepsModal";
 export default function Steps() {
-  const router = useRouter();
   const { language } = useLanguage();
   const { theme } = useAppTheme();
   const [modalVisible, setModalVisible] = useState(false);

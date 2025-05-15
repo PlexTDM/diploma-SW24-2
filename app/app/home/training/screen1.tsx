@@ -1,21 +1,17 @@
-import { View, Text, ScrollView } from "react-native";
-import { ThemeView } from "@/components";
+import { useState } from "react";
+import { View, Text, ScrollView, Switch } from "react-native";
+import { ThemeView, ThemeText } from "@/components";
 import { Image, ImageBackground } from "expo-image";
-import { StyleSheet } from "react-native";
 import { languages, useLanguage } from "@/lib/language";
 import { Share, Bookmark, X, Sun, Star } from "lucide-react-native";
 import { Button } from "react-native-paper";
-import { ThemeText } from "@/components";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
   useScrollViewOffset,
   interpolate,
 } from "react-native-reanimated";
-import { transform } from "@babel/core";
 const IMAGE_HEIGHT = 320;
-import { Switch } from "react-native";
-import { useState } from "react";
 
 function Screen1() {
   const { language } = useLanguage();
@@ -125,12 +121,12 @@ function Screen1() {
             </ThemeText>
           </View>
           <ThemeText className="text-gray-500 mt-4">
-            Upper body, lower body, and core working together in today's gym
-            session-build serious strength and muscle mass. Each set gets you
-            closer to your muscle gain goal.
+            Upper body, lower body, and core working together in today&apos;s
+            gym session-build serious strength and muscle mass. Each set gets
+            you closer to your muscle gain goal.
           </ThemeText>
           <ThemeText className="uppercase text-gray-500 mt-14">
-            what you'll need
+            what you&apos;ll need
           </ThemeText>
           <View className="flex-row mt-4 gap-4">
             <View className="py-8 px-4 bg-gray-200 rounded-2xl">
@@ -143,7 +139,7 @@ function Screen1() {
             </View>
           </View>
           <ThemeText className="uppercase text-gray-500 mt-14">
-            what you'll do
+            what you&apos;ll do
           </ThemeText>
           <View className="flex-row items-center justify-between mt-4 border-b border-gray-300">
             <View className="flex-row items-center gap-1 py-4">
