@@ -1,16 +1,11 @@
 import { ThemeView } from '@/components'
-import React from 'react'
-import { View } from 'react-native'
-import { Text } from 'react-native'
-import { TextInput } from 'react-native'
-import { Pressable } from 'react-native'
-import { ScrollView } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, TextInput, Pressable, ScrollView, Image } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
 import { Feather } from '@expo/vector-icons'
 
-export default function create() {
+export default function Create() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -20,12 +15,12 @@ export default function create() {
   const handleSubmit = () => {
     if (!title.trim() || !content.trim()) return;
 
-    
-    
-    router.replace('/(tabs)');
+    // Та энд өгөгдлөө хадгалах logic нэмж болно.
+    router.replace('/(tabs)/blogs');
   };
 
   const isSubmitDisabled = !title.trim() || !content.trim();
+
   return (
     <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
       <View className="flex-row items-center justify-between p-4 border-b border-neutral-100">
@@ -36,7 +31,8 @@ export default function create() {
         <Pressable 
           className={`py-2 px-4 rounded-full ${isSubmitDisabled ? 'bg-neutral-200' : 'bg-primary-500'}`}
           onPress={handleSubmit}
-          disabled={isSubmitDisabled}>
+          disabled={isSubmitDisabled}
+        >
           <Text className={`${isSubmitDisabled ? 'text-neutral-500' : 'text-black'} font-medium`}>Post</Text>
         </Pressable>
       </View>
@@ -63,10 +59,17 @@ export default function create() {
         />
         
         {imageUrl ? (
-          <View className="mt-4 rounded-lg overflow-hidden">
+          <View className="mt-4 rounded-lg overflow-hidden relative">
+            <Image
+              source={{ uri: imageUrl }}
+              className="w-full h-48 rounded-lg"
+              resizeMode="cover"
+            />
             <Pressable 
               className="absolute top-2 right-2 bg-black/50 rounded-full p-1"
-              onPress={() => setImageUrl('')}>
+              onPress={() => setImageUrl('')}
+            >
+              <Feather name="x" size={20} color="white" />
             </Pressable>
           </View>
         ) : (
@@ -74,7 +77,8 @@ export default function create() {
             className="mt-4 border-2 border-dashed border-neutral-300 rounded-lg p-6 items-center"
             onPress={() => {
               setImageUrl('https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
-            }}>
+            }}
+          >
             <Feather name="plus" size={32} color="#9CA3AF" />
             <Text className="mt-2 text-neutral-500">Add an image</Text>
             <Text className="text-xs text-neutral-400 mt-1">
@@ -84,5 +88,5 @@ export default function create() {
         )}
       </ScrollView>
     </View>
-  )
+  );
 }
