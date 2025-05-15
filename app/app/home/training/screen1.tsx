@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import { ThemeView } from "@/components";
 import { Image, ImageBackground } from "expo-image";
 import { StyleSheet } from "react-native";
@@ -16,6 +16,7 @@ import { transform } from "@babel/core";
 const IMAGE_HEIGHT = 320;
 import { Switch } from "react-native";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 
 function Screen1() {
   const { language } = useLanguage();
@@ -23,6 +24,7 @@ function Screen1() {
   const scrollOffset = useScrollViewOffset(scrollRef);
   const deedHeight = 500;
   const [isEnabled, setIsEnabled] = useState(false);
+  const router = useRouter();
 
   const toggleSwitch = () => setIsEnabled((previous) => !previous);
   const deedStyle = useAnimatedStyle(() => {
@@ -172,14 +174,15 @@ function Screen1() {
         </Animated.View>
       </ScrollView>
       <View className="absolute bottom-5 left-5 right-5">
-        <Button
-          mode="contained"
-          onPress={() => console.log("Create New Session")}
-          className="rounded-xl"
-          contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
-        >
-          Start Workout
-        </Button>
+        <Pressable onPress={() => router.push("/home/training/start")}>
+          <Button
+            mode="contained"
+            className="rounded-xl"
+            contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
+          >
+            Start Workout
+          </Button>
+        </Pressable>
         <View className="absolute bottom-20 left-5 right-5">
           <Button
             mode="contained"
