@@ -34,7 +34,7 @@ export default function Settings() {
   };
 
   return (
-    <ThemeView className="pt-8 px-8 flex-1">
+    <ThemeView className="pt-8 px-10 flex-1">
       <View className="flex-row items-center justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
           <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
@@ -158,7 +158,6 @@ export default function Settings() {
        {/* Language */}
       <Pressable
         className="flex-row mt-8 items-center justify-between"
-        onPress={() => router.push("/settings/Language")}
       >
         <View className="flex-row items-center gap-8">
           <View className="bg-blue-50 dark:bg-gray-800 p-4 rounded-full">
