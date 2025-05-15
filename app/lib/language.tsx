@@ -162,6 +162,13 @@ export const mn = {
     special: "Зөвхөн танд зориулсан",
     custom: "Өөрийн дасгал",
     get: "Өөрийн Зорилгоо Тодорхойлох",
+    custom1: "Ямар дасгал хийхийг хүсэж байна вэ?",
+    location: "Байршил",
+    wtype: "Дасгалын Төрөл",
+    time: "Хугацаа",
+    muscle: "Булчин сонгох",
+    muscle1: "Дасгалынхаа голчлон ажиллуулах булчинг сонгоно уу. Бусад булчингууд мөн тодорхой хэмжээгээр ажиллах боломжтой",
+    inten: "Дасгалын эрчим"
   },
   profile1:{
     title:"Таны мэдээлэл",
@@ -336,6 +343,13 @@ export const en = {
     special: "Special for you",
     custom: "Custom workout",
     get: "Get a Strength Goal",
+    custom1: "What would you like to do in our session?",
+    location: "Location",
+    wtype: "Workout Type",
+    time: "Time",
+    muscle: "Muscle Focus",
+    muscle1: "Pick your workout's maiin muscles. It may include a few more. ",
+    inten: "Intensity",
   },
   profile1:{
     title:"Your Profile",
