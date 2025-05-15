@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { CheckCircle2, Circle } from "lucide-react-native";
+import { useColorScheme } from "react-native";
 
 type Task = {
     id: number;
@@ -25,7 +26,7 @@ const initialTasks: Task[] = [
 
 export default function DailyTasks() {
     const [tasks, setTasks] = useState(initialTasks);
-
+    const theme = useColorScheme();
     const incrementProgress = (id: number) => {
         setTasks((prev) =>
             prev.map((task) => {
@@ -45,54 +46,65 @@ export default function DailyTasks() {
         <View className="px-4 mt-6">
             <View className="flex-row justify-between mb-4">
                 <Text className="text-xl font-bold">Today's Tasks</Text>
-                <Text className="text-sm text-gray-500">
+                <Text className="text-sm text-gray-500 dark:text-gray-400">
                     {completedCount}/{tasks.length} completed
                 </Text>
             </View>
 
-            <View className="space-y-3">
-                {tasks.map((task) => (
-                    <TouchableOpacity
-                        key={task.id}
-                        onPress={() => incrementProgress(task.id)}
-                        className={`
-              w-full p-4 rounded-xl relative
-              ${task.completed ? "bg-green-50 border-l-4 border-green-500" : "bg-white border border-gray-200"}
-            `}
-                    >
-                        <View className="flex-row items-center justify-between">
-                            <View>
-                                <View className="flex-row items-center space-x-2 mb-1">
-                                    <Text className="text-xl">{task.icon}</Text>
-                                    <Text className="text-sm font-semibold">{task.title}</Text>
-                                </View>
-                                <Text className="text-xs text-gray-500 mb-2">{task.target}</Text>
+            <View className="space-y-3 gap-3">
+                {tasks.map((task) => {
+                    const containerClasses = `
+            w-full p-4 rounded-3xl flex flex-col border transition-all duration-300
+            ${task.completed
+                        ? "border-l-2 border-blue-400 border border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+                            : "border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
 
-                                <View className="h-1.5 bg-gray-200 rounded-full mb-2 w-full">
-                                    <View
-                                        className={`h-full rounded-full ${task.completed ? "bg-green-500" : "bg-blue-400"
-                                            }`}
-                                        style={{ width: `${(task.current / task.max) * 100}%` }}
-                                    />
-                                </View>
+          `;
 
-                                <Text className="text-xs text-gray-500">
-                                    {task.current}/{task.max} {task.unit}
-                                </Text>
-                            </View>
-
-                            <View className="items-center justify-center">
-                                {task.completed ? (
-                                    <View className="rounded-full bg-green-100 p-1">
-                                        <CheckCircle2 size={18} color="#22c55e" />
+                    return (
+                        <TouchableOpacity
+                            key={task.id}
+                            onPress={() => incrementProgress(task.id)}
+                            className={containerClasses}
+                        >
+                            <View className="flex-row items-center justify-between">
+                                <View>
+                                    <View className="flex-row items-center space-x-2 mb-1 gap-2">
+                                        <Text className="text-sm font-semibold text-black dark:text-white">{task.title}</Text>
+                                        <Text className="text-xl">{task.icon}</Text>
+                                        
                                     </View>
-                                ) : (
-                                    <Circle size={18} color="#d1d5db" />
-                                )}
+                                    <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{task.target}</Text>
+
+                                    <View className="h-1.5 bg-gray-200 dark:bg-zinc-600 rounded-full mb-2 w-full">
+                                        <View
+                                            className={`h-full rounded-full ${task.completed ? "bg-blue-500" : "bg-cyan-300 dark:bg-cyan-400"}`}
+                                            style={{ width: `${(task.current / task.max) * 100}%` }}
+                                        />
+                                    </View>
+
+                                    <Text className="text-xs text-gray-500 dark:text-gray-400">
+                                        {task.current}/{task.max} {task.unit}
+                                    </Text>
+                                </View>
+
+                                <View className="items-center justify-center">
+                                    {task.completed ? (
+                                        <View className="rounded-full bg-blue-100 dark:bg-blue-600/40 p-1">
+                                            <CheckCircle2
+                                                size={18}
+                                                color={theme === "dark" ? "#5FBFFF" : "#136CF1"} 
+                                            />
+                                        </View>
+                                    ) : (
+                                        <Circle size={18} color="#d1d5db" />
+                                    )}
+                                </View>
+
                             </View>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
         </View>
     );
