@@ -59,9 +59,9 @@ export default function Tab3() {
 
         {/* Steps */}
         <View className="flex-row justify-center space-x-1">
-          <ThemeText className="font-bold text-xl text-[#E9509F]">
+          <Text className="font-bold text-xl text-[#E9509F]">
             {yourSteps}
-          </ThemeText>
+          </Text>
           <ThemeText className="text-lg text-gray-500 mx-2">vs</ThemeText>
           <Text className="font-bold text-xl text-blue-500">
             {alexSteps}

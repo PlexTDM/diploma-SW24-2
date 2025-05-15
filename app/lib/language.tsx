@@ -1,8 +1,5 @@
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
-
-
 
 export const mn = {
  question1: {
@@ -168,7 +165,24 @@ export const mn = {
     time: "Хугацаа",
     muscle: "Булчин сонгох",
     muscle1: "Дасгалынхаа голчлон ажиллуулах булчинг сонгоно уу. Бусад булчингууд мөн тодорхой хэмжээгээр ажиллах боломжтой",
-    inten: "Дасгалын эрчим"
+    inten: "Дасгалын эрчим",
+    min: "74 мин",
+    bul:"Нуруу, Гуя, Цээж",
+    dund:"дунд зэргийн ачаалалтай",
+    str:"хүчний дасгал",
+    vid:"Видео дасгалжуулагч",
+    hog:"Хөгжим & Дуу хоолой",
+    aud:"Дууны тохиргоо",
+    hugjim:"Хөгжим холбох",
+    dasgal:"Яагаад энэ дасгал?",
+    gejuu:"Дээд бие, доод бие, болон гол булчингуудыг хамтад нь ажиллуулах өнөөдрийн бэлтгэл – жинхэнэ хүч болон булчингийн масс бий болгоно. Хийх бүр сет таны булчин нэмэгдүүлэх зорилгод нэг алхмаар ойртуулна.",
+    need:"Танд хэрэгтэй зүйлс",
+    hiih:"Та юу хийх вэ",
+    adapt:"Дасгалыг тохируулах",
+    start:"Дасгалаа эхлэе",
+    comp:"2 дасгалыг бүрэн гүйцэтгэ",
+    urid:"Урьдчилсан хүчний оноо: 350–650",
+      nerrr:"Дасгалын нэр",
   },
   profile1:{
     title:"Таны мэдээлэл",
@@ -177,7 +191,10 @@ export const mn = {
     timeline:"Түүх",
     stats:"Статистик",
     duels:"Өрсөлдөөн",
-  } ,
+  },
+  settings: {
+    title: "Тохиргоо",
+  },
   fortune:{
     title:"",
     desc:"Таны зорилгоо тодорхойлно",
@@ -350,6 +367,23 @@ export const en = {
     muscle: "Muscle Focus",
     muscle1: "Pick your workout's maiin muscles. It may include a few more. ",
     inten: "Intensity",
+    min: "74 min",
+    bul:"Back, Hamstrings, Chest",
+    dund:"Medium intensity",
+    str:"Strength",
+    vid:"Video Coach",
+    hog:"MUSIC & VOICE",
+    aud:"Audio Settings",
+    hugjim:"Connect Music",
+    dasgal:"Why this workout?",
+    gejuu:"Upper body, lower body, and core working together in today's gym session—build serious strength and muscle mass. Each set gets you closer to your muscle gain goal.",
+    need:"What you'll need",
+    hiih:"what you'll do",
+    adapt:"Adapt Workout",
+    start:"Start Workout",
+    comp:"Complete 2 gym workouts",
+     urid:"Preliminary Strength Score: 350-650",
+     nerrr:"Workout Name",
   },
   profile1:{
     title:"Your Profile",
@@ -358,6 +392,9 @@ export const en = {
     timeline:"Timeline",
     stats:"Stats",
     duels:"Duels",
+  },
+  settings: {
+    title: "Settings",
   }
 };
 

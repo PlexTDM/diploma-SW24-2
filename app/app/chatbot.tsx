@@ -17,10 +17,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useAnimatedKeyboard,
   useAnimatedStyle,
-  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { sendMessage } from "@/lib/data";
+import CameraTracking from "@/components/cameraTracking";
 interface Message {
   id: string;
   text: string;
@@ -156,60 +156,62 @@ export default function ChatScreen() {
 
   return (
     <ThemeView className="flex-1 pb-12">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 20}
-      >
-        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-        <FlatList
-          data={messages}
-          renderItem={({ item }) => (
-            <MessageBubble key={item.id} message={item} />
-          )}
-          className="flex-1 px-4 py-8"
-        />
-
-        {/* meow input */}
-        <View
-          className="flex-row items-center px-4 py-2 border-t border-gray-200 dark:border-gray-800"
-          style={{ paddingBottom: insets.bottom + 8 }}
-        >
-          <TextInput
-            className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full px-5 py-5 mr-2 text-gray-900 dark:text-gray-100"
-            placeholder="Type a message..."
-            placeholderTextColor={theme === "dark" ? "#9CA3AF" : "#6B7280"}
-            value={inputText}
-            onChangeText={setInputText}
-            multiline
-            numberOfLines={4}
-            submitBehavior="blurAndSubmit"
-            returnKeyType="send"
-            onSubmitEditing={handleSend}
-          />
-          <Pressable
-            onPress={handleSend}
-            disabled={!inputText.trim()}
-            className={`w-10 h-10 rounded-full items-center justify-center ${
-              inputText.trim() ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
-            }`}
-          >
-            <Ionicons
-              name="send"
-              size={20}
-              color={
-                inputText.trim()
-                  ? "white"
-                  : theme === "dark"
-                  ? "#9CA3AF"
-                  : "#6B7280"
-              }
-            />
-          </Pressable>
-        </View>
-        {/* </TouchableWithoutFeedback> */}
-        <Animated.View style={translateStyle} />
-      </KeyboardAvoidingView>
+      <CameraTracking />
     </ThemeView>
   );
 }
+
+// <KeyboardAvoidingView
+//   behavior={Platform.OS === "ios" ? "padding" : "height"}
+//   className="flex-1"
+//   keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 20}
+// >
+//   {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+//   <FlatList
+//     data={messages}
+//     renderItem={({ item }) => (
+//       <MessageBubble key={item.id} message={item} />
+//     )}
+//     className="flex-1 px-4 py-8"
+//   />
+
+//   {/* meow input */}
+//   <View
+//     className="flex-row items-center px-4 py-2 border-t border-gray-200 dark:border-gray-800"
+//     style={{ paddingBottom: insets.bottom + 8 }}
+//   >
+//     <TextInput
+//       className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full px-5 py-5 mr-2 text-gray-900 dark:text-gray-100"
+//       placeholder="Type a message..."
+//       placeholderTextColor={theme === "dark" ? "#9CA3AF" : "#6B7280"}
+//       value={inputText}
+//       onChangeText={setInputText}
+//       multiline
+//       numberOfLines={4}
+//       submitBehavior="blurAndSubmit"
+//       returnKeyType="send"
+//       onSubmitEditing={handleSend}
+//     />
+//     <Pressable
+//       onPress={handleSend}
+//       disabled={!inputText.trim()}
+//       className={`w-10 h-10 rounded-full items-center justify-center ${
+//         inputText.trim() ? "bg-blue-500" : "bg-gray-300 dark:bg-gray-700"
+//       }`}
+//     >
+//       <Ionicons
+//         name="send"
+//         size={20}
+//         color={
+//           inputText.trim()
+//             ? "white"
+//             : theme === "dark"
+//             ? "#9CA3AF"
+//             : "#6B7280"
+//         }
+//       />
+//     </Pressable>
+//   </View>
+//   {/* </TouchableWithoutFeedback> */}
+//   <Animated.View style={translateStyle} />
+// </KeyboardAvoidingView>;

@@ -2,9 +2,6 @@ import { useLanguage, languages } from "@/lib/language";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
-import { useRouter } from "expo-router";
-import { Image } from "expo-image";
-import React from "react";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -12,12 +9,19 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {Footprints} from "lucide-react-native";
-
+import { useState } from "react";
+import { Footprints } from "lucide-react-native";
+import StepsModal from "./StepsModal";
+import { usePedometer } from "@/hooks/usePedometer";
 export default function Steps() {
-  const router = useRouter();
   const { language } = useLanguage();
   const { theme } = useAppTheme();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { isPedometerAvailable, pastStepCount, currentStepCount } =
+    usePedometer();
+
+  console.log(currentStepCount, pastStepCount, isPedometerAvailable);
 
   const handlePressIn = () => {
     pressed.value = withTiming(1, { duration: 150 });
@@ -28,7 +32,7 @@ export default function Steps() {
   };
 
   const handlePress = () => {
-    
+    setModalVisible(true);
   };
 
   const pressed = useSharedValue(0);
@@ -55,6 +59,7 @@ export default function Steps() {
       className="dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
       style={animatedStyle}
     >
+      <StepsModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 px-6"
         onPressIn={handlePressIn}
@@ -75,7 +80,7 @@ export default function Steps() {
 
         <View>
           <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold">
-            12,000
+            {pastStepCount ? pastStepCount : currentStepCount}
           </Text>
           <Text className="text-sm font-normal text-slate-400">
             {languages[language].walk.stepsCount}

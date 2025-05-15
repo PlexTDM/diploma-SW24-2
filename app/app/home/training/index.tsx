@@ -130,7 +130,7 @@ export default function Training() {
                 75 min
               </Text>
               <Text className=" text-base text-black">
-                Dasgaliin ner
+                 {languages[language].training.nerrr}
               </Text>
 
               <View className="flex-row mt-6 gap-2">
@@ -177,7 +177,7 @@ export default function Training() {
                     {languages[language].training.get}
                   </ThemeText>
                   <ThemeText className="text-sm">
-                    Complete 2 gym workouts
+                    {languages[language].training.comp}
                   </ThemeText>
                 </View>
               </View>
@@ -195,7 +195,7 @@ export default function Training() {
               </View>
             </View>
             <ThemeText className="mt-3">
-              Preliminary Strength Score: 350-650
+              {languages[language].training.urid}
             </ThemeText>
           </Pressable>
         </View>
