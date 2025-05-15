@@ -31,9 +31,9 @@ export default function Sleep() {
   };
 
   const handlePress = () => {
-    // router.push("/home/water");
-    setModalVisible(true);
-    // setCurrentWater((p) => Math.max(p + 500));
+   
+    // setModalVisible(true);
+   
   };
 
   const animatedStyle = useAnimatedStyle(() => {

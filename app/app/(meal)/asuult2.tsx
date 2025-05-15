@@ -41,7 +41,7 @@ const Asuult2 = () => {
     >
       {/* Progress Bar */}
       <View style={styles.progressBar}>
-        {[0, 1, 2, 3, 4].map((_, i) => (
+        {[0, 1, 2, 3, 4].map((i) => (
           <View
             key={i}
             style={{
