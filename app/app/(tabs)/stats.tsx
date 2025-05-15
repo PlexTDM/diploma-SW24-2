@@ -14,7 +14,9 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemeView , ThemeText} from "@/components";
 import { Image } from "react-native";
+import QuizLottie from "@/components/home/Quizlottie";
 const screenWidth = Dimensions.get("window").width;
+
 
 const Blog = () => {
   const [dates, setDates] = useState<Moment[]>([]);
@@ -104,7 +106,7 @@ const Blog = () => {
             value: "12%",
           },
         ].map((item, i) => (
-          <View className="flex-col gap-6 justify-center" key={i}>
+          <View className="flex-col gap-6 justify-center w-[14%]" key={i}>
             <View className="w-14 h-48 border rounded-full  border-gray-300 pt-8 justify-end">
               <View
                 className={`w-15 ${item.height} ${item.color} rounded-full items-center `}
@@ -122,26 +124,28 @@ const Blog = () => {
       </View>
 
       {/* AI Suggestion Box */}
-        <View className="w-full h-[200px] mt-6 relative rounded-3xl overflow-hidden ">
-          <Image
-            source={require("@/assets/img/foodPoster.png")}
-            style={{ width: "100%", height: "100%" }}
-            resizeMode="cover"
-          />
+          <View className="w-full h-[200px] rounded-3xl  p-2 mt-5 items-center justify-center relative">
 
-          {/* Overlay */}
-          <View className="absolute  p-2 justify-center items-center top-6 left-5">
-            <Text className="text-white text-2xl font-bold text-center mb-4 w-44">
-              Not sure what to eat? Let AI decide for you
+            <Image
+              source={require("@/assets/img/foodPoster.png")}
+              className="w-full h-full rounded-3xl"
+              resizeMode="cover"
+            />
+
+            <Text className="absolute top-10 w-36 left-12 text-center text-xl font-bold text-white">
+              Not sure what to eat? Let AI decide for you!
             </Text>
-            <TouchableOpacity
-              className="bg-white px-6 py-2 rounded-full items-center justify-center"
+
+            <Pressable
               onPress={() => router.push("/mnkv")}
+              className="absolute mt-24 right-28 w-full items-center justify-center rounded-full"
             >
-              <Text className="text-black font-semibold w-28 p-1 items-center justify-center">Take Quiz</Text>
-            </TouchableOpacity>
+              <QuizLottie />
+              <Text className="black absolute font-bold font-quicksand">Take Quiz</Text>
+            </Pressable>
+
           </View>
-        </View>
+
 
 
       {/* Meals Section */}
@@ -278,12 +282,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 10,
+    paddingHorizontal: 14,
     marginTop: 20,
   },
   dayContainer: {
     alignItems: "center",
-    width: (screenWidth - 20) / 7,
+    width: (screenWidth - 27) / 7,
   },
   dayText: {
     fontSize: 14,
