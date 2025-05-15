@@ -4,6 +4,7 @@ import { Image, ImageBackground } from "expo-image";
 import { languages, useLanguage } from "@/lib/language";
 import { Share, Bookmark, X, Sun, Star } from "lucide-react-native";
 import { Button } from "react-native-paper";
+import { ThemeText } from "@/components";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
