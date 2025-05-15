@@ -14,8 +14,6 @@ const hashRounds = 10;
 
 class AuthController {
   public static async login(req: Request, res: Response): Promise<any> {
-    const { password, email } = req.body;
-
     try {
       const authHeader = req.headers.authorization;
       const token = authHeader?.startsWith("Bearer ")
@@ -49,6 +47,7 @@ class AuthController {
         });
       }
 
+      const { password, email } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
         res.status(404).json({ message: "User not found" });

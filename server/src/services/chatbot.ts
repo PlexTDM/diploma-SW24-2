@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import Chat, { IChat } from "@/models/chatbotHistory";
 import { config } from "dotenv";
+import { Response } from "express";
 config();
 
 export class ChatbotService {
@@ -68,10 +69,11 @@ Please remain focused on fitness and health topics at all times.`;
     }
   }
 
-  async sendMessage(
+  async sendMessageStream(
     userId: string,
-    message: string
-  ): Promise<{ response: string; history: IChat["messages"] }> {
+    message: string,
+    res: Response
+  ): Promise<void> {
     try {
       let chat = await Chat.findOne({ userId });
 
@@ -115,19 +117,24 @@ Please remain focused on fitness and health topics at all times.`;
         },
       });
 
-      const result = await chatSession.sendMessage(message);
-      const response = await result.response;
-      const assistantMessage = await response.text();
+      const resultStream = await chatSession.sendMessageStream(message);
 
-      await chat.addMessage("model", assistantMessage);
+      let aiMessage = "";
 
-      return {
-        response: assistantMessage,
-        history: chat.messages,
-      };
+      for await (const chunk of resultStream.stream) {
+        const text = chunk.text();
+        process.stdout.write(text);
+        aiMessage += text;
+        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+      }
+
+      res.write("event: close\ndata: end\n\n");
+      res.end();
+      await chat.addMessage("model", aiMessage);
     } catch (error: any) {
       console.error("Error in chatbot:", error.message);
-      throw error;
+      res.write("event: error\ndata: end\n\n");
+      res.end();
     }
   }
 
