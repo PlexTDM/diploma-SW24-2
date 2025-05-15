@@ -9,16 +9,25 @@ class ChatbotController {
     res: Response
   ): Promise<any> {
     try {
-      const { message }: { message?: string } = req.body;
+      const { message } = req.body;
 
-      if (!message)
+      if (!message || typeof message !== "string")
         return res.status(400).json({ error: "Message is required" });
 
-      const result = await chatbotService.sendMessage(req.user.id, message);
-      res.json(result);
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+      res.flushHeaders();
+
+      await chatbotService.sendMessageStream(req.user.id, message, res);
     } catch (error: any) {
       console.error("Error in sendMessage:", error.message);
-      res.status(500).json({ error: "Failed to process message" });
+      res.write(
+        "event: error\ndata: " +
+          JSON.stringify({ error: "Failed to process message" }) +
+          "\n\n"
+      );
+      res.end();
     }
   }
 

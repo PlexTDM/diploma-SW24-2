@@ -1,5 +1,5 @@
 import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
@@ -59,14 +59,14 @@ const RootLayout = () => {
           <Stack
             screenOptions={{
               headerShown: false,
-              presentation: "modal",
-              animation: "flip",
+              presentation: Platform.OS === "ios" ? "modal" : "card",
+              animation: Platform.OS === "ios" ? "flip" : "ios_from_right",
             }}
             initialRouteName="(tabs)"
           >
             <Stack.Screen
               name="(tabs)"
-              options={{ animation: "flip", presentation: "modal" }}
+              // options={{ animation: "flip", presentation: "modal" }}
             />
             <Stack.Screen name="(auth)" />
             <Stack.Screen

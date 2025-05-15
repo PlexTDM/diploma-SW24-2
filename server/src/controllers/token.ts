@@ -13,7 +13,7 @@ export interface UserPayload {
 }
 
 interface AuthenticatedRequest extends Request {
-  user?: UserPayload;
+  user: UserPayload;
 }
 
 export const generateAccessToken = (user: IUser): string => {
