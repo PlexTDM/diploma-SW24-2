@@ -67,7 +67,7 @@ export default function Calories() {
           <ThemeText className="flex-1 font-bold text-lg  ">
             {languages[language].calories.calorie}
           </ThemeText>
-          <View className="w-[25px] h-[25px]">
+          <View className="w-[25px] h-[25px] px-2">
             <Zap color={theme === "dark" ? "#ffffff" : "#000000"} size={25} />
           </View>
         </View>

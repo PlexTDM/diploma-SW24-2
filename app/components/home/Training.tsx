@@ -71,10 +71,10 @@ export default function Training() {
       onPress={handlePress}
     >
       <View className="flex-row items-center justify-between absolute top-4 left-5">
-        <ThemeText className="flex-1 font-bold text-lg dark:text-black ">
+        <ThemeText className="flex-1 font-bold text-lg dark:text-black px-1 ">
           {languages[language].training.workout}
         </ThemeText>
-        <View className="w-[25px] h-[20px]">
+        <View className="w-[25px] h-[20px] px-1">
           <Dumbbell size={25} color={theme === "dark" ? "white" : "black"} />
         </View>
       </View>

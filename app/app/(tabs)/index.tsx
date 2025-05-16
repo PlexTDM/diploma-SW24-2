@@ -1,6 +1,7 @@
 import { Sleep, Water, Training, Steps, Calories } from "@/components/home";
 import Flame from "@/components/icons/Flame";
 import { Image } from "expo-image";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
@@ -8,7 +9,7 @@ import FortuneCookie from "@/components/home/FortuneCookie";
 import DailyTasks from "@/components/home/DailyTasks";
 export default function Tab() {
   const router = useRouter();
-
+ 
   return (
     <ScrollView
       className="p-8 dark:bg-gray-900 bg-white flex-1"

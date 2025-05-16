@@ -1,4 +1,4 @@
-import { useLanguage } from "@/lib/language";
+import { useLanguage, languages } from "@/lib/language";
 import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -21,7 +21,8 @@ import { Droplets} from "lucide-react-native";
 export default function Water() {
   const { theme } = useAppTheme();
   const [componentHeight, setComponentHeight] = useState<number>(0);
-
+  const { language } = useLanguage();
+  
   const animateHeight = useSharedValue<number>(0);
   const waterGoal = 3500;
   const [currentWater, setCurrentWater] = useState(100);
@@ -159,7 +160,9 @@ export default function Water() {
         onPress={handlePress}
       >
         <View className="flex-row items-center justify-between  ">
-          <ThemeText className="flex-1 font-bold text-lg ">Water</ThemeText>
+          <ThemeText className="flex-1 font-bold text-lg dark:text-black px-1 ">
+            {languages[language].water.word}
+          </ThemeText>
           <View className="w-[20px] h-[25px] ">
           <Droplets size={25} color={theme === "dark" ? "#fff" : "#000"} />
           </View>
