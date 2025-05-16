@@ -36,7 +36,7 @@ const chatMessageSchema = new Schema<ChatMessage>(
       default: Date.now,
     },
   },
-  { _id: false } // avoid nested _id fields for messages
+  { _id: false }
 );
 
 const chatSchema = new Schema<IChat>(

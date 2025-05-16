@@ -28,7 +28,6 @@ export const useChatStore = create<ChatState>((set) => ({
     set({ isSending: true });
     try {
       const accessToken = await AsyncStorage.getItem("accessToken");
-
       return new Promise((resolve, reject) => {
         const es = new EventSource(`${api}/chatbot/message`, {
           method: "POST",
@@ -116,13 +115,15 @@ export const useChatStore = create<ChatState>((set) => ({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get conversation history");
+        throw new Error(
+          `Failed to get conversation history: ${await response.json()}`
+        );
       }
 
       const data = await response.json();
       set({ messages: data.history as Message[] });
     } catch (error) {
-      console.error("Error getting conversation history:", error);
+      console.error("Error getting conversation history", error);
       set({ error: "Failed to get conversation history" });
     } finally {
       set({ isLoading: false });

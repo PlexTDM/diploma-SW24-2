@@ -36,12 +36,13 @@ class ChatbotController {
     try {
       const id = req.user.id;
       const history = await req.redis.get(`chatbot-${id}`);
-      if (!history) {
+      if (history) {
+        res.json({ history: JSON.parse(history) });
+      } else {
         const history = await chatbotService.getConversationHistory(id);
-        res.json({ history });
         await req.redis.set(`chatbot-${id}`, JSON.stringify(history));
+        res.json({ history });
       }
-      res.json({ history: JSON.parse(history) });
     } catch (error: any) {
       console.error("Error in getConversationHistory:", error.message);
       res.status(500).json({ error: "Failed to get conversation history" });
@@ -71,6 +72,7 @@ class ChatbotController {
   ): Promise<void> {
     try {
       const messages = await chatbotService.clearConversation(req.user.id);
+      await req.redis.del(`chatbot-${req.user.id}`);
       res.json({ messages });
     } catch (error: any) {
       console.error("Error in clearConversation:", error.message);

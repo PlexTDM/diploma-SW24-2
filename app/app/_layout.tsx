@@ -7,8 +7,7 @@ import "@/lib/global.css";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-
-// import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 // import * as NavigationBar from "expo-navigation-bar";
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +17,15 @@ const RootLayout = () => {
   const [loaded, error] = useFonts({
     Quicksand: require("../assets/fonts/Quicksand-Variable.ttf"),
   });
+
+  // useEffect(() => {
+  //   const setNavigationBar = async () => {
+  //     if (Platform.OS === "android") {
+  //       await NavigationBar.setVisibilityAsync("hidden");
+  //     }
+  //   };
+  //   setNavigationBar();
+  // }, []);
 
   useEffect(() => {
     if (loaded || error) {
@@ -33,54 +41,50 @@ const RootLayout = () => {
     );
   }
 
-  // useEffect(() => {
-  //   const setNavigationBar = async () => {
-  //     if (Platform.OS === "android") {
-  //       await NavigationBar.setVisibilityAsync("hidden");
-  //     }
-  //   };
-  //   setNavigationBar();
-  // }, []);
-
   return (
-    <ThemeView>
-      {/* <SafeAreaView className={`flex-1`}> */}
-      <ThemeProvider>
-        <Providers>
-          <StatusBar
-            style={theme === "dark" ? "light" : "dark"}
-            hidden={true}
-          />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeView>
+        {/* <SafeAreaView className={`flex-1`}> */}
+        <ThemeProvider>
+          <Providers>
+            <StatusBar
+              style={theme === "dark" ? "light" : "dark"}
+              hidden={true}
+            />
 
-          {/* <View className="flex flex-row w-full justify-between">
-            <ThemeSwitch />
-            <LangSwitch />
-          </View> */}
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              presentation: Platform.OS === "ios" ? "modal" : "card",
-              animation: Platform.OS === "ios" ? "flip" : "ios_from_right",
-            }}
-            initialRouteName="(tabs)"
-          >
-            <Stack.Screen
-              name="(tabs)"
-              options={{ animation: "default", presentation: "card" }}
-            />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(meal)" />
-            <Stack.Screen
-              name="home"
-              options={{ animation: "default", presentation: "card" }}
-            />
-            <Stack.Screen name="chatbot" />
-            <Stack.Screen name="mnkv" options={{animation:'default', presentation:'card'}} />
-          </Stack>
-        </Providers>
-      </ThemeProvider>
-      {/* </SafeAreaView> */}
-    </ThemeView>
+            {/* <View className="flex flex-row w-full justify-between">
+              <ThemeSwitch />
+              <LangSwitch />
+            </View> */}
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                presentation: Platform.OS === "ios" ? "modal" : "card",
+                animation: Platform.OS === "ios" ? "flip" : "ios_from_right",
+              }}
+              initialRouteName="(tabs)"
+            >
+              <Stack.Screen
+                name="(tabs)"
+                options={{ animation: "default", presentation: "card" }}
+              />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(meal)" />
+              <Stack.Screen
+                name="home"
+                options={{ animation: "default", presentation: "card" }}
+              />
+              <Stack.Screen name="chatbot" />
+              <Stack.Screen
+                name="mnkv"
+                options={{ animation: "default", presentation: "card" }}
+              />
+            </Stack>
+          </Providers>
+        </ThemeProvider>
+        {/* </SafeAreaView> */}
+      </ThemeView>
+    </GestureHandlerRootView>
   );
 };
 
