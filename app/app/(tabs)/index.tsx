@@ -8,7 +8,7 @@ import FloatingButton from "@/components/chat/FloatingButton";
 import React from "react";
 export default function HomeTab() {
   const router = useRouter();
-
+ 
   return (
     <>
       <ScrollView className="p-8 dark:bg-gray-900 bg-white flex-1">

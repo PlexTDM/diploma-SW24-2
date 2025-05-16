@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
-import { measure } from "react-native-reanimated";
+
 
 export const mn = {
  question1: {
@@ -84,13 +84,7 @@ export const mn = {
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
         choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
       },
-      water: {
-        word: "Ус",
-        milliliter: "м/литр",
-        title: "Та өдөрт хэдэн литр ус уудаг вэ?",
-        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
-        choices: ["4+ литр", "2-3 литр", "1 литр"],
-      },
+     
       work: {
         title: "Таны ажлын хуваарь ямар вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
@@ -128,11 +122,10 @@ export const mn = {
           },
         },
       },
+      
     },
   },
-  home: {
-    title: "Өнөөдрийн мэдээлэл",
-  },
+  
   walk: {
     steps: "Алхалт",
     stepsCount: "Алхам тоолох",
@@ -201,7 +194,20 @@ export const mn = {
   fortune:{
     title:"",
     desc:"Таны зорилгоо тодорхойлно",
-  }
+  },
+  water: {
+    word: "Ус",
+    milliliter: "м/литр",
+    title: "Та өдөрт хэдэн литр ус уудаг вэ?",
+    desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+    choices: ["4+ литр", "2-3 литр", "1 литр"],
+    add: 'Нэмэх',
+    alarm: 'Сануулга'
+  },
+  home: {
+    task: "Өнөөдрийн зорилт",
+  },
+
 };
 
  
@@ -287,13 +293,7 @@ export const en = {
         desc: "Your choice will affect your workout plan",
         choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
       },
-      water: {
-        word: "Water",
-        milliliter: "ml",
-        title: "How much water do you drink per day?",
-        desc: "Your choice will affect your workout plan",
-        choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
-      },
+     
       work: {
         title: "What is your current work schedule?",
         desc: "Your choice will affect your workout plan.",
@@ -333,9 +333,7 @@ export const en = {
       },
     },
   },
-  home: {
-    title: "Today's information",
-  },
+  
   walk: {
     steps: "Steps",
     stepsCount: "Count Steps",
@@ -390,6 +388,15 @@ export const en = {
     measure: "Measure your fitness level",
     test: "After Bluvi's 5-min test, you'll recieve an analysis of your current fitness levels."
   },
+  water: {
+    word: "Water",
+    milliliter: "ml",
+    title: "How much water do you drink per day?",
+    desc: "Your choice will affect your workout plan",
+    choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
+    add: 'Add',
+    alarm: 'Alarm'
+  },
   profile1:{
     title:"Your Profile",
     calories:"Total Calories",
@@ -400,7 +407,11 @@ export const en = {
   },
   settings: {
     title: "Settings",
-  }
+  },
+  home: {
+    task: "Today's Tasks",
+  },
+  
 };
 
 export const languages = {
