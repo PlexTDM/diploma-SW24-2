@@ -1,6 +1,6 @@
 import { ThemeView, ThemeText } from "@/components";
 import { use, useCallback, useRef, useState } from "react";
-import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
+import { FlatList, LayoutChangeEvent, Pressable, View , SafeAreaView} from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
@@ -73,6 +73,7 @@ const Tabs = () => {
     };
     const selected = selectedTab === tab;
     return (
+      
       <View
         className={`flex-1 overflow-hidden  ${
           selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
@@ -95,6 +96,7 @@ const Tabs = () => {
   };
 
   return (
+   
     <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
         <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
@@ -141,6 +143,7 @@ export default function Tab() {
   };
 
   return (
+      
     <ThemeView className="items-center justify-center pt-8">
       <View className="flex-row items-center px-6 justify-between w-full">
         <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
@@ -206,5 +209,6 @@ export default function Tab() {
       </View>
       <Tabs />
     </ThemeView>
+
   );
 }

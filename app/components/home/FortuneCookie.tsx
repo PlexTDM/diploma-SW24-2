@@ -29,7 +29,18 @@ export default function FortuneCookie() {
         "Fitness is a journey, not a destination. 🛤️",
         "You're stronger than you think! 💪",
         "Progress, not perfection. 🌱",
+        "Keep going—every rep counts! 🔁",
+        "Believe in the power of consistency. ⏳",
+        "One day or day one. You decide. 🎯",
+        "Success starts with showing up. 🏁",
+        "The only bad workout is the one you didn’t do. 🏋️",
+        "Push past your limits—growth lives there. 🌄",
+        "Discipline beats motivation. 💥",
+        "Fuel your body, free your mind. 🍎🧘",
+        "You’re not alone—your future self is cheering. 🎉",
+        "Show up for yourself today. You deserve it. 💖",
     ];
+
 
     const getRandomQuote = () => {
         const index = Math.floor(Math.random() * quotes.length);

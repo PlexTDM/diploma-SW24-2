@@ -38,7 +38,7 @@ export default function Tab() {
           >
             <Flame size={35} />
           </Pressable>
-          <Pressable className="border rounded-full p-2 border-gray-200 dark:border-gray-800 w-[40px] aspect-square"></Pressable>
+         
         </View>
       </View>
       <View className="flex-row items-center justify-between w-full">

@@ -16,6 +16,7 @@ import { useRouter } from "expo-router";
 
 const IMAGE_HEIGHT = 320;
 import { Switch } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 
 function Screen1() {
@@ -23,10 +24,11 @@ function Screen1() {
   const { theme } = useAppTheme();
   const isDark = theme === "dark";
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
-  const deedHeight = 500;
+  const deedHeight = 500 + insets.top;
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -46,11 +48,12 @@ function Screen1() {
     opacity: interpolate(scrollOffset.value, [0, deedHeight / 2], [1, 0]),
   }));
 
-  const toggleSwitch = ()=>{}
+  // const toggleSwitch = ()=>{}
 
   return (
+    //  <SafeAreaView className="flex-1">
     <ThemeView className="flex-1 relative pt-[100px]">
-      <View className="flex-row items-center gap-3 absolute top-4 right-4 z-10">
+      <View className="flex-row items-center gap-3 absolute right-4 z-10" style={{ paddingTop: insets.top }}>
         {[{ icon: Share }, { icon: Bookmark }, { icon: X }].map(
           ({ icon: Icon }, i) => (
             <View
@@ -70,7 +73,7 @@ function Screen1() {
       >
         <ImageBackground
           source={require("@/assets/img/lightEffect.jpg")}
-          style={{ width: "100%", height: "100%", padding: 12 }}
+          style={{ width: "100%", height: "100%", padding: 12, paddingTop: insets.top, paddingHorizontal: 25 }}
         >
           <Animated.View style={[deedContentStyle]} className="flex-1">
             <View className="flex-row items-center justify-between">
@@ -221,20 +224,21 @@ function Screen1() {
             Adapt Workout
           </Button>
         </Pressable>
-        </View>
-        <View className="absolute bottom-28 left-5 right-5">
-          <Pressable onPress={() => router.push("/home/training/start")}>
-            <Button
-              mode="contained"
-              className="rounded-xl"
-              contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
-            >
-              Start Workout
-            </Button>
-          </Pressable>
-        </View>
-      
+      </View>
+      <View className="absolute bottom-28 left-5 right-5">
+        <Pressable onPress={() => router.push("/home/training/start")}>
+          <Button
+            mode="contained"
+            className="rounded-xl"
+            contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
+          >
+            Start Workout
+          </Button>
+        </Pressable>
+      </View>
+
     </ThemeView>
+    // </SafeAreaView>
   );
 }
 
