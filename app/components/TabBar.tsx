@@ -9,6 +9,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 
 enum labelValues {
   home = "home",
@@ -118,7 +119,7 @@ export default function TabBar({
   navigation,
 }: BottomTabBarProps) {
   const [dimensions, setDimensions] = useState({ width: 100, height: 30 });
-  const btnWidth = dimensions.width / state.routes.length - 5;
+  const btnWidth = dimensions.width / state.routes.length;
   const { theme } = useAppTheme();
   const onTabBarLayout = (e: LayoutChangeEvent) => {
     setDimensions(e.nativeEvent.layout);
@@ -143,7 +144,7 @@ export default function TabBar({
 
   useEffect(() => {
     const newPosition = Math.max(
-      Math.min(state.index * btnWidth + 5, dimensions.width - btnWidth - 5),
+      Math.min(state.index * btnWidth, dimensions.width - btnWidth - 10),
       10
     );
 
@@ -165,7 +166,7 @@ export default function TabBar({
         style={[
           animatedStyle,
           {
-            width: btnWidth + 15,
+            width: btnWidth + 10,
             height: dimensions.height - 12,
             backgroundColor: theme === "dark" ? "#4C91F9" : "#4C91F9",
           },
@@ -176,6 +177,7 @@ export default function TabBar({
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         const onPress = () => {
           const event = navigation.emit({
             type: "tabPress",
@@ -188,6 +190,8 @@ export default function TabBar({
         };
 
         const onLongPress = () => {
+          console.log("long press");
+          Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Long_Press);
           navigation.emit({
             type: "tabLongPress",
             target: route.key,

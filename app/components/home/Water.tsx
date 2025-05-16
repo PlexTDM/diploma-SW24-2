@@ -1,7 +1,6 @@
-import { useLanguage } from "@/lib/language";
 import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import Animated, {
   cancelAnimation,
@@ -16,7 +15,7 @@ import Animated, {
 import { useAppTheme } from "@/lib/theme";
 import { useCallback, useState } from "react";
 import WaterModal from "./WaterModal";
-import { Droplets} from "lucide-react-native";
+import { Droplets } from "lucide-react-native";
 
 export default function Water() {
   const { theme } = useAppTheme();
@@ -158,10 +157,10 @@ export default function Water() {
         onPressOut={handlePressOut}
         onPress={handlePress}
       >
-        <View className="flex-row items-center justify-between  ">
+        <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg ">Water</ThemeText>
-          <View className="w-[20px] h-[25px] ">
-          <Droplets size={25} color={theme === "dark" ? "#fff" : "#000"} />
+          <View className="w-[20px] h-[25px]">
+            <Droplets size={25} color={theme === "dark" ? "#fff" : "#000"} />
           </View>
         </View>
 
@@ -185,7 +184,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water2/1.svg")}
+              source={require("@/assets/water/1.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -198,7 +197,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water2/2.svg")}
+              source={require("@/assets/water/2.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -211,7 +210,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water2/3.svg")}
+              source={require("@/assets/water/3.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -224,7 +223,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water2/4.svg")}
+              source={require("@/assets/water/4.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />

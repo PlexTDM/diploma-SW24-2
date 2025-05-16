@@ -94,7 +94,7 @@ export default function FloatingButton() {
           colors={["#8A24FF", "#BB80FF"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          className="absolute inset-0 rounded-full p-1"
+          className="absolute inset-0 rounded-full p-3"
         >
           <Pressable
             onPress={() => runOnJS(handlePress)()}
