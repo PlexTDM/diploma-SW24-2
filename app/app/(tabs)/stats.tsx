@@ -7,7 +7,8 @@ import {
   Dimensions,
   Pressable,
   useColorScheme,
-  ScrollView
+  ScrollView,
+  SafeAreaView
 } from "react-native";
 import moment, { Moment } from "moment";
 import { Feather } from "@expo/vector-icons";
@@ -41,6 +42,7 @@ const Blog = () => {
   };
 
   return (
+    <SafeAreaView>
     <ScrollView>
     <ThemeView className="flex-1">
     <View className="p-6 items-center">
@@ -273,6 +275,7 @@ const Blog = () => {
     </View>
     </ThemeView>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
