@@ -8,7 +8,7 @@ import {
   Pressable,
   useColorScheme,
   ScrollView,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import moment, { Moment } from "moment";
 import { useLanguage, languages } from "@/lib/language";
@@ -18,7 +18,6 @@ import { ThemeView, ThemeText } from "@/components";
 import { Image } from "react-native";
 import QuizLottie from "@/components/home/Quizlottie";
 const screenWidth = Dimensions.get("window").width;
-
 
 const Blog = () => {
   const [dates, setDates] = useState<Moment[]>([]);
@@ -129,7 +128,6 @@ const Blog = () => {
 
             {/* AI Suggestion Box */}
             <View className="w-full h-[200px] rounded-3xl  p-2 mt-5 items-center justify-center relative">
-
               <Image
                 source={require("@/assets/img/foodPoster.png")}
                 className="w-full h-full rounded-3xl"

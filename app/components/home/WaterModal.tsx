@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
 } from "react-native";
-import { ThemeView , ThemeText} from "@/components";
+import { ThemeView, ThemeText } from "@/components";
 import WaterAnimation from "@/components/home/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -67,7 +67,7 @@ function WaterModal({
       supportedOrientations={["portrait"]}
     >
       <TouchableWithoutFeedback onPress={() => setVisible(false)}>
-        <SafeAreaView className="flex-1 items-center px-8 py-2 justify-end bg-black/50">
+        <SafeAreaView className="flex-1 items-center py-2 justify-end bg-black/50">
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
             <ThemeView className="flex-1 max-h-[90%] w-full p-8 rounded-3xl">
               {/* Water progress */}

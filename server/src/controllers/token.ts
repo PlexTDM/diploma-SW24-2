@@ -4,6 +4,7 @@ import bcryptjs from "bcryptjs";
 import { Response, NextFunction } from "express";
 import RefreshToken from "@/models/refreshToken";
 import { IUser } from "@/models/user";
+import { AuthenticatedRequest } from "@/global";
 
 config();
 
