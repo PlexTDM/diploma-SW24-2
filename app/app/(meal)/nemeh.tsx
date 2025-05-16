@@ -111,7 +111,10 @@ export default function Meal() {
       </View>
 
       {/* Scan Button */}
-      <Pressable className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5">
+      <Pressable
+        className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
+        onPress={() => router.push("./scan")}
+      >
         <Text className="text-base text-white">Scan your meals</Text>
       </Pressable>
 

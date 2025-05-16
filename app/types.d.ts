@@ -55,3 +55,36 @@ type DataType = {
   date: string;
   value: number;
 };
+
+type User = {
+  username: string;
+  email: string;
+  stats?: Record<string, any>;
+  gender: Gender;
+  birthday: Date;
+  height: number;
+  weight: number;
+  goal: string;
+  activityLevel: string;
+  mealPerDay: string;
+  waterPerDay: string;
+  workSchedule: string;
+  healthCondition: string;
+  password: string;
+  role: Role;
+  bio?: string;
+  image?: string | null;
+  posts?: string[];
+  isEmailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationTokenExpiry?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+type Message = {
+  id: string;
+  content: string;
+  role: "user" | "model" | "system";
+  timestamp: Date;
+};

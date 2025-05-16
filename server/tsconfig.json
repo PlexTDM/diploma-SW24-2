@@ -19,8 +19,9 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["src/global.d.ts"]
   },
-  "include": ["src/**/*", "chatbot.ts", "chatbotRoutes.ts"],
+  "include": ["src/**/*.ts", "src/global.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

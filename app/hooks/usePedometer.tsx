@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+  import { useState, useEffect } from "react";
 import { Pedometer } from "expo-sensors";
+import { Platform } from "react-native";
 
 export function usePedometer() {
   const [isPedometerAvailable, setIsPedometerAvailable] =
@@ -8,10 +9,8 @@ export function usePedometer() {
   const [currentStepCount, setCurrentStepCount] = useState<number>(0);
 
   useEffect(() => {
-    // get permission
     const getPermission = async () => {
       const { status } = await Pedometer.requestPermissionsAsync();
-      console.log("status", status);
       setIsPedometerAvailable(String(status));
     };
     getPermission();
@@ -30,12 +29,14 @@ export function usePedometer() {
         start.setDate(end.getDate() - 1);
 
         try {
-          const pastStepCountResult = await Pedometer.getStepCountAsync(
-            start,
-            end
-          );
-          if (pastStepCountResult) {
-            setPastStepCount(pastStepCountResult.steps);
+          if (Platform.OS === "ios") {
+            const pastStepCountResult = await Pedometer.getStepCountAsync(
+              start,
+              end
+            );
+            if (pastStepCountResult) {
+              setPastStepCount(pastStepCountResult.steps);
+            }
           }
         } catch (error) {
           console.warn("Error getting step count:", error);

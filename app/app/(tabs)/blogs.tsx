@@ -6,7 +6,7 @@ import {
   FlatList,
   RefreshControl,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaFrameContext, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useBlogStore } from "@/stores/blogStore";
 import PostCard from "@/components/PostCard";
@@ -20,6 +20,7 @@ export default function FeedScreen() {
   const { posts } = useBlogStore();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
+  const [isFocused, setIsFocused] = useState(false)
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -42,33 +43,47 @@ export default function FeedScreen() {
     );
   }
   return (
-    <ThemeView className="flex-1 bg-white p-6">
-      <View className="flex-row w-full border-2 justify-start items-center border-gray-300 rounded-full p-2 mb-4 h-14 pl-3 gap-2">
-        <Search size={18} color="#d1d5db" />
-        <TextInput placeholder="Search posts" />
-      </View>
-      <Pressable
-        onPress={() => router.push("/(blog)/create")}
-        className="w-20 h-20 bg-blue-500 rounded-full justify-center items-center"
-      >
-        <Feather name="plus" size={20} color="white" />
-      </Pressable>
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PostCard post={item} />}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        showsVerticalScrollIndicator={false}
-        className="mt-6"
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#3B82F6"
-            colors={["#3B82F6"]}
+    <SafeAreaView className="flex-1">
+      <ThemeView className="flex-1 bg-white p-6 pt-0">
+        <Text className="text-2xl font-bold mb-6 text-gray-900 dark:text-white  ">
+          Social
+        </Text>
+        <View
+          className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${isFocused ? "border-blue-200" : "border-gray-200"
+            }`}
+        >
+          <Search size={18} color="#B6B7BC" />
+          <TextInput
+            placeholder="Search posts"
+            placeholderTextColor="#B6B7BC"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className="flex-1 text-gray-900"
           />
-        }
-      />
-    </ThemeView>
+        </View>
+        <Pressable
+          onPress={() => router.push("/(blog)/create")}
+          className="w-20 h-20 bg-blue-500 rounded-full justify-center items-center"
+        >
+          <Feather name="plus" size={20} color="white" />
+        </Pressable>
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PostCard post={item} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={false}
+          className="mt-6"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#3B82F6"
+              colors={["#3B82F6"]}
+            />
+          }
+        />
+      </ThemeView>
+    </SafeAreaView>
   );
 }

@@ -9,6 +9,7 @@ import router from "@/routes/route";
 import os from "os";
 import dotenv from "dotenv";
 import connectToMongoDB from "./services/mongodb";
+import "./global.d.ts";
 
 dotenv.config();
 

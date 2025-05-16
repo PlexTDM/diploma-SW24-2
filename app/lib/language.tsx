@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
+import { measure } from "react-native-reanimated";
 
 export const mn = {
  question1: {
@@ -183,6 +184,8 @@ export const mn = {
     comp:"2 дасгалыг бүрэн гүйцэтгэ",
     urid:"Урьдчилсан хүчний оноо: 350–650",
       nerrr:"Дасгалын нэр",
+    measure: "Биеийн тамирын түвшнээ хэмжих",
+    test: "Bluvi-гийн 5 минутын тестийг дуусгасны дараа таны одоогийн фитнесийн түвшинг задлан шинжилж өгнө."
   },
   profile1:{
     title:"Таны мэдээлэл",
@@ -384,6 +387,8 @@ export const en = {
     comp:"Complete 2 gym workouts",
      urid:"Preliminary Strength Score: 350-650",
      nerrr:"Workout Name",
+    measure: "Measure your fitness level",
+    test: "After Bluvi's 5-min test, you'll recieve an analysis of your current fitness levels."
   },
   profile1:{
     title:"Your Profile",

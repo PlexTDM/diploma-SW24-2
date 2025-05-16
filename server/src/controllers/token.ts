@@ -1,20 +1,11 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import bcryptjs from "bcryptjs";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import RefreshToken from "@/models/refreshToken";
 import { IUser } from "@/models/user";
 
 config();
-
-export interface UserPayload {
-  id: string;
-  role: "ADMIN" | "USER";
-}
-
-interface AuthenticatedRequest extends Request {
-  user: UserPayload;
-}
 
 export const generateAccessToken = (user: IUser): string => {
   const secret = process.env.SECRET_ACCESS_TOKEN as string;
