@@ -19,6 +19,7 @@ import { useChatStore } from "@/stores/chatStore";
 import MessageBubble from "@/components/chat/messageBubble";
 import Header from "@/components/chat/Header";
 import { StatusBar } from "expo-status-bar";
+import ListFooterElement from "@/components/chat/ListFooterElement";
 // import CameraTracking from "@/components/cameraTracking";
 
 const LoadingIndicator = () => {
@@ -58,6 +59,7 @@ export default function ChatScreen() {
     getConversationHistory();
   }, [getConversationHistory]);
 
+  // GET HISTORY
   useEffect(() => {
     if (storeMessages?.length > 0) {
       const convertedMessages = storeMessages?.filter(
@@ -76,6 +78,21 @@ export default function ChatScreen() {
     }
   }, [storeMessages]);
 
+  // INITIAL MESSAGE
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: "init-1",
+          content: "Hello! I'm your AI assistant.",
+          role: "model",
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [messages]);
+
+  // SEND MESSAGE
   const handleSend = async () => {
     if (!inputText.trim()) return;
 
@@ -122,6 +139,7 @@ export default function ChatScreen() {
     }
   };
 
+  // ERROR HANDLING
   useEffect(() => {
     if (error && messages.length > 0) {
       const currentStreamingMessage = messages.find(
@@ -134,11 +152,20 @@ export default function ChatScreen() {
           )
         );
       } else if (error && !streamingMessageId) {
+        setMessages((prev) => [
+          {
+            id: "error-1",
+            content: error,
+            role: "model",
+            timestamp: new Date(),
+          },
+        ]);
         console.warn("Chat store general error:", error);
       }
     }
   }, [error, messages, streamingMessageId]);
 
+  // CLEAR CHAT
   const handleClearChat = () => {
     clearChat();
   };
@@ -159,19 +186,28 @@ export default function ChatScreen() {
         <FlatList
           inverted={true}
           data={messages}
+          ListFooterComponent={<ListFooterElement />}
           renderItem={({ item }) => (
             <MessageBubble
               key={item.id}
               message={item}
               isCurrentlyStreaming={item.id === streamingMessageId}
               setCurrentStreamingMessageId={setStreamingMessageId}
+              isSending={isSending && item.id === streamingMessageId}
             />
           )}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center">
+              <Text className="text-gray-500 dark:text-gray-400">
+                No messages yet
+              </Text>
+            </View>
+          }
           keyExtractor={(item) => item.id}
           className="flex-1 px-4 pb-12"
           contentContainerClassName="pb-4"
-          ListFooterComponent={
-            isLoading && messages.length === 0 ? <LoadingIndicator /> : null
+          ListHeaderComponent={
+            isLoading && messages.length <= 1 ? <LoadingIndicator /> : null
           }
         />
 
