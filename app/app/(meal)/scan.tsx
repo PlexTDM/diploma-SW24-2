@@ -20,7 +20,9 @@ export default function App() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Text style={styles.message}>
+          We need your permission to show the camera
+        </Text>
         <Button onPress={requestPermission} title="Grant Permission" />
       </View>
     );
@@ -69,26 +71,32 @@ export default function App() {
           onBarcodeScanned={handleBarcodeScanned}
         >
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={toggleCameraFacing}
+            >
               <Text style={styles.text}>Flip Camera</Text>
             </TouchableOpacity>
           </View>
         </CameraView>
       ) : (
         <ScrollView contentContainerStyle={styles.infoContainer}>
-          <Text style={styles.title}>{foodInfo.product_name || "Нэр олдсонгүй"}</Text>
-          <Text>Brand: {foodInfo.brands || "Unknown"}</Text>
-
-          {foodInfo.image_url ? (
-            <Image source={{ uri: foodInfo.image_url }} style={styles.image} />
-          ) : null}
-
-          <Text>Calories: {foodInfo.nutriments?.energy_kcal || "?"} kcal</Text>
-          <Text>Ingredients: {foodInfo.ingredients_text || "Not available"}</Text>
-          <Text>
-            Nutri Score: {foodInfo.nutriscore_grade?.toUpperCase() || "?"}
-          </Text>
-          <Text>Serving Size: {foodInfo.serving_size || "?"}</Text>
+          <View style={{ marginTop: 20 }}>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+              Nutrition (per 100g):
+            </Text>
+            <Text>Fat: {foodInfo.nutriments?.fat_100g || "?"} g</Text>
+            <Text>
+              Saturated Fat:{" "}
+              {foodInfo.nutriments?.["saturated-fat_100g"] || "?"} g
+            </Text>
+            <Text>
+              Carbohydrates: {foodInfo.nutriments?.carbohydrates_100g || "?"} g
+            </Text>
+            <Text>Sugars: {foodInfo.nutriments?.sugars_100g || "?"} g</Text>
+            <Text>Proteins: {foodInfo.nutriments?.proteins_100g || "?"} g</Text>
+            <Text>Salt: {foodInfo.nutriments?.salt_100g || "?"} g</Text>
+          </View>
 
           <Button
             title="Scan Another"
