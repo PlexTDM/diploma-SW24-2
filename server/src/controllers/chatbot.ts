@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { chatbotService } from "@/services/chatbot";
+import { AuthenticatedRequest } from "@/global";
 
 class ChatbotController {
   public static async sendMessage(

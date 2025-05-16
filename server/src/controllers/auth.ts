@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import User, { IUser } from "@/models/user";
 import { generateAccessToken, generateRefreshToken } from "./token";
 import { transporter } from "@/services/nodemailer";
-import { UserPayload } from "@/global";
 import RefreshToken from "@/models/refreshToken";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
