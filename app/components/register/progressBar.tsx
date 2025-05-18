@@ -1,7 +1,7 @@
 import { useRegisterStore } from "@/stores/register";
 import { useNavigation, useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { View, Pressable } from "react-native";
 import { Button, Icon } from "react-native-paper";
 import Animated, {
   Easing,
@@ -32,7 +32,7 @@ export default function ProgressBar() {
     if (navigaton.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)/home");
+      router.push("/(tabs)");
     }
   };
 

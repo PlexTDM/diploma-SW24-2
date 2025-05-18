@@ -1,7 +1,7 @@
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useNavigation, useRouter } from "expo-router";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Button, Icon } from "react-native-paper";
 
 export default function ProgressBar({ maxTabs = 3 }: { maxTabs?: number }) {
@@ -15,25 +15,14 @@ export default function ProgressBar({ maxTabs = 3 }: { maxTabs?: number }) {
     if (navigaton.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)/home");
+      router.push("/(tabs)");
     }
   };
 
   return (
-    <View className="flex-row w-full items-center px-4 h-[60px]">
-      <Button
-        className="top-0 left-0"
-        mode="text"
-        rippleColor={"#FFf00020"}
-        onPress={handleBack}
-      >
-        <Icon
-          source="chevron-left"
-          size={24}
-          color={theme === "dark" ? "#fff" : "#000"}
-        />
-      </Button>
-      <View className="flex-1 h-2 flex-row overflow-hidden gap-2">
+    <View className="flex-row w-full items-center px-6 h-[60px] justify-center">
+      
+      <View className="flex-1 h-2 flex-row overflow-hidden gap-2 ">
         {[...Array(maxStep).keys()].map((step) => {
           return (
             <View

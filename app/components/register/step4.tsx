@@ -21,7 +21,7 @@ export default function Step4() {
   };
 
   return (
-    <View className="flex-1 gap-auto justify-center items-center">
+    <View className="flex-1 mt-28  items-center">
       <View className="flex items-center">
         <View className="flex-row px-6 justify-center relative">
           <View className="absolute left-0 -top-2">
@@ -40,16 +40,16 @@ export default function Step4() {
             {languages[language].register.steps.meals.title}
           </ThemeText>
         </View>
-        <Text className="text-gray-300 text-xl w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
+        <Text className="text-gray-300 text-lg w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
           {languages[language].register.steps.meals.desc}
         </Text>
       </View>
-      <View className="my-4">
+      <View className="my-8">
         {choices.map((choice, i) => (
           <Pressable
             key={i}
             onPress={() => handlePress(i)}
-            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${
+            className={`dark:bg-gray-900 p-5 mb-6 w-[330px] border-2  rounded-3xl relative ${
               selectedIndex === i
                 ? "border-black dark:border-white"
                 : "border-gray-200 dark:border-gray-700"

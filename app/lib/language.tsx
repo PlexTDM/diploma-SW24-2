@@ -36,19 +36,15 @@ export const mn = {
   question5: {
     zori: "Таньд зориулсан хоолны цэсийг бэлдэж байна.....",
   },
-  meals: {
-    title: "Та өдөрт хэдэн удаа хооллодог вэ?",
+  meal:{
     meal: "Хоолны төрөл",
-    desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
-    choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
     type: [
       { name: "Өглөөний хоол", desc: "Өглөөний хоолоо идсэн үү?" },
       { name: "Өдрийн хоол", desc: "Өдрийн хоолоо идсэн үү?" },
       { name: "Оройн хоол", desc: "Оройн хоолоо идсэн үү?" },
       { name: "Зууш", desc: "Зууш идсэн үү?" }
     ]
-  }
-  ,
+  },
 
   mascot: {
     name: "Блуви",
@@ -91,8 +87,19 @@ export const mn = {
           "Идэвхгүй (7 хоногт 1 удаа эсвэл огт биш)",
         ],
       },
-
-
+      meals: {
+        title: "Та өдөрт хэдэн удаа хооллодог вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
+        
+      }
+      ,
+      water: {
+        milliliter: "м/литр",
+        title: "Та өдөрт хэдэн литр ус уудаг вэ?",
+        desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
+        choices: ["4+ литр", "2-3 литр", "1 литр"],
+      },
       work: {
         title: "Таны ажлын хуваарь ямар вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
@@ -111,8 +118,14 @@ export const mn = {
           "Үгүй, би эрүүл",
           "Нуруу, үе мөчний асуудалтай",
           "Зүрх судасны асуудалтай",
+          "Холестерины түвшин өндөр",
           "Амьсгалын замын өвчтэй (астма гэх мэт)",
           "Эмчийн заавар дор дасгал хийдэг",
+          "Ходоодны өвчинтэй",
+          "Хорт хавдар",
+          "Бамбай булчирхайн өвчин",
+          "Чихрийн шижин",
+          "Өөр төрлийн өвчин",
         ],
       },
       step1: {
@@ -142,7 +155,11 @@ export const mn = {
     sleep: "Нойр",
     duration: "цаг",
   },
-
+  water: {
+    word: "Ус",
+    add: 'Нэмэх',
+    alarm: 'Сануулга'
+  },
   calories: {
     calorie: " Калори",
     kcal: "ккал",
@@ -203,15 +220,7 @@ export const mn = {
     title: "",
     desc: "Таны зорилгоо тодорхойлно",
   },
-  water: {
-    word: "Ус",
-    milliliter: "м/литр",
-    title: "Та өдөрт хэдэн литр ус уудаг вэ?",
-    desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
-    choices: ["4+ литр", "2-3 литр", "1 литр"],
-    add: 'Нэмэх',
-    alarm: 'Сануулга'
-  },
+  
   home: {
     task: "Өнөөдрийн зорилт",
   },
@@ -244,18 +253,7 @@ export const en = {
     ],
     daraah: "Continue"
   },
-  meals: {
-    title: "How many meals do you have per day?",
-    meal: "Meals",
-    desc: "Your choice will affect your workout plan",
-    choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
-    type: [
-      { name: "Breakfast", desc: "Do you eat breakfast?" },
-      { name: "Lunch", desc: "Do you eat lunch?" },
-      { name: "Dinner", desc: "Do you eat dinner?" },
-      { name: "Snack", desc: "Do you eat snacks?" }
-    ]
-  },
+  
   question3: {
     ta: "Which meals do you usually have in a day?",
     ogloo: ["Breakfast", "Lunch", "Dinner", "Snacks"],
@@ -274,6 +272,15 @@ export const en = {
   mascot: {
     name: "Bluvi",
     desc: "Let's Get Fit Together",
+  },
+  meal:{
+    meal: "Meals",
+    type: [
+      { name: "Breakfast", desc: "Do you eat breakfast?" },
+      { name: "Lunch", desc: "Do you eat lunch?" },
+      { name: "Dinner", desc: "Do you eat dinner?" },
+      { name: "Snack", desc: "Do you eat snacks?" }
+    ]
   },
   login: {
     title1: "Hi There! I'm Bluvi",
@@ -312,9 +319,20 @@ export const en = {
           "Inactive (exercises once a week or not at all)",
         ],
       },
-
-     
-
+      meals: {
+        title: "How many meals do you have per day?",
+        desc: "Your choice will affect your workout plan",
+        choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
+        
+      },
+      water: {
+       
+        milliliter: "ml",
+        title: "How much water do you drink per day?",
+        desc: "Your choice will affect your workout plan",
+        choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
+        
+      },
       work: {
         title: "What is your current work schedule?",
         desc: "Your choice will affect your workout plan.",
@@ -333,8 +351,14 @@ export const en = {
           "No, I'm healthy",
           "Back or joint problems",
           "Heart or cardiovascular condition",
+          "High Cholesterol",
           "Respiratory issues (e.g., asthma)",
           "Exercising under medical supervision",
+          "Gastric Disease",
+          "Cancer",
+          "Diabetes",
+          "Thyroid Disease",
+          "I have other",
         ],
       },
       step1: {
@@ -363,7 +387,11 @@ export const en = {
     sleep: "Sleep",
     duration: "hours",
   },
-
+  water:{
+    word: "Water",
+    add: 'Add',
+    alarm: 'Alarm'
+  },
   calories: {
     calorie: "Calories",
     kcal: "kcal",
@@ -409,15 +437,7 @@ export const en = {
     measure: "Measure your fitness level",
     test: "After Bluvi's 5-min test, you'll recieve an analysis of your current fitness levels."
   },
-  water: {
-    word: "Water",
-    milliliter: "ml",
-    title: "How much water do you drink per day?",
-    desc: "Your choice will affect your workout plan",
-    choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
-    add: 'Add',
-    alarm: 'Alarm'
-  },
+  
   profile1: {
     title: "Your Profile",
     calories: "Total Calories",

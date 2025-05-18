@@ -160,7 +160,7 @@ const Blog = () => {
             <ThemeText
               className={`text-2xl font-bold mt-6 w-full px-2 ${isDark ? "text-white" : "text-black"}`}
             >
-              {languages[language].meals.meal}
+              {languages[language].meal.meal}
             </ThemeText>
 
             <View className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4">
@@ -178,7 +178,7 @@ const Blog = () => {
                 <Text
                   className={`font-bold text-xl ${isDark ? "text-white" : "text-black"}`}
                 >
-                  {languages[language].meals.type[0].name}
+                  {languages[language].meal.type[0].name}
                 </Text>
                 <Text className="text-gray-500">120 / 304 cal</Text>
               </View>
@@ -206,7 +206,7 @@ const Blog = () => {
                 <Text
                   className={`font-bold text-xl ${isDark ? "text-white" : "text-black"}`}
                 >
-                  {languages[language].meals.type[1].name}
+                  {languages[language].meal.type[1].name}
                 </Text>
                 <Text className="text-gray-500">120 / 304 cal</Text>
               </View>
@@ -234,7 +234,7 @@ const Blog = () => {
                 <Text
                   className={`font-bold text-xl ${isDark ? "text-white" : "text-black"}`}
                 >
-                  {languages[language].meals.type[2].name}
+                  {languages[language].meal.type[2].name}
                 </Text>
                 <Text className="text-gray-500">120 / 304 cal</Text>
               </View>
@@ -262,7 +262,7 @@ const Blog = () => {
                 <Text
                   className={`font-bold text-xl ${isDark ? "text-white" : "text-black"}`}
                 >
-                  {languages[language].meals.type[3].name}
+                  {languages[language].meal.type[3].name}
                 </Text>
                 <Text className="text-gray-500">120 / 304 cal</Text>
               </View>
