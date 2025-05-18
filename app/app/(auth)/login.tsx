@@ -43,7 +43,7 @@ const Login = () => {
           top: 0,
           left: 0,
           right: 0,
-          height: 250, 
+          height: 250,
           zIndex: 0,
         }}
       >
@@ -71,8 +71,9 @@ const Login = () => {
                 <TextInput
                   placeholder="Enter your email"
                   autoCapitalize="none"
-                  className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 text-lg"
+                  className="bg-white dark:bg-gray-700 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300"
                   onChangeText={setUsername}
+                  style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
                 />
               </View>
@@ -83,8 +84,9 @@ const Login = () => {
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  className="bg-white dark:bg-gray-700 text-black flex-1 dark:text-white px-6 py-5 text-lg"
+                  className="bg-white dark:bg-gray-700 text-black flex-1 dark:text-white px-6 py-5 items-center justify-center"
                   onChangeText={setPassword}
+                  style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
                 />
                 <Pressable
@@ -174,4 +176,3 @@ const Login = () => {
 };
 
 export default Login;
-
