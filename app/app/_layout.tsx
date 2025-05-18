@@ -60,7 +60,7 @@ const RootLayout = () => {
               screenOptions={{
                 headerShown: false,
                 presentation: Platform.OS === "ios" ? "modal" : "card",
-                animation: Platform.OS === "ios" ? "flip" : "ios_from_right",
+                animation: Platform.OS === "ios" ? "default" : "ios_from_right",
               }}
               initialRouteName="(tabs)"
             >
