@@ -69,12 +69,12 @@ export default function DailyTasks() {
             <View className="space-y-3 gap-3">
                 {tasks.map((task) => {
                     const containerClasses = `
-            p-4 rounded-3xl  flex-col border-1 transition-all duration-300
-            ${task.completed
-                            ? " border-blue-300 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+  p-4 rounded-3xl flex-col border-1
+  ${task.completed
+                            ? "border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
                             : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
+`;
 
-          `;
                     return (
                         <Pressable
                             key={task.id}

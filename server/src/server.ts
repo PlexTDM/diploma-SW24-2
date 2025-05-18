@@ -16,9 +16,10 @@ const app: Express = express();
 
 // Log requests
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  const ip = req.ip || req.socket.remoteAddress || "";
-  const ipPrefix = ip.split(".").slice(0, 2).join(".");
-  console.log(`Request from IP: ${ipPrefix}.*.* to ${req.method} ${req.url}`);
+  let ip = req.ip || req.socket.remoteAddress || "unknown";
+  if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "IPv4 ");
+  console.log(`Request IP: ${ip}`);
+
   next();
 });
 

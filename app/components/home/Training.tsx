@@ -57,7 +57,7 @@ export default function Training() {
     style={animatedStyle}
   >
     {/* Background Gradient */}
-    <View className="absolute top-0 w-full left-0 right-0 bottom-0">
+    <View className="absolute top-0 w-full left-0 right-0 bottom-0 ">
     <Image
       source={require("@/assets/img/gradient.png")}
       style={[StyleSheet.absoluteFillObject, { zIndex: -1 }]}
@@ -79,7 +79,7 @@ export default function Training() {
         </View>
       </View>
       <View>
-        <Text className="text-2xl text-gray-700 dark:text-gray-200 font-semibold mt-16">
+        <Text className="text-2xl text-gray-800 dark:text-gray-200 font-semibold mt-16">
           69
         </Text>
         <Text className="text-sm font-normal text-gray-600 dark:text-gray-200">
