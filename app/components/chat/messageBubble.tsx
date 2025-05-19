@@ -2,6 +2,7 @@ import { useEffect, useState, memo, use } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
+import { Message } from "@/types";
 
 const TYPING_SPEED_MS = 1;
 
@@ -35,29 +36,25 @@ const MessageBubbleComponent = memo(
         return;
       }
 
-      if (isCurrentlyStreaming) {
-        if (
-          !message.content.startsWith(displayedText) &&
-          displayedText !== ""
-        ) {
-          setDisplayedText(message.content);
-          setCurrentStreamingMessageId(null);
-          return;
-        }
+      // if (isCurrentlyStreaming) {
+      // if (
+      //   !message.content.startsWith(displayedText) &&
+      //   displayedText !== ""
+      // ) {
+      //   setDisplayedText(message.content);
+      //   setCurrentStreamingMessageId(null);
+      //   return;
+      // }
 
-        if (displayedText.length < message.content.length) {
-          const timer = setTimeout(() => {
-            setDisplayedText(
-              message.content.substring(0, displayedText.length + 1)
-            );
-          }, TYPING_SPEED_MS);
-          return () => clearTimeout(timer);
-        }
-      } else {
-        if (message.content !== displayedText) {
-          setDisplayedText(message.content);
-        }
+      if (displayedText.length < message.content.length) {
+        const timer = setTimeout(() => {
+          setDisplayedText(
+            message.content.substring(0, displayedText.length + 10)
+          );
+        }, TYPING_SPEED_MS);
+        return () => clearTimeout(timer);
       }
+      // }
     }, [
       message.content,
       isUser,

@@ -20,6 +20,7 @@ import MessageBubble from "@/components/chat/messageBubble";
 import Header from "@/components/chat/Header";
 import { StatusBar } from "expo-status-bar";
 import ListFooterElement from "@/components/chat/ListFooterElement";
+import { Message } from "@/types";
 // import CameraTracking from "@/components/cameraTracking";
 
 const LoadingIndicator = () => {
@@ -47,17 +48,16 @@ export default function ChatScreen() {
   const insets = useSafeAreaInsets();
   const {
     sendMessage,
-    getConversationHistory,
     clearChat,
     isSending,
-    isLoading,
+    isLoadingHistory,
     error,
     messages: storeMessages,
   } = useChatStore();
 
   useEffect(() => {
-    getConversationHistory();
-  }, [getConversationHistory]);
+    useChatStore.getState().getConversationHistory();
+  }, []);
 
   // GET HISTORY
   useEffect(() => {
@@ -138,7 +138,6 @@ export default function ChatScreen() {
       setStreamingMessageId(null);
     }
   };
-
   // ERROR HANDLING
   useEffect(() => {
     if (error && messages.length > 0) {
@@ -207,7 +206,9 @@ export default function ChatScreen() {
           className="flex-1 px-4 pb-12"
           contentContainerClassName="pb-4"
           ListHeaderComponent={
-            isLoading && messages.length <= 1 ? <LoadingIndicator /> : null
+            isLoadingHistory && messages.length <= 1 ? (
+              <LoadingIndicator />
+            ) : null
           }
         />
 
@@ -218,14 +219,14 @@ export default function ChatScreen() {
         >
           <Pressable
             onPress={handleClearChat}
-            disabled={isSending || isLoading}
+            disabled={isSending || isLoadingHistory}
             className="p-2 mr-2"
           >
             <Ionicons
               name="trash-outline"
               size={24}
               color={
-                isSending || isLoading
+                isSending || isLoadingHistory
                   ? theme === "dark"
                     ? "#4B5563"
                     : "#D1D5DB"
@@ -246,14 +247,14 @@ export default function ChatScreen() {
             submitBehavior="blurAndSubmit"
             returnKeyType="send"
             onSubmitEditing={handleSend}
-            editable={!isSending && !isLoading}
+            editable={!isSending && !isLoadingHistory}
             style={{ textAlignVertical: "top" }}
           />
           <Pressable
             onPress={handleSend}
-            disabled={!inputText.trim() || isSending || isLoading}
+            disabled={!inputText.trim() || isSending || isLoadingHistory}
             className={`w-10 h-10 rounded-full items-center justify-center ${
-              inputText.trim() && !isSending && !isLoading
+              inputText.trim() && !isSending && !isLoadingHistory
                 ? "bg-blue-500"
                 : "bg-gray-300 dark:bg-gray-700"
             }`}
@@ -265,7 +266,7 @@ export default function ChatScreen() {
                 name="send"
                 size={20}
                 color={
-                  inputText.trim() && !isSending && !isLoading
+                  inputText.trim() && !isSending && !isLoadingHistory
                     ? "white"
                     : theme === "dark"
                     ? "#4B5563"
