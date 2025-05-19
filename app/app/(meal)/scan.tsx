@@ -43,6 +43,8 @@ export default function App() {
       );
       const json = await response.json();
 
+      // console.log("Fetched product", json);
+
       if (json.status === 1 && json.product) {
         setFoodInfo(json.product);
         setHasShownNotFoundAlert(false); // Шинэ бүтээгдэхүүн олдсон тул alert-г дахин харуулах боломж нээх
@@ -74,7 +76,7 @@ export default function App() {
     }
     if (type === "sugars") {
       if (value < 5) return "бага";
-      if (value < 22.5) return "дунд";
+      if (value < 22.5) return "дунд";  
       return "өндөр";
     }
     if (type === "salt") {
@@ -121,7 +123,7 @@ export default function App() {
           <View style={styles.card}>
             <Text style={styles.label}>📊Шим тэжээлийн мэдээлэл:</Text>
             <Text style={styles.value}>
-              Илчлэг: {foodInfo.nutriments?.energy || "?"} kcal
+              Илчлэг: {foodInfo.nutriments?.["energy-kcal"] || "?"} kcal
             </Text>
             <Text style={styles.value}>
               Нүүрс ус: {foodInfo.nutriments?.carbohydrates || "?"} г
