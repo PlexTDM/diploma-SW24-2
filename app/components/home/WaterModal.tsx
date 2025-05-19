@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useLanguage, languages } from "@/lib/language";
 import {
   View,
@@ -13,6 +13,7 @@ import {
 import { ThemeView, ThemeText } from "@/components";
 import WaterAnimation from "@/components/home/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
+import { useRegisterStore } from "@/stores/statsStore";
 
 function WaterModal({
   visible,
@@ -21,20 +22,26 @@ function WaterModal({
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const waterGoal = 3500;
-  const [currentWater, setCurrentWater] = useState(2100);
   const { language } = useLanguage();
+  const water = useRegisterStore((state) => state.water);
+  const waterGoal = useRegisterStore((state) => state.waterGoal);
+  const setField = useRegisterStore((state) => state.setField);
 
-  const percentage = Math.min(
-    Math.round((currentWater / waterGoal) * 100),
-    100
+  const percentage = useMemo(
+    () => Math.min(Math.round((water / waterGoal) * 100), 100),
+    [water, waterGoal]
   );
 
-  const addWater = (amount: number) => {
-    setCurrentWater((prev) => Math.min(prev + amount, waterGoal));
-  };
+  const addWater = useCallback(
+    (amount: number) => {
+      setField("water", Math.min(water + amount, waterGoal));
+    },
+    [water, waterGoal, setField]
+  );
 
-  const waterOptions = [100, 250, 500, 1000];
+  console.log(water, waterGoal);
+
+  const waterOptions = useMemo(() => [100, 250, 500, 1000], []);
 
   const [alarms, setAlarms] = useState([
     { id: 1, time: "07:00 AM", enabled: true },
@@ -47,13 +54,36 @@ function WaterModal({
     { id: 8, time: "06:00 PM", enabled: false },
   ]);
 
-  const toggleAlarm = (id: number) => {
+  const toggleAlarm = useCallback((id: number) => {
     setAlarms((prev) =>
       prev.map((alarm) =>
         alarm.id === id ? { ...alarm, enabled: !alarm.enabled } : alarm
       )
     );
-  };
+  }, []);
+
+  const renderAlarmItem = useCallback(
+    ({ item: alarm }: { item: (typeof alarms)[0] }) => (
+      <View
+        key={alarm.id}
+        className="flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-xl mb-2"
+      >
+        <View className="flex-row items-center gap-4">
+          <Ionicons name="alarm-outline" size={20} color="#2563EB" />
+          <Text className="text-gray-800 dark:text-gray-200 text-base">
+            {alarm.time}
+          </Text>
+        </View>
+        <Switch
+          value={alarm.enabled}
+          onValueChange={() => toggleAlarm(alarm.id)}
+          thumbColor={alarm.enabled ? "#2563EB" : "#ccc"}
+          trackColor={{ false: "#ccc", true: "#93c5fd" }}
+        />
+      </View>
+    ),
+    [toggleAlarm]
+  );
 
   return (
     <Modal
@@ -81,10 +111,10 @@ function WaterModal({
                   </Text>
                 </View>
                 <Text className="text-center text-sm mb-2 ml-10 z-10 dark:text-slate-300">
-                  {currentWater} ml of {waterGoal} ml
+                  {water} ml of {waterGoal} ml
                 </Text>
                 <WaterAnimation
-                  currentWater={currentWater}
+                  currentWater={water}
                   waterGoal={waterGoal}
                   containerHeight={240}
                 />
@@ -92,10 +122,10 @@ function WaterModal({
 
               {/* Add Water Section */}
               <View className="w-full flex-row flex-wrap justify-between mt-6">
-                <ThemeText className=" font-bold text-lg dark:text-black w-full font-quicksand ">
+                <ThemeText className="font-bold text-lg dark:text-black w-full font-quicksand">
                   {languages[language].water.add}
                 </ThemeText>
-                <View className="w-full flex-row flex-wrap justify-between gap-3   mt-6">
+                <View className="w-full flex-row flex-wrap justify-between gap-3 mt-6">
                   {waterOptions.map((amount) => (
                     <TouchableOpacity
                       key={amount}
@@ -123,29 +153,8 @@ function WaterModal({
                   scrollEnabled={true}
                   showsVerticalScrollIndicator={true}
                   className="h-full"
-                  renderItem={({ item: alarm }) => (
-                    <View
-                      key={alarm.id}
-                      className="flex-row justify-between items-center bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-xl mb-2"
-                    >
-                      <View className="flex-row items-center gap-4">
-                        <Ionicons
-                          name="alarm-outline"
-                          size={20}
-                          color="#2563EB"
-                        />
-                        <Text className="text-gray-800 dark:text-gray-200 text-base">
-                          {alarm.time}
-                        </Text>
-                      </View>
-                      <Switch
-                        value={alarm.enabled}
-                        onValueChange={() => toggleAlarm(alarm.id)}
-                        thumbColor={alarm.enabled ? "#2563EB" : "#ccc"}
-                        trackColor={{ false: "#ccc", true: "#93c5fd" }}
-                      />
-                    </View>
-                  )}
+                  renderItem={renderAlarmItem}
+                  keyExtractor={(item) => item.id.toString()}
                 />
               </View>
             </ThemeView>
@@ -156,4 +165,4 @@ function WaterModal({
   );
 }
 
-export default WaterModal;
+export default React.memo(WaterModal);

@@ -17,6 +17,7 @@ import { useAppTheme } from "@/lib/theme";
 import { useCallback, useState } from "react";
 import WaterModal from "./WaterModal";
 import { Droplets } from "lucide-react-native";
+import { useRegisterStore } from "@/stores/statsStore";
 
 export default function Water() {
   const { theme } = useAppTheme();
@@ -24,8 +25,8 @@ export default function Water() {
   const { language } = useLanguage();
 
   const animateHeight = useSharedValue<number>(0);
-  const waterGoal = 3500;
-  const [currentWater, setCurrentWater] = useState(100);
+  const waterGoal = useRegisterStore((state) => state.waterGoal);
+  const currentWater = useRegisterStore((state) => state.water);
   const [modalVisible, setModalVisible] = useState(false);
 
   // wave animation
@@ -170,7 +171,7 @@ export default function Water() {
 
         {/* Text content */}
         <View className="relative">
-          <ThemeText className="text-2xl font-bold">3500</ThemeText>
+          <ThemeText className="text-2xl font-bold">{waterGoal}</ThemeText>
           <ThemeText className="text-sm font-normal">17 oz</ThemeText>
         </View>
       </Pressable>

@@ -1,10 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
+interface LanguageProviderProps {
+  children: React.ReactNode;
+}
 
+type Language = "en" | "mn";
+
+type LanguageContextType = {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+};
 
 export const mn = {
   question1: {
-    tanid: "Танд анхаарах ёстой хоолны ямар нэгэн хорио цээр, дэглэм байгаа юу? ",
+    tanid:
+      "Танд анхаарах ёстой хоолны ямар нэгэн хорио цээр, дэглэм байгаа юу? ",
     suun: ["Сүүн сахар", "сахар", "Глютен", "Самар", "Дэглэм байхгүй"],
     daraah: "Дараах",
   },
@@ -36,14 +46,14 @@ export const mn = {
   question5: {
     zori: "Таньд зориулсан хоолны цэсийг бэлдэж байна.....",
   },
-  meal:{
+  meal: {
     meal: "Хоолны төрөл",
     type: [
       { name: "Өглөөний хоол", desc: "Өглөөний хоолоо идсэн үү?" },
       { name: "Өдрийн хоол", desc: "Өдрийн хоолоо идсэн үү?" },
       { name: "Оройн хоол", desc: "Оройн хоолоо идсэн үү?" },
-      { name: "Зууш", desc: "Зууш идсэн үү?" }
-    ]
+      { name: "Зууш", desc: "Зууш идсэн үү?" },
+    ],
   },
 
   mascot: {
@@ -91,9 +101,7 @@ export const mn = {
         title: "Та өдөрт хэдэн удаа хооллодог вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
         choices: ["4+ удаа", "2-3 удаа", "1 удаа"],
-        
-      }
-      ,
+      },
       water: {
         milliliter: "м/литр",
         title: "Та өдөрт хэдэн литр ус уудаг вэ?",
@@ -143,10 +151,9 @@ export const mn = {
           },
         },
       },
-
     },
   },
-  
+
   walk: {
     steps: "Алхалт",
     stepsCount: "Алхам тоолох",
@@ -157,8 +164,8 @@ export const mn = {
   },
   water: {
     word: "Ус",
-    add: 'Нэмэх',
-    alarm: 'Сануулга'
+    add: "Нэмэх",
+    alarm: "Сануулга",
   },
   calories: {
     calorie: " Калори",
@@ -183,7 +190,8 @@ export const mn = {
     wtype: "Дасгалын Төрөл",
     time: "Хугацаа",
     muscle: "Булчин сонгох",
-    muscle1: "Дасгалынхаа голчлон ажиллуулах булчинг сонгоно уу. Бусад булчингууд мөн тодорхой хэмжээгээр ажиллах боломжтой",
+    muscle1:
+      "Дасгалынхаа голчлон ажиллуулах булчинг сонгоно уу. Бусад булчингууд мөн тодорхой хэмжээгээр ажиллах боломжтой",
     inten: "Дасгалын эрчим",
     min: "74 мин",
     bul: "Нуруу, Гуя, Цээж",
@@ -194,7 +202,8 @@ export const mn = {
     aud: "Дууны тохиргоо",
     hugjim: "Хөгжим холбох",
     dasgal: "Яагаад энэ дасгал?",
-    gejuu: "Дээд бие, доод бие, болон гол булчингуудыг хамтад нь ажиллуулах өнөөдрийн бэлтгэл – жинхэнэ хүч болон булчингийн масс бий болгоно. Хийх бүр сет таны булчин нэмэгдүүлэх зорилгод нэг алхмаар ойртуулна.",
+    gejuu:
+      "Дээд бие, доод бие, болон гол булчингуудыг хамтад нь ажиллуулах өнөөдрийн бэлтгэл – жинхэнэ хүч болон булчингийн масс бий болгоно. Хийх бүр сет таны булчин нэмэгдүүлэх зорилгод нэг алхмаар ойртуулна.",
     need: "Танд хэрэгтэй зүйлс",
     hiih: "Та юу хийх вэ",
     adapt: "Дасгалыг тохируулах",
@@ -203,7 +212,7 @@ export const mn = {
     urid: "Урьдчилсан хүчний оноо: 350–650",
     nerrr: "Дасгалын нэр",
     measure: "Биеийн тамирын түвшнээ хэмжих",
-    test: "Bluvi-гийн 5 минутын тестийг дуусгасны дараа таны одоогийн фитнесийн түвшинг задлан шинжилж өгнө."
+    test: "Bluvi-гийн 5 минутын тестийг дуусгасны дараа таны одоогийн фитнесийн түвшинг задлан шинжилж өгнө.",
   },
   profile1: {
     title: "Таны мэдээлэл",
@@ -220,7 +229,7 @@ export const mn = {
     title: "",
     desc: "Таны зорилгоо тодорхойлно",
   },
-  
+
   home: {
     task: "Өнөөдрийн зорилт",
   },
@@ -228,17 +237,13 @@ export const mn = {
     title: "Асуулга өгөх",
     desc: "Ямар хоолны сонголт хийхээ мэдэхгүй байна уу? AI танд шийдэж өгнө",
   },
-  
-
 };
 
-
 export const en = {
-
   question1: {
     tanid: "Do you have any dietary restrictions we should know about?",
     suun: ["Lactose Free", "Sugar Free", "Gluten free", "Nut Free", "None"],
-    daraah: "Continue"
+    daraah: "Continue",
   },
   question2: {
     songo: "What's your preferred eating style?",
@@ -251,13 +256,13 @@ export const en = {
       "Climatarian",
       "Alkaline",
     ],
-    daraah: "Continue"
+    daraah: "Continue",
   },
-  
+
   question3: {
     ta: "Which meals do you usually have in a day?",
     ogloo: ["Breakfast", "Lunch", "Dinner", "Snacks"],
-    daraah: "Continue"
+    daraah: "Continue",
   },
   question4: {
     chi: "Which days are you planning meals for?",
@@ -267,20 +272,20 @@ export const en = {
     nemeh: "Add",
   },
   question5: {
-    zori: "Preparing your personalized menu...."
+    zori: "Preparing your personalized menu....",
   },
   mascot: {
     name: "Bluvi",
     desc: "Let's Get Fit Together",
   },
-  meal:{
+  meal: {
     meal: "Meals",
     type: [
       { name: "Breakfast", desc: "Do you eat breakfast?" },
       { name: "Lunch", desc: "Do you eat lunch?" },
       { name: "Dinner", desc: "Do you eat dinner?" },
-      { name: "Snack", desc: "Do you eat snacks?" }
-    ]
+      { name: "Snack", desc: "Do you eat snacks?" },
+    ],
   },
   login: {
     title1: "Hi There! I'm Bluvi",
@@ -323,15 +328,12 @@ export const en = {
         title: "How many meals do you have per day?",
         desc: "Your choice will affect your workout plan",
         choices: ["4 meals or more", "2-3 meals per day", "1 meal per day"],
-        
       },
       water: {
-       
         milliliter: "ml",
         title: "How much water do you drink per day?",
         desc: "Your choice will affect your workout plan",
         choices: ["4 liters or more", "2-3 liters per day", "1 liter per day"],
-        
       },
       work: {
         title: "What is your current work schedule?",
@@ -387,10 +389,10 @@ export const en = {
     sleep: "Sleep",
     duration: "hours",
   },
-  water:{
+  water: {
     word: "Water",
-    add: 'Add',
-    alarm: 'Alarm'
+    add: "Add",
+    alarm: "Alarm",
   },
   calories: {
     calorie: "Calories",
@@ -426,7 +428,8 @@ export const en = {
     aud: "Audio Settings",
     hugjim: "Connect Music",
     dasgal: "Why this workout?",
-    gejuu: "Upper body, lower body, and core working together in today's gym session—build serious strength and muscle mass. Each set gets you closer to your muscle gain goal.",
+    gejuu:
+      "Upper body, lower body, and core working together in today's gym session—build serious strength and muscle mass. Each set gets you closer to your muscle gain goal.",
     need: "What you'll need",
     hiih: "what you'll do",
     adapt: "Adapt Workout",
@@ -435,9 +438,9 @@ export const en = {
     urid: "Preliminary Strength Score: 350-650",
     nerrr: "Workout Name",
     measure: "Measure your fitness level",
-    test: "After Bluvi's 5-min test, you'll recieve an analysis of your current fitness levels."
+    test: "After Bluvi's 5-min test, you'll recieve an analysis of your current fitness levels.",
   },
-  
+
   profile1: {
     title: "Your Profile",
     calories: "Total Calories",
@@ -456,8 +459,6 @@ export const en = {
     title: "Take Quiz",
     desc: "Not sure what to eat? Let AI decide for you!",
   },
-
-
 };
 
 export const languages = {

@@ -1,14 +1,3 @@
-interface LanguageProviderProps {
-  children: React.ReactNode;
-}
-
-type Language = "en" | "mn";
-
-type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-};
-
 interface RegisterState {
   username: string;
   gender: string;
@@ -82,9 +71,10 @@ type User = {
   updatedAt?: Date;
 };
 
-type Message = {
+export interface Message {
   id: string;
   content: string;
   role: "user" | "model" | "system";
-  timestamp: Date;
-};
+  timestamp: Date | string; // Allow string from API, convert to Date
+  isStreaming?: boolean;
+}

@@ -1,5 +1,5 @@
-import { ThemeView, LangSwitch, ThemeSwitch, Providers } from "@/components";
-import { View, Text, Platform } from "react-native";
+import { ThemeView, Providers } from "@/components";
+import { Platform } from "react-native";
 import { ThemeProvider, useAppTheme } from "@/lib/theme";
 import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router/stack";
@@ -8,12 +8,12 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useRegisterStore } from "@/stores/statsStore";
 // import * as NavigationBar from "expo-navigation-bar";
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const { theme } = useAppTheme();
-
   const [loaded, error] = useFonts({
     Quicksand: require("../assets/fonts/Quicksand-Variable.ttf"),
   });
@@ -28,17 +28,17 @@ const RootLayout = () => {
   // }, []);
 
   useEffect(() => {
+    useRegisterStore.getState().load();
+  }, []);
+
+  useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
   if (!loaded) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return null;
   }
 
   return (

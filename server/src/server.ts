@@ -9,20 +9,24 @@ import router from "@/routes/route";
 import os from "os";
 import dotenv from "dotenv";
 import connectToMongoDB from "./services/mongodb";
+import path from "path";
 
 dotenv.config();
+const __dirname = path.resolve();
 
 const app: Express = express();
 
 // Log requests
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  let ip = req.ip || req.socket.remoteAddress || "unknown";
+  let ip = req.headers["cf-connecting-ip"] || req.ip || "unknown";
+  if (Array.isArray(ip)) ip = ip[0];
   if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "IPv4 ");
   console.log(`Request IP: ${ip}`);
 
   next();
 });
 
+app.use(express.static(path.join(__dirname, "public")));
 app.use(bp.urlencoded({ limit: "16mb", extended: true }));
 app.use(redisMiddleware);
 app.use(express.json());
