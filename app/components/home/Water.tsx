@@ -188,7 +188,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water/1.svg")}
+              source={require("@/assets/water2/1.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -201,7 +201,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water/2.svg")}
+              source={require("@/assets/water2/2.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -214,7 +214,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water/3.svg")}
+              source={require("@/assets/water2/3.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
@@ -227,7 +227,7 @@ export default function Water() {
             }
           >
             <Image
-              source={require("@/assets/water/4.svg")}
+              source={require("@/assets/water2/4.svg")}
               style={{ width: "100%", height: "100%" }}
               renderToHardwareTextureAndroid
             />
