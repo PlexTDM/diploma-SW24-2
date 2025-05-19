@@ -1,6 +1,6 @@
 import { ThemeView } from "@/components";
 import { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { addMonths, subMonths } from "date-fns";
 import MiniCalendar from "@/components/MiniCalendar";
 
@@ -60,9 +60,10 @@ export default function Streak() {
   const { currentStreak, longestStreak } = calculateStreaks(completedDays);
 
   return (
-    <ThemeView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ThemeView className="flex-1 bg-white dark:bg-gray-900">
       <View className="w-full px-2 mb-2">
-        <Text className="text-lg font-bold text-black dark:text-white mb-2 text-center">
+        <Text className="text-lg font-bold text-black dark:text-white mt-10 text-center">
           Streak Days
         </Text>
       </View>
@@ -96,5 +97,6 @@ export default function Streak() {
         />
       </View>
     </ThemeView>
+    </ScrollView>
   );
 }

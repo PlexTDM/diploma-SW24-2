@@ -1,3 +1,4 @@
+import React, { use } from "react";
 import { View, Pressable, Switch, Text } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { ThemeView, ThemeText } from "@/components";
@@ -6,7 +7,6 @@ import { useAppTheme } from "@/lib/theme";
 import { useLanguage, languages } from "@/lib/language";
 import { Button, Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
-import { use } from "react";
 
 export default function Settings() {
   const { user } = use(AuthContext);
@@ -132,7 +132,6 @@ export default function Settings() {
         />
       </Pressable>
 
-    
       {/* Privacy */}
       <Pressable
         className="flex-row mt-8 items-center justify-between"
@@ -155,10 +154,8 @@ export default function Settings() {
         />
       </Pressable>
 
-       {/* Language */}
-      <Pressable
-        className="flex-row mt-8 items-center justify-between"
-      >
+      {/* Language */}
+      <Pressable className="flex-row mt-8 items-center justify-between">
         <View className="flex-row items-center gap-8">
           <View className="bg-blue-50 dark:bg-gray-800 p-4 rounded-full">
             <Icon
@@ -169,21 +166,24 @@ export default function Settings() {
           </View>
           <ThemeText className="text-xl font-semibold">Language</ThemeText>
         </View>
-        <Pressable onPress={toggleLang} >
+        <Pressable onPress={toggleLang}>
           <View className="flex-row items-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700">
             {language === "mn" ? (
               <>
-                <Text className="text-black dark:text-white text-lg">Монгол</Text>
+                <Text className="text-black dark:text-white text-lg">
+                  Монгол
+                </Text>
               </>
             ) : (
               <>
-                <Text className="text-black dark:text-white text-lg">English</Text>
+                <Text className="text-black dark:text-white text-lg">
+                  English
+                </Text>
               </>
             )}
           </View>
         </Pressable>
       </Pressable>
-
 
       {/* Dark Mode Switch */}
       <Pressable className="flex-row mt-8 items-center justify-between">

@@ -1,5 +1,5 @@
 import { useEffect, useState, memo, use } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
 
@@ -10,10 +10,12 @@ const MessageBubbleComponent = memo(
     message,
     isCurrentlyStreaming,
     setCurrentStreamingMessageId,
+    isSending,
   }: {
     message: Message;
     isCurrentlyStreaming: boolean;
     setCurrentStreamingMessageId: (id: string | null) => void;
+    isSending: boolean;
   }) => {
     const isUser = message.role === "user";
     const { user } = use(AuthContext);
@@ -34,24 +36,22 @@ const MessageBubbleComponent = memo(
       }
 
       if (isCurrentlyStreaming) {
+        if (
+          !message.content.startsWith(displayedText) &&
+          displayedText !== ""
+        ) {
+          setDisplayedText(message.content);
+          setCurrentStreamingMessageId(null);
+          return;
+        }
+
         if (displayedText.length < message.content.length) {
           const timer = setTimeout(() => {
-            if (message.content.startsWith(displayedText)) {
-              setDisplayedText(
-                message.content.substring(0, displayedText.length + 1)
-              );
-            } else {
-              setDisplayedText(message.content.substring(0, 1));
-            }
+            setDisplayedText(
+              message.content.substring(0, displayedText.length + 1)
+            );
           }, TYPING_SPEED_MS);
           return () => clearTimeout(timer);
-        } else if (
-          displayedText.length > message.content.length ||
-          (displayedText !== message.content &&
-            !message.content.startsWith(displayedText))
-        ) {
-          setDisplayedText("");
-          setCurrentStreamingMessageId(null);
         }
       } else {
         if (message.content !== displayedText) {
@@ -98,9 +98,15 @@ const MessageBubbleComponent = memo(
           {isUser ? (
             <Text className={`text-base text-white`}>{message.content}</Text>
           ) : (
-            <Text className="text-base text-gray-900 dark:text-gray-100">
-              {displayedText}
-            </Text>
+            <View className="flex-row items-center gap-2">
+              {isSending ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                <Text className="text-base text-gray-900 dark:text-gray-100">
+                  {displayedText}
+                </Text>
+              )}
+            </View>
           )}
           <Text
             className={`text-xs mt-1 ${

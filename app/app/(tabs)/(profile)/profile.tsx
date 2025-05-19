@@ -1,15 +1,16 @@
 import { ThemeView, ThemeText } from "@/components";
 import { use, useCallback, useRef, useState } from "react";
-import { FlatList, LayoutChangeEvent, Pressable, View , SafeAreaView} from "react-native";
+import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
-import { useLanguage,languages } from "@/lib/language";
+import { useLanguage, languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Button, Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
+import { SafeAreaView } from "react-native-safe-area-context";
 const Tabs = () => {
   const { language } = useLanguage();
   const tabRef = useRef<FlatList>(null);
@@ -73,11 +74,10 @@ const Tabs = () => {
     };
     const selected = selectedTab === tab;
     return (
-      
+
       <View
-        className={`flex-1 overflow-hidden  ${
-          selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
-        }`}
+        className={`flex-1 overflow-hidden  ${selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
+          }`}
       >
         <Pressable
           android_ripple={{
@@ -96,7 +96,7 @@ const Tabs = () => {
   };
 
   return (
-   
+
     <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
         <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
@@ -143,17 +143,17 @@ export default function Tab() {
   };
 
   return (
-      
-    <ThemeView className="items-center justify-center pt-8">
+
+    <SafeAreaView className="items-center justify-center dark:bg-gray-900 bg-white flex-1">
       <View className="flex-row items-center px-6 justify-between w-full">
-        <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
-          <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
+        <View className="border-2 border-gray-200 p-2 dark:border-gray-700 rounded-full">
+          <Pressable onPress={handleBack}>
             <Icon
               source="chevron-left"
               size={25}
               color={theme === "dark" ? "#fff" : "#000"}
             />
-          </Button>
+          </Pressable>
         </View>
         <ThemeText className="text-2xl text-center font-semibold">
           {languages[language].profile1.title}
@@ -208,7 +208,7 @@ export default function Tab() {
         </View>
       </View>
       <Tabs />
-    </ThemeView>
+    </SafeAreaView>
 
   );
 }

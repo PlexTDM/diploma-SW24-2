@@ -11,8 +11,14 @@ declare global {
       user: UserPayload;
     }
   }
-  type AuthenticatedRequest<TBody = any> = Express.Request<any, any, TBody> & {
-    user: UserPayload;
-    redis: RedisService;
-  };
 }
+
+export type AuthenticatedRequest<
+  P = Record<string, string>,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = Query
+> = Request<P, ResBody, ReqBody, ReqQuery> & {
+  user: UserPayload;
+  redis: RedisService;
+};

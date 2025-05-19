@@ -2,7 +2,7 @@ import { languages, useLanguage } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, View , ScrollView} from "react-native";
 import { Icon } from "react-native-paper";
 import { ThemeText } from "..";
 import LottieView from "lottie-react-native";
@@ -22,7 +22,7 @@ export default function Step1() {
   };
 
   return (
-    <View className="flex-1 gap-auto justify-center items-center">
+    <View className="flex-1 mt-24 items-center">
       <View className="flex items-center ">
         <View className="flex-row px-6">
           <View className="w-10 h-10">
@@ -46,20 +46,21 @@ export default function Step1() {
               />
             </View>
           </View>
-          <ThemeText className="text-3xl w-[90%] font-bold text-center">
+          <ThemeText className="text-3xl w-[85%] font-bold text-center">
             {languages[language].register.steps.health.title}
           </ThemeText>
         </View>
-        <Text className="text-gray-300 text-xl w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
+        <Text className="text-gray-300 text-lg w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
           {languages[language].register.steps.health.desc}
         </Text>
       </View>
-      <View className="my-4">
+      <ScrollView className="px-2">
+      <View className="my-6">
         {choices.map((choice, i) => (
           <Pressable
             key={i}
             onPress={() => handlePress(i)}
-            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${
+            className={`dark:bg-gray-900 p-5 mb-6 w-[330px] border-2 rounded-3xl relative ${
               selectedIndex === i
                 ? "border-black dark:border-white"
                 : "border-gray-200 dark:border-gray-700"
@@ -83,6 +84,7 @@ export default function Step1() {
         ))}
       </View>
       <View className="mb-4"></View>
+      </ScrollView>
     </View>
   );
 }

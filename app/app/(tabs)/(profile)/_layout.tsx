@@ -3,9 +3,9 @@ import { Stack } from "expo-router/stack";
 import { use } from "react";
 import { useAppTheme } from "@/lib/theme";
 const RootLayout = () => {
-  const { loggedIn } = use(AuthContext);
+  // const { loggedIn } = use(AuthContext);
   const { theme } = useAppTheme();
-  // const loggedIn = true;
+  const loggedIn = true;
   return (
     <Stack
       screenOptions={{

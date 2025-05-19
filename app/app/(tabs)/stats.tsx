@@ -9,13 +9,15 @@ import {
   useColorScheme,
   ScrollView,
   SafeAreaView,
+  Image,
 } from "react-native";
 import moment, { Moment } from "moment";
+import { useLanguage, languages } from "@/lib/language";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemeView, ThemeText } from "@/components";
-import { Image } from "react-native";
 import QuizLottie from "@/components/home/Quizlottie";
+
 const screenWidth = Dimensions.get("window").width;
 
 const Blog = () => {
@@ -26,6 +28,7 @@ const Blog = () => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { language } = useLanguage();
 
   useEffect(() => {
     const today = moment();
@@ -40,14 +43,42 @@ const Blog = () => {
     setSelectedDate(date.format("YYYY-MM-DD"));
   };
 
+  const meals = [
+    {
+      image: require("@/assets/food/breakfast.png"),
+      typeIndex: 0,
+      cal: "120 / 304 cal",
+    },
+    {
+      image: require("@/assets/food/lunch.png"),
+      typeIndex: 1,
+      cal: "450 / 700 cal",
+    },
+    {
+      image: require("@/assets/food/dinner.png"),
+      typeIndex: 2,
+      cal: "500 / 600 cal",
+    },
+    {
+      image: require("@/assets/food/donut.png"),
+      typeIndex: 3,
+      cal: "220 / 300 cal",
+    },
+  ];
+
   return (
     <SafeAreaView>
       <ScrollView>
         <ThemeView className="flex-1">
           <View className="p-6 items-center">
-            <View className="flex-row justify-between items-center gap-80">
+            {/* Header */}
+            <View className="flex-row justify-between items-center w-full mb-4">
               <ThemeText className="font-bold text-2xl">Calories</ThemeText>
-              <Feather name="bell" size={20} color="black" />
+              <Feather
+                name="bell"
+                size={20}
+                color={isDark ? "#ccc" : "black"}
+              />
             </View>
 
             {/* Calendar */}
@@ -81,42 +112,15 @@ const Blog = () => {
             {/* Nutrient Bars */}
             <View className="flex-row justify-between gap-7 mt-6">
               {[
-                {
-                  label: "Cal",
-                  height: "h-36",
-                  color: "bg-blue-300",
-                  value: "1240",
-                },
-                {
-                  label: "Prot",
-                  height: "h-28",
-                  color: "bg-green-200",
-                  value: "60.2",
-                },
-                {
-                  label: "Carb",
-                  height: "h-40",
-                  color: "bg-green-300",
-                  value: "80.2",
-                },
-                {
-                  label: "Fats",
-                  height: "h-36",
-                  color: "bg-green-300",
-                  value: "68.2",
-                },
-                {
-                  label: "RDC",
-                  height: "h-24",
-                  color: "bg-orange-200",
-                  value: "12%",
-                },
+                { label: "Cal", height: "h-36", color: "bg-blue-300", value: "1240" },
+                { label: "Prot", height: "h-28", color: "bg-green-200", value: "60.2" },
+                { label: "Carb", height: "h-40", color: "bg-green-300", value: "80.2" },
+                { label: "Fats", height: "h-36", color: "bg-green-300", value: "68.2" },
+                { label: "RDC", height: "h-24", color: "bg-orange-200", value: "12%" },
               ].map((item, i) => (
-                <View className="flex-col gap-6 justify-center w-[14%]" key={i}>
-                  <View className="w-14 h-48 border rounded-full  border-gray-300 pt-8 justify-end">
-                    <View
-                      className={`w-15 ${item.height} ${item.color} rounded-full items-center `}
-                    >
+                <View className="flex-col gap-6 justify-center w-[16%]" key={i}>
+                  <View className="w-14 h-48 border rounded-full border-gray-300 pt-8 justify-end">
+                    <View className={`w-15 ${item.height} ${item.color} rounded-full items-center`}>
                       <View className="top-2 flex bg-white w-10 h-10 rounded-full items-center justify-center">
                         <Text className="text-[10px]">{item.value}</Text>
                       </View>
@@ -130,156 +134,75 @@ const Blog = () => {
             </View>
 
             {/* AI Suggestion Box */}
-            <View className="w-full h-[200px] rounded-3xl  p-2 mt-5 items-center justify-center relative">
+            <View className="w-full h-[200px] rounded-3xl p-2 mt-5 items-center justify-center relative">
               <Image
                 source={require("@/assets/img/foodPoster.png")}
                 className="w-full h-full rounded-3xl"
                 resizeMode="cover"
               />
-
-              <Text className="absolute top-10 w-36 left-12 text-center text-xl font-bold text-white">
-                Not sure what to eat? Let AI decide for you!
-              </Text>
+              <ThemeText
+                className={`absolute text-center font-bold text-white ${
+                  language === "mn" ? "w-48 left-8 top-12" : "w-36 text-xl top-10 left-12"
+                }`}
+              >
+                {languages[language].quiz.desc}
+              </ThemeText>
 
               <Pressable
                 onPress={() => router.push("/mnkv")}
-                className="absolute mt-24 right-28 w-full items-center justify-center rounded-full"
+                className="absolute mt-28 right-28 w-full items-center justify-center rounded-full"
               >
                 <QuizLottie />
-                <Text className="black absolute font-bold font-quicksand">
-                  Take Quiz
-                </Text>
+                <ThemeText className="text-orange-500 absolute mb-2 font-bold font-quicksand">
+                  {languages[language].quiz.title}
+                </ThemeText>
               </Pressable>
             </View>
 
             {/* Meals Section */}
-            <Text
-              className={`text-2xl font-bold mt-6 w-full px-2  ${
+            <ThemeText
+              className={`text-2xl font-bold mt-6 w-full px-2 ${
                 isDark ? "text-white" : "text-black"
               }`}
             >
-              Meals
-            </Text>
-            <View className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4">
-              {/* Food image */}
-              <View className="w-20 h-20 rounded-full overflow-hidden">
-                <Image
-                  source={require("@/assets/food/breakfast.png")}
-                  style={{ width: "100%", height: "100%" }}
-                  resizeMode="cover"
-                />
-              </View>
+              {languages[language].meal.meal}
+            </ThemeText>
 
-              {/* Text info */}
-              <View className="flex-1 ml-4">
-                <Text
-                  className={`font-bold text-xl ${
-                    isDark ? "text-white" : "text-black"
-                  }`}
-                >
-                  Breakfast
-                </Text>
-                <Text className="text-gray-500">120 / 304 cal</Text>
-              </View>
-
-              {/* Add button */}
-              <Pressable
-                onPress={() => router.push("/(meal)/nemeh")}
-                className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20  justify-center items-center"
+            {meals.map((meal, index) => (
+              <View
+                key={index}
+                className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4"
               >
-                <Feather name="plus" size={24} color="#136CF1" />
-              </Pressable>
-            </View>
-            <View className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4">
-              {/* Food image */}
-              <View className="w-20 h-20 rounded-full overflow-hidden">
-                <Image
-                  source={require("@/assets/food/lunch.png")}
-                  style={{ width: "100%", height: "100%" }}
-                  resizeMode="cover"
-                />
-              </View>
+                {/* Food image */}
+                <View className="w-20 h-20 rounded-full overflow-hidden">
+                  <Image
+                    source={meal.image}
+                    style={{ width: "100%", height: "100%" }}
+                    resizeMode="cover"
+                  />
+                </View>
 
-              {/* Text info */}
-              <View className="flex-1 ml-4">
-                <Text
-                  className={`font-bold text-xl ${
-                    isDark ? "text-white" : "text-black"
-                  }`}
+                {/* Text info */}
+                <View className="flex-1 ml-4">
+                  <Text
+                    className={`font-bold text-xl ${
+                      isDark ? "text-white" : "text-black"
+                    }`}
+                  >
+                    {languages[language].meal.type[meal.typeIndex].name}
+                  </Text>
+                  <Text className="text-gray-500">{meal.cal}</Text>
+                </View>
+
+                {/* Add button */}
+                <Pressable
+                  onPress={() => router.push("/(meal)/nemeh")}
+                  className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20 justify-center items-center"
                 >
-                  Breakfast
-                </Text>
-                <Text className="text-gray-500">120 / 304 cal</Text>
+                  <Feather name="plus" size={24} color="#136CF1" />
+                </Pressable>
               </View>
-
-              {/* Add button */}
-              <Pressable
-                onPress={() => router.push("/(meal)/nemeh")}
-                className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20  justify-center items-center"
-              >
-                <Feather name="plus" size={24} color="#136CF1" />
-              </Pressable>
-            </View>
-            <View className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4">
-              {/* Food image */}
-              <View className="w-20 h-20 rounded-full overflow-hidden">
-                <Image
-                  source={require("@/assets/food/dinner.png")}
-                  style={{ width: "100%", height: "100%" }}
-                  resizeMode="cover"
-                />
-              </View>
-
-              {/* Text info */}
-              <View className="flex-1 ml-4">
-                <Text
-                  className={`font-bold text-xl ${
-                    isDark ? "text-white" : "text-black"
-                  }`}
-                >
-                  Breakfast
-                </Text>
-                <Text className="text-gray-500">120 / 304 cal</Text>
-              </View>
-
-              {/* Add button */}
-              <Pressable
-                onPress={() => router.push("/(meal)/nemeh")}
-                className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20 justify-center items-center"
-              >
-                <Feather name="plus" size={24} color="#136CF1" />
-              </Pressable>
-            </View>
-            <View className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4">
-              {/* Food image */}
-              <View className="w-20 h-20 rounded-full overflow-hidden">
-                <Image
-                  source={require("@/assets/food/donut.png")}
-                  style={{ width: "100%", height: "100%" }}
-                  resizeMode="cover"
-                />
-              </View>
-
-              {/* Text info */}
-              <View className="flex-1 ml-4">
-                <Text
-                  className={`font-bold text-xl ${
-                    isDark ? "text-white" : "text-black"
-                  }`}
-                >
-                  Breakfast
-                </Text>
-                <Text className="text-gray-500">120 / 304 cal</Text>
-              </View>
-
-              {/* Add button */}
-              <Pressable
-                onPress={() => router.push("/(meal)/nemeh")}
-                className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20  justify-center items-center"
-              >
-                <Feather name="plus" size={24} color="#136CF1" />
-              </Pressable>
-            </View>
+            ))}
           </View>
         </ThemeView>
       </ScrollView>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLanguage, languages } from "@/lib/language";
 import {
   View,
   Text,
@@ -9,7 +10,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
 } from "react-native";
-import { ThemeView } from "@/components";
+import { ThemeView, ThemeText } from "@/components";
 import WaterAnimation from "@/components/home/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -22,6 +23,7 @@ function WaterModal({
 }) {
   const waterGoal = 3500;
   const [currentWater, setCurrentWater] = useState(2100);
+  const { language } = useLanguage();
 
   const percentage = Math.min(
     Math.round((currentWater / waterGoal) * 100),
@@ -65,7 +67,7 @@ function WaterModal({
       supportedOrientations={["portrait"]}
     >
       <TouchableWithoutFeedback onPress={() => setVisible(false)}>
-        <SafeAreaView className="flex-1 items-center px-8 py-2 justify-end bg-black/50">
+        <SafeAreaView className="flex-1 items-center py-2 justify-end bg-black/50">
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
             <ThemeView className="flex-1 max-h-[90%] w-full p-8 rounded-3xl">
               {/* Water progress */}
@@ -90,10 +92,10 @@ function WaterModal({
 
               {/* Add Water Section */}
               <View className="w-full flex-row flex-wrap justify-between mt-6">
-                <Text className="text-xl text-black dark:text-white font-semibold ml-3">
-                  Add
-                </Text>
-                <View className="w-full flex-row flex-wrap justify-between gap-4 px-2 mt-6">
+                <ThemeText className=" font-bold text-lg dark:text-black w-full font-quicksand ">
+                  {languages[language].water.add}
+                </ThemeText>
+                <View className="w-full flex-row flex-wrap justify-between gap-3   mt-6">
                   {waterOptions.map((amount) => (
                     <TouchableOpacity
                       key={amount}
@@ -111,10 +113,10 @@ function WaterModal({
               </View>
 
               {/* Alarm Section */}
-              <View className="mt-6 w-full px-2 flex-1">
-                <Text className="text-xl text-black dark:text-white font-semibold ml-1 mb-3">
-                  Alarm
-                </Text>
+              <View className="mt-6 w-full px-1 flex-1">
+                <ThemeText className="font-bold text-lg dark:text-black w-full mb-3 font-quicksand">
+                  {languages[language].water.alarm}
+                </ThemeText>
 
                 <FlatList
                   data={alarms}

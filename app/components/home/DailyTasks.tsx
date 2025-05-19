@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { CheckCircle2, Circle } from "lucide-react-native";
 import { useColorScheme } from "react-native";
+import { useLanguage, languages } from "@/lib/language";
+import { ThemeText } from "@/components";
 import {
     configureReanimatedLogger,
     ReanimatedLogLevel,
@@ -22,6 +24,7 @@ type Task = {
     unit: string;
 };
 
+
 const initialTasks: Task[] = [
     { id: 1, title: "Drink water", target: "3 glasses", current: 2, max: 3, completed: false, icon: "💧", unit: "glasses" },
     { id: 2, title: "Walk", target: "1000 steps", current: 750, max: 1000, completed: false, icon: "👣", unit: "steps" },
@@ -35,6 +38,8 @@ const initialTasks: Task[] = [
 export default function DailyTasks() {
     const [tasks, setTasks] = useState(initialTasks);
     const theme = useColorScheme();
+
+    const { language } = useLanguage();
     const incrementProgress = (id: number) => {
         setTasks((prev) =>
             prev.map((task) => {
@@ -53,7 +58,9 @@ export default function DailyTasks() {
     return (
         <View className="px-1 mt-6">
             <View className="flex-row justify-between mb-4 items-center">
-                <Text className="text-xl font-bold font-quicksand dark:text-white">Today's Tasks</Text>
+                <ThemeText className="text-xl font-bold  dark:text-white "> 
+                    {languages[language].home.task}
+                    </ThemeText>
                 <Text className="text-sm text-gray-500 dark:text-gray-400 ">
                     {completedCount}/{tasks.length} completed
                 </Text>
@@ -62,12 +69,12 @@ export default function DailyTasks() {
             <View className="space-y-3 gap-3">
                 {tasks.map((task) => {
                     const containerClasses = `
-            p-4 rounded-3xl  flex-col border-1 transition-all duration-300
-            ${task.completed
-                            ? " border-blue-300 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+  p-4 rounded-3xl flex-col border-1
+  ${task.completed
+                            ? "border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
                             : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
+`;
 
-          `;
                     return (
                         <Pressable
                             key={task.id}

@@ -2,7 +2,6 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import {
   Button,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,13 +14,16 @@ export default function App() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [foodInfo, setFoodInfo] = useState<any>(null);
+  const [hasShownNotFoundAlert, setHasShownNotFoundAlert] = useState(false); // Шинэ нэмэлт state
 
   if (!permission) return <View />;
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <Text style={styles.message}>
+          Камер ашиглах зөвшөөрөл шаардлагатай.
+        </Text>
+        <Button onPress={requestPermission} title="Зөвшөөрөх" />
       </View>
     );
   }
@@ -33,7 +35,7 @@ export default function App() {
   async function handleBarcodeScanned({ data }: { data: string }) {
     if (scanned) return;
     setScanned(true);
-    setFoodInfo(null); // хуучин мэдээллийг устгана
+    setFoodInfo(null);
 
     try {
       const response = await fetch(
@@ -41,12 +43,14 @@ export default function App() {
       );
       const json = await response.json();
 
-      console.log("Full product info:", json);
-
       if (json.status === 1 && json.product) {
         setFoodInfo(json.product);
+        setHasShownNotFoundAlert(false); // Шинэ бүтээгдэхүүн олдсон тул alert-г дахин харуулах боломж нээх
       } else {
-        alert("Бүтээгдэхүүн олдсонгүй!");
+        if (!hasShownNotFoundAlert) {
+          alert("Бүтээгдэхүүн олдсонгүй!");
+          setHasShownNotFoundAlert(true); // Alert нэг удаа гарсан гэж тэмдэглэх
+        }
         setFoodInfo(null);
         setScanned(false);
       }
@@ -55,6 +59,30 @@ export default function App() {
       alert("Алдаа гарлаа. Сүлжээг шалгана уу.");
       setScanned(false);
     }
+  }
+
+  function getLevel(value: number, type: string) {
+    if (type === "fat") {
+      if (value < 3) return "бага";
+      if (value < 17.5) return "дунд";
+      return "өндөр";
+    }
+    if (type === "saturated-fat") {
+      if (value < 1.5) return "бага";
+      if (value < 5) return "дунд";
+      return "өндөр";
+    }
+    if (type === "sugars") {
+      if (value < 5) return "бага";
+      if (value < 22.5) return "дунд";
+      return "өндөр";
+    }
+    if (type === "salt") {
+      if (value < 0.3) return "бага";
+      if (value < 1.5) return "дунд";
+      return "өндөр";
+    }
+    return "мэдэгдэхгүй";
   }
 
   return (
@@ -69,32 +97,86 @@ export default function App() {
           onBarcodeScanned={handleBarcodeScanned}
         >
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Flip Camera</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={toggleCameraFacing}
+            >
+              <Text style={styles.text}>Камер эргүүлэх</Text>
             </TouchableOpacity>
           </View>
         </CameraView>
       ) : (
         <ScrollView contentContainerStyle={styles.infoContainer}>
-          <Text style={styles.title}>{foodInfo.product_name || "Нэр олдсонгүй"}</Text>
-          <Text>Brand: {foodInfo.brands || "Unknown"}</Text>
-
-          {foodInfo.image_url ? (
-            <Image source={{ uri: foodInfo.image_url }} style={styles.image} />
-          ) : null}
-
-          <Text>Calories: {foodInfo.nutriments?.energy_kcal || "?"} kcal</Text>
-          <Text>Ingredients: {foodInfo.ingredients_text || "Not available"}</Text>
-          <Text>
-            Nutri Score: {foodInfo.nutriscore_grade?.toUpperCase() || "?"}
+          <Text style={styles.title}>
+            {foodInfo.product_name || "Нэргүй бүтээгдэхүүн"}
           </Text>
-          <Text>Serving Size: {foodInfo.serving_size || "?"}</Text>
+
+          <View style={styles.card}>
+            <Text style={styles.label}>🍽 Ангилал:</Text>
+            <Text style={styles.value}>
+              {foodInfo.categories || "Мэдээлэл байхгүй"}
+            </Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.label}>📊Шим тэжээлийн мэдээлэл:</Text>
+            <Text style={styles.value}>
+              Илчлэг: {foodInfo.nutriments?.energy || "?"} kcal
+            </Text>
+            <Text style={styles.value}>
+              Нүүрс ус: {foodInfo.nutriments?.carbohydrates || "?"} г
+            </Text>
+            <Text style={styles.value}>
+              Өөх тос: {foodInfo.nutriments?.fat || "?"} г
+            </Text>
+            <Text style={styles.value}>
+              ‣ Ханасан тос:{" "}
+              {foodInfo.nutriments?.["saturated-fat"] || "?"} г
+            </Text>
+            <Text style={styles.value}>
+              Уураг: {foodInfo.nutriments?.proteins || "?"} г
+            </Text>
+            <Text style={styles.value}>
+              Давс: {foodInfo.nutriments?.salt || "?"} г
+            </Text>
+            <Text style={styles.value}>
+              Сахар: {foodInfo.nutriments?.sugars || "?"} г
+            </Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.label}>🟢 Тэжээлийн чанарын үнэлгээ:</Text>
+            <Text style={[styles.value, { fontWeight: "bold", fontSize: 18 }]}>
+              {foodInfo.nutriscore_grade?.toUpperCase() || "?"}
+            </Text>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.label}>🧂 Тэжээлийн түвшин:</Text>
+            <Text style={styles.value}>
+              Өөх тос:{" "}
+              {getLevel(foodInfo.nutriments?.fat_100g || 0, "fat")}
+            </Text>
+            <Text style={styles.value}>
+              Ханасан тос:{" "}
+              {getLevel(foodInfo.nutriments?.["saturated-fat_100g"] || 0, "saturated-fat")}
+            </Text>
+            <Text style={styles.value}>
+              Сахар:{" "}
+              {getLevel(foodInfo.nutriments?.sugars_100g || 0, "sugars")}
+            </Text>
+            <Text style={styles.value}>
+              Давс:{" "}
+              {getLevel(foodInfo.nutriments?.salt_100g || 0, "salt")}
+            </Text>
+          </View>
 
           <Button
-            title="Scan Another"
+            title="Буцах"
             onPress={() => {
               setFoodInfo(null);
               setScanned(false);
+              setHasShownNotFoundAlert(false); // Alert дахин харуулах боломжийг нээх
             }}
           />
         </ScrollView>
@@ -105,7 +187,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  message: { textAlign: "center", paddingBottom: 10 },
+  message: {
+    textAlign: "center",
+    padding: 10,
+    fontSize: 16,
+    color: "gray",
+  },
   camera: { flex: 1 },
   buttonContainer: {
     flex: 1,
@@ -118,13 +205,37 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     alignItems: "center",
   },
-  text: { fontSize: 24, fontWeight: "bold", color: "white" },
+  text: { fontSize: 20, fontWeight: "bold", color: "white" },
   infoContainer: {
     flexGrow: 1,
     alignItems: "center",
-    justifyContent: "center",
     padding: 20,
+    backgroundColor: "#fff",
   },
-  image: { width: 200, height: 200, marginVertical: 20 },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  card: {
+    backgroundColor: "#f0f4f7",
+    borderRadius: 15,
+    padding: 15,
+    marginVertical: 10,
+    width: "100%",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  label: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  value: {
+    fontSize: 15,
+    marginBottom: 3,
+  },
 });

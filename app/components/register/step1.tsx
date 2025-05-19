@@ -90,7 +90,7 @@ export default function Step1() {
   };
 
   return (
-    <View className="flex-1 gap-4 items-center px-6 pt-10 bg-white dark:bg-black">
+    <View className="flex-1 gap-4 items-center px-6 mt-24 bg-white dark:bg-black">
       <Text className="text-2xl font-bold text-center text-black dark:text-white">
         {languages[language].register.steps.step1.title}
       </Text>
@@ -113,23 +113,23 @@ export default function Step1() {
             borderRadius: 12,
             borderColor: "#ccc",
             paddingHorizontal: 16,
-            paddingVertical: 12,
+            paddingVertical: 16,
           }}
           dropDownContainerStyle={{
             borderColor: "#ccc",
             borderRadius: 12,
           }}
-          placeholderStyle={{ fontSize: 16, color: "gray" }}
-          textStyle={{ fontSize: 16, color: "#000" }}
+          placeholderStyle={{ fontSize: 15, color: "gray" , fontWeight: "semibold" }}
+          textStyle={{ fontSize: 15, color: "#000" }}
         />
       </View>
 
       {/* Date Picker */}
       <Pressable
         onPress={() => setShowDatePicker(true)}
-        className="w-full border border-gray-300 rounded-xl p-4 bg-white"
+        className="w-full border border-gray-300 rounded-xl py-5 px-4 bg-white"
       >
-        <Text className="text-gray-800">
+        <Text className="text-gray-500 font-normal text-base">
           {dob ? dob.toDateString() : "Төрсөн өдрөө сонгоно уу"}
         </Text>
       </Pressable>
@@ -147,47 +147,49 @@ export default function Step1() {
         />
       )}
 
-      {/* Weight Input */}
-      <View className="w-full flex-row items-center border bg-white border-gray-300 rounded-xl overflow-hidden">
-        <TextInput
-          placeholder={languages[language].register.steps.step1.weight}
-          placeholderTextColor="gray"
-          value={weight}
-          onChangeText={handleWeight}
-          keyboardType="numeric"
-          className="flex-1 p-4 text-gray-800"
-        />
+      // Weight Input
+      <View className="w-full flex-row items-center justify-between gap-4">
+        <View className="flex-1 flex-row items-center border border-gray-300 rounded-2xl bg-white px-4 py-5 ">
+          
+          <TextInput
+            placeholder={languages[language].register.steps.step1.weight}
+            placeholderTextColor="#A9A9A9"
+            value={weight}
+            onChangeText={handleWeight}
+            keyboardType="numeric"
+            className="flex-1 text-base text-gray-800 font-medium"
+          />
+        </View>
         <Pressable
-          onPress={() =>
-            setWeightUnit((prev) => (prev === "kg" ? "lbs" : "kg"))
-          }
-          className="px-4 py-3"
+          onPress={() => setWeightUnit((prev) => (prev === "kg" ? "lbs" : "kg"))}
+          className="w-16 h-[60px] bg-[#0066FF] rounded-2xl items-center justify-center shadow-md shadow-blue-600/50"
         >
-          <Text className="text-black font-bold">
-            {weightUnit.toUpperCase()}
-          </Text>
+          <Text className="text-white font-bold">{weightUnit.toUpperCase()}</Text>
         </Pressable>
       </View>
 
-      {/* Height Input */}
-      <View className="w-full flex-row items-center border bg-white border-gray-300 rounded-xl overflow-hidden">
-        <TextInput
-          placeholder={languages[language].register.steps.step1.height}
-          placeholderTextColor="gray"
-          value={height}
-          onChangeText={handleHeight}
-          keyboardType="numeric"
-          className="flex-1 p-4 text-gray-800"
-        />
+// Height Input
+      <View className="w-full flex-row items-center justify-between gap-4 ">
+        <View className="flex-1 flex-row items-center border border-gray-300 rounded-2xl bg-white px-4 py-5">
+          
+          <TextInput
+            placeholder={languages[language].register.steps.step1.height}
+            placeholderTextColor="#A9A9A9"
+            value={height}
+            onChangeText={handleHeight}
+            keyboardType="numeric"
+            className="flex-1 text-base text-gray-800 font-medium"
+          />
+        </View>
         <Pressable
           onPress={() => setHeightUnit((prev) => (prev === "cm" ? "ft" : "cm"))}
-          className="px-4 py-3"
+          className="w-16 h-[60px] bg-[#0066FF] rounded-2xl items-center justify-center shadow-md shadow-blue-600/50"
         >
-          <Text className="text-black font-bold">
-            {heightUnit.toUpperCase()}
-          </Text>
+          <Text className="text-white font-bold">{heightUnit.toUpperCase()}</Text>
         </Pressable>
       </View>
+
+
     </View>
   );
 }
