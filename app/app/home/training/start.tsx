@@ -44,7 +44,7 @@ export default function start() {
         </Pressable>
       </View>
       <View className="absolute bottom-28 left-5 right-5">
-        <Pressable onPress={() => router.push("/home/training/screen2")}>
+        <Pressable onPress={() => router.push("/home/training/test")}>
           <Button
             mode="contained"
             className="rounded-xl"
