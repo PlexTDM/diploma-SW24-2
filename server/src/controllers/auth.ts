@@ -352,7 +352,7 @@ class AuthController {
         new URLSearchParams({
           client_id: process.env.GOOGLE_CLIENT_ID as string,
           client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
-          redirect_uri: "http://localhost:8081/api/auth/callback",
+          redirect_uri: `${BASE_URL}/auth/callback`,
           grant_type: "authorization_code",
           code: code,
         }),
