@@ -28,7 +28,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 
   next();
 });
-
+app.set("trust proxy", 1);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bp.urlencoded({ limit: "16mb", extended: true }));
 app.use(redisMiddleware);

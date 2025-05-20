@@ -73,3 +73,4 @@ app/expo-env.d.ts
 app/package-lock.json
 app/package-lock.json
 /.vscode
+/server/.env

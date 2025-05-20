@@ -53,8 +53,8 @@ const appleConfig: AuthRequestConfig = {
 };
 
 const discovery: DiscoveryDocument = {
-  authorizationEndpoint: `${api}/auth/authorize`,
-  tokenEndpoint: `${api}/auth/token`,
+  authorizationEndpoint: `https://server.tengis.space/auth/authorize`,
+  tokenEndpoint: `https://server.tengis.space/auth/token`,
 };
 
 const appleDiscovery: DiscoveryDocument = {
