@@ -4,7 +4,6 @@ import React from "react";
 import { View } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { AuthProvider } from "@/context/auth";
-import { AuthProvider as GoogleAuthProvider } from "@/context/googleAuth";
 
 const ThemeUser = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useAppTheme();
@@ -12,9 +11,7 @@ const ThemeUser = ({ children }: { children: React.ReactNode }) => {
     <View className={`${theme} flex-1`}>
       <PaperProvider theme={theme === "dark" ? MD3DarkTheme : MD3LightTheme}>
         <AuthProvider>
-          <GoogleAuthProvider>
-            <LanguageProvider>{children}</LanguageProvider>
-          </GoogleAuthProvider>
+          <LanguageProvider>{children}</LanguageProvider>
         </AuthProvider>
       </PaperProvider>
     </View>

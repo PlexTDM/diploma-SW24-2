@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
@@ -7,6 +7,8 @@ import User, { IUser } from "@/models/user";
 import { generateAccessToken, generateRefreshToken } from "./token";
 import { transporter } from "@/services/nodemailer";
 import RefreshToken from "@/models/refreshToken";
+import axios from "axios";
+import * as jose from "jose";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -214,10 +216,14 @@ class AuthController {
     res: Response
   ): Promise<any> {
     try {
+      let refreshToken = null;
       const authHeader = req.headers.authorization;
-      const refreshToken = authHeader?.startsWith("Bearer ")
-        ? authHeader.slice(7)
-        : null;
+      if (authHeader) {
+        refreshToken = authHeader.split(" ")[1];
+      }
+      if (req.body.refreshToken) {
+        refreshToken = req.body.refreshToken;
+      }
 
       if (!refreshToken)
         return res.status(400).json({ message: "Refresh token is required" });
@@ -335,6 +341,54 @@ class AuthController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  public static async google(req: Request, res: Response): Promise<any> {
+    const { code } = req.body;
+    try {
+      const response = await axios.post(
+        "https://oauth2.googleapis.com/token",
+        new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID as string,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
+          redirect_uri: "http://localhost:8081/api/auth/callback",
+          grant_type: "authorization_code",
+          code: code,
+        }),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+      const data = response.data;
+      const userInfo = jose.decodeJwt(data.id_token) as googleUser;
+      console.log("userInfo", userInfo);
+
+      const user = await User.findOne({ email: userInfo.email })
+        .select("-password")
+        .exec();
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const accessToken = generateAccessToken(user);
+      const refreshToken = await generateRefreshToken(user);
+
+      res.status(200).json({
+        user,
+        accessToken,
+        refreshToken,
+      });
+    } catch (e) {
+      console.error("Error verifying email:", e);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 export default AuthController;
+
+type googleUser = {
+  email: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  name: string;
+};

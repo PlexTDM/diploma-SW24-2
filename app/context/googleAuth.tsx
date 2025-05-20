@@ -398,69 +398,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // This function is called when Google redirects back to our app
     // The response contains the authorization code that we'll exchange for tokens
     if (response?.type === "success") {
+      console.log("handleResponse success", response);
       try {
         setIsLoading(true);
         // Extract the authorization code from the response
         // This code is what we'll exchange for access and refresh tokens
         const { code } = response.params;
 
-        // Create form data to send to our token endpoint
-        // We include both the code and platform information
-        // The platform info helps our server handle web vs native differently
-        const formData = new FormData();
-        formData.append("code", code);
-
-        // Add platform information for the backend to handle appropriately
-        if (isWeb) {
-          formData.append("platform", "web");
-        }
-
-        console.log("request", request);
-
-        // Get the code verifier from the request object
-        // This is the same verifier that was used to generate the code challenge
-        if (request?.codeVerifier) {
-          formData.append("code_verifier", request.codeVerifier);
-        } else {
-          console.warn("No code verifier found in request object");
-        }
-
-        // Send the authorization code to our token endpoint
-        // The server will exchange this code with Google for access and refresh tokens
-        // For web: credentials are included to handle cookies
-        // For native: we'll receive the tokens directly in the response
-        const tokenResponse = await fetch(`${BASE_URL}/api/auth/token`, {
-          method: "POST",
-          body: formData,
-          credentials: isWeb ? "include" : "same-origin", // Include cookies for web
-        });
-
-        if (isWeb) {
-          // For web: The server sets the tokens in HTTP-only cookies
-          // We just need to get the user data from the response
-          const userData = await tokenResponse.json();
-          if (userData.success) {
-            // Fetch the session to get user data
-            // This ensures we have the most up-to-date user information
-            const sessionResponse = await fetch(
-              `${BASE_URL}/api/auth/session`,
-              {
-                method: "GET",
-                credentials: "include",
-              }
-            );
-
-            if (sessionResponse.ok) {
-              const sessionData = await sessionResponse.json();
-              setUser(sessionData as AuthUser);
-            }
+        const serverResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_API_URL}/auth/google`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              code,
+            }),
           }
-        } else {
-          // For native: The server returns both tokens in the response
-          // We need to store these tokens securely and decode the user data
-          const tokens = await tokenResponse.json();
-          await handleNativeTokens(tokens);
-        }
+        );
+        const data = await serverResponse.json();
+        console.log("data", data);
       } catch (e) {
         console.error("Error handling auth response:", e);
       } finally {

@@ -9,7 +9,7 @@ import { Button, Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
 
 export default function Settings() {
-  const { user } = use(AuthContext);
+  const { user, logout } = use(AuthContext);
   const { theme, setTheme } = useAppTheme();
   const router = useRouter();
   const navigation = useNavigation();
@@ -204,6 +204,25 @@ export default function Settings() {
           thumbColor={isDark ? "#1d4ed8" : "#f4f3f4"}
         />
       </Pressable>
+
+      {/* logout */}
+      {user && (
+        <Pressable
+          className="flex-row mt-8 items-center justify-between"
+          onPress={() => logout()}
+        >
+          <View className="flex-row items-center gap-8">
+            <View className="bg-blue-50 dark:bg-gray-800 p-4 rounded-full">
+              <Icon
+                source="logout"
+                size={25}
+                color={theme === "dark" ? "#fff" : "#000"}
+              />
+            </View>
+            <ThemeText className="text-xl font-semibold">Logout</ThemeText>
+          </View>
+        </Pressable>
+      )}
     </ThemeView>
   );
 }

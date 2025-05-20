@@ -14,9 +14,10 @@ import {
 } from "@/utils/constants";
 
 export async function POST(request: Request) {
+  console.log("request in token+api.ts");
   const body = await request.formData();
   const code = body.get("code") as string;
-  const platform = (body.get("platform") as string) || "native"; // Default to native if not specified
+  const platform = (body.get("platform") as string) || "native";
 
   if (!code) {
     return Response.json(

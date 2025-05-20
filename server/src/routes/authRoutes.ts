@@ -22,6 +22,7 @@ const validateUser = [
 app.post("/login", auth.login);
 app.post("/register", validateUser, auth.register);
 app.post("/logout", auth.logout);
-app.post("/generateNewToken", auth.generateNewToken);
+app.post("/refresh", auth.generateNewToken);
+app.post("/google", auth.google);
 
 export default app;

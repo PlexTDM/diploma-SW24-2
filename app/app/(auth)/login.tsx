@@ -12,13 +12,11 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView } from "@/components";
 import { AuthContext } from "@/context/auth";
-import { useAuth } from "@/context/googleAuth";
 
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
-  const { login, user, loading } = use(AuthContext);
-  const { signIn } = useAuth();
+  const { login, user, loading, loginWithGoogle } = use(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -37,8 +35,7 @@ const Login = () => {
   const signUp = () => router.push("/(auth)/signup");
 
   const handleGoogleLogin = () => {
-    signIn();
-    console.log("Google login");
+    loginWithGoogle();
   };
 
   return (
