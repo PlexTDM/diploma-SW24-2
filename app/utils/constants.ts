@@ -31,6 +31,7 @@ export const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 export const APP_SCHEME = process.env.EXPO_PUBLIC_SCHEME;
 export const JWT_SECRET = process.env.JWT_SECRET!;
+export const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -44,6 +45,6 @@ export const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: true,
   sameSite: "Lax" as const,
-  path: "/api/auth/refresh", // Restrict to refresh endpoint only
+  path: "/auth/refresh", // Restrict to refresh endpoint only
   maxAge: REFRESH_TOKEN_MAX_AGE,
 };

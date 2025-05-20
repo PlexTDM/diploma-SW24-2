@@ -12,18 +12,26 @@ export const generateAccessToken = (user: IUser): string => {
   const secret = process.env.SECRET_ACCESS_TOKEN as string;
   if (!secret) throw new Error("SECRET_ACCESS_TOKEN is not defined");
 
-  return jwt.sign({ id: user.id, role: user.role }, secret, {
-    expiresIn: "1d",
-  });
+  return jwt.sign(
+    { id: user.id, role: user.role, name: user.username, email: user.email },
+    secret,
+    {
+      expiresIn: "1d",
+    }
+  );
 };
 
 export const generateRefreshToken = async (user: IUser): Promise<string> => {
   const secret = process.env.SECRET_REFRESH_TOKEN as string;
   if (!secret) throw new Error("SECRET_REFRESH_TOKEN is not defined");
 
-  const refreshToken = jwt.sign({ id: user.id, role: user.role }, secret, {
-    expiresIn: "7d",
-  });
+  const refreshToken = jwt.sign(
+    { id: user.id, role: user.role, name: user.username, email: user.email },
+    secret,
+    {
+      expiresIn: "7d",
+    }
+  );
   const hashedToken = await bcryptjs.hash(refreshToken, 10);
 
   await RefreshToken.create({

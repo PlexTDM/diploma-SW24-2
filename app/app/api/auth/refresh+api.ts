@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as jose from "jose";
 import {
   COOKIE_NAME,

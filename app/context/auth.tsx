@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { login, logout } from "@/lib/data";
+import { login } from "@/lib/data";
 import * as WebBrowser from "expo-web-browser";
 import * as AppleAuthentication from "expo-apple-authentication";
 import {
@@ -19,12 +19,10 @@ import {
 } from "expo-auth-session";
 import * as jose from "jose";
 import { tokenCache } from "@/utils/cache";
-import { BASE_URL } from "@/utils/constants";
+import { BASE_URL, API_URL } from "@/utils/constants";
 import { handleAppleAuthError } from "@/utils/handleAppleError";
 import { randomUUID } from "expo-crypto";
 import { Platform } from "react-native";
-
-const api = process.env.EXPO_PUBLIC_API_URL as string;
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -103,7 +101,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         if (isWeb) {
           // For web: Use JSON for the request
-          const refreshResponse = await fetch(`${BASE_URL}/api/auth/refresh`, {
+          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -124,7 +122,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           }
 
           // Fetch the session to get updated user data
-          const sessionResponse = await fetch(`${BASE_URL}/api/auth/session`, {
+          const sessionResponse = await fetch(`${API_URL}/auth/session`, {
             method: "GET",
             credentials: "include",
           });
@@ -144,7 +142,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           }
 
           console.log("Using refresh token to get new tokens");
-          const refreshResponse = await fetch(`${api}/auth/refresh`, {
+          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -225,7 +223,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (isWeb) {
       // For web: Call logout endpoint to clear the cookie
       try {
-        await fetch(`${BASE_URL}/api/auth/logout`, {
+        await fetch(`${API_URL}/auth/logout`, {
           method: "POST",
           credentials: "include",
         });
@@ -245,13 +243,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const handleResponse = useCallback(async () => {
+    console.log("handleResponse", response);
     if (response?.type === "success") {
       console.log("handleResponse success", response);
       try {
         setIsLoading(true);
         const { code } = response.params;
 
-        const serverResponse = await fetch(`${api}/auth/google`, {
+        const serverResponse = await fetch(`${API_URL}/auth/google`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -261,6 +260,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           }),
         });
         const data = await serverResponse.json();
+        console.log("handleResponse data", data);
         setUser(data.user);
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
@@ -340,7 +340,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setLoading(true);
     console.log(formData);
     try {
-      const res = await fetch(`${api}/auth/register`, {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

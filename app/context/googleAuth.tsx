@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try {
               await refreshAccessToken();
             } catch (e) {
-              console.log("Failed to refresh token on startup");
+              console.log("Failed to refresh token on startup", e);
             }
           }
         } else {
