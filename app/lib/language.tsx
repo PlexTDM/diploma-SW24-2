@@ -157,6 +157,7 @@ export const mn = {
   walk: {
     steps: "Алхалт",
     stepsCount: "Алхам тоолох",
+    allowPermission: "Утасны тохиргоог өөрчилнө үү",
   },
   sleep: {
     sleep: "Нойр",
@@ -384,6 +385,7 @@ export const en = {
   walk: {
     steps: "Steps",
     stepsCount: "Count Steps",
+    allowPermission: "Allow permission in settings",
   },
   sleep: {
     sleep: "Sleep",

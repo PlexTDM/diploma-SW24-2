@@ -251,18 +251,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
         setIsLoading(true);
         const { code } = response.params;
 
-        const serverResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_API_URL}/auth/google`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              code,
-            }),
-          }
-        );
+        const serverResponse = await fetch(`${api}/auth/google`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+          }),
+        });
         const data = await serverResponse.json();
         setUser(data.user);
         setAccessToken(data.accessToken);

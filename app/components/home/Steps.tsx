@@ -83,7 +83,7 @@ export default function Steps() {
             </Text>
           ) : (
             <Text className="text-xs text-gray-700 dark:text-gray-200">
-              Allow permission in settings
+              {languages[language].walk.allowPermission}
             </Text>
           )}
           <Text className="text-sm font-normal text-slate-400">

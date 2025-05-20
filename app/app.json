@@ -27,11 +27,15 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.unnamed0631.coolfitness"
+      "package": "com.unnamed0631.coolfitness",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+      ]
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "server",
       "favicon": "./assets/img/logo.png"
     },
     "plugins": [
@@ -76,6 +80,10 @@
         "projectId": "90489b54-2458-4406-a394-e31059a52f0f"
       }
     },
-    "owner": "unnamed0631"
+    "owner": "unnamed0631",
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/90489b54-2458-4406-a394-e31059a52f0f"
+    }
   }
 }

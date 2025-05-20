@@ -32,8 +32,13 @@ export default function HomeTab() {
         <View className="w-full flex-row items-center justify-between  gap-2 pb-4">
           <View className="flex-row justify-between w-full items-center gap-2">
             <Pressable
-              onPressIn={() => (settingsAnimation.value = 50)}
-              onPressOut={() => (settingsAnimation.value = 0)}
+              onPressIn={() =>
+                (settingsAnimation.value = withTiming(20, { duration: 200 }))
+              }
+              onPressOut={() =>
+                (settingsAnimation.value = withTiming(0, { duration: 200 }))
+              }
+              android_disableSound={true}
               onPress={() => router.push("/settings")}
               android_ripple={{
                 color: theme === "dark" ? "#ffffff20" : "#00000020",
