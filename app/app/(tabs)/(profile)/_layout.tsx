@@ -1,6 +1,6 @@
 import { AuthContext } from "@/context/auth";
-import { Stack } from "@/lib/node_modules/expo-router/stack";
-import { use } from "@/lib/node_modules/@types/react";
+import { Stack } from "expo-router";
+import { use } from "react";
 import { useAppTheme } from "@/lib/theme";
 const RootLayout = () => {
   const { loggedIn } = use(AuthContext);
