@@ -12,11 +12,13 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView } from "@/components";
 import { AuthContext } from "@/context/auth";
+import { useAuth } from "@/context/googleAuth";
 
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
   const { login, user, loading } = use(AuthContext);
+  const { signIn } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +35,11 @@ const Login = () => {
   }, [user, router]);
 
   const signUp = () => router.push("/(auth)/signup");
+
+  const handleGoogleLogin = () => {
+    signIn();
+    console.log("Google login");
+  };
 
   return (
     <ThemeView className="flex-1 relative">
@@ -136,7 +143,10 @@ const Login = () => {
               </View>
 
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
-                <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
+                <TouchableOpacity
+                  onPress={handleGoogleLogin}
+                  className="border border-gray-300 rounded-full px-8 py-3"
+                >
                   <Image
                     source={require("@/assets/socialLogo/google.png")}
                     style={{ width: 25, height: 30 }}
