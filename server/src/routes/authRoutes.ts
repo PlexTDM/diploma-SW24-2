@@ -24,5 +24,7 @@ app.post("/register", validateUser, auth.register);
 app.post("/logout", auth.logout);
 app.post("/refresh", auth.generateNewToken);
 app.post("/google", auth.google);
+app.get("/authorize", auth.authorize);
+app.get("/callback", auth.callback);
 
 export default app;

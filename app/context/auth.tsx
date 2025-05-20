@@ -53,8 +53,8 @@ const appleConfig: AuthRequestConfig = {
 };
 
 const discovery: DiscoveryDocument = {
-  authorizationEndpoint: `${BASE_URL}/api/auth/authorize`,
-  tokenEndpoint: `${BASE_URL}/api/auth/token`,
+  authorizationEndpoint: `${api}/auth/authorize`,
+  tokenEndpoint: `${api}/auth/token`,
 };
 
 const appleDiscovery: DiscoveryDocument = {

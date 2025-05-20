@@ -81,12 +81,9 @@
       }
     },
     "owner": "unnamed0631",
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": "appVersion",
     "updates": {
       "url": "https://u.expo.dev/90489b54-2458-4406-a394-e31059a52f0f"
-    },
-    "runtime": {
-      "policy": "appVersion"
     }
   }
 }

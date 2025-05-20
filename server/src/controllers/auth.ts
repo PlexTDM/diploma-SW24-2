@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { request, Request, response, Response } from "express";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
@@ -9,6 +9,8 @@ import { transporter } from "@/services/nodemailer";
 import RefreshToken from "@/models/refreshToken";
 import axios from "axios";
 import * as jose from "jose";
+import { BASE_URL } from "@/routes/constants";
+import { APP_SCHEME } from "@/routes/constants";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -380,6 +382,102 @@ class AuthController {
       console.error("Error verifying email:", e);
       res.status(500).json({ message: "Internal server error" });
     }
+  }
+
+  public static async authorize(req: Request, res: Response): Promise<any> {
+    try {
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        return res
+          .status(500)
+          .json({ error: "Missing GOOGLE_CLIENT_ID environment variable" });
+      }
+
+      const url = new URL(
+        req.protocol + "://" + req.get("host") + req.originalUrl
+      );
+      let idpClientId: string;
+
+      const internalClient = url.searchParams.get("client_id");
+      const redirectUri = url.searchParams.get("redirect_uri");
+      let platform;
+
+      if (redirectUri === APP_SCHEME) {
+        platform = "mobile";
+      } else if (redirectUri === BASE_URL) {
+        platform = "web";
+      } else {
+        return res.status(400).json({ error: "Invalid redirect_uri" });
+      }
+
+      let state = platform + "|" + url.searchParams.get("state");
+
+      if (internalClient === "google") {
+        idpClientId = process.env.GOOGLE_CLIENT_ID;
+      } else {
+        return res.status(400).json({ error: "Invalid client" });
+      }
+
+      if (!state) {
+        return res.status(400).json({ error: "Invalid state" });
+      }
+
+      const params = new URLSearchParams({
+        client_id: idpClientId,
+        // TODO: GOOGLE_AUTH_URL needs to be defined, possibly from process.env
+        // For now, I'll use a placeholder. Replace with actual value.
+        redirect_uri: `${BASE_URL}/auth/callback`,
+        response_type: "code",
+        scope: url.searchParams.get("scope") || "identity",
+        state: state,
+        prompt: "select_account",
+      });
+
+      // TODO: GOOGLE_AUTH_URL needs to be defined
+      const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+      return res.redirect(GOOGLE_AUTH_URL + "?" + params.toString());
+    } catch (e) {
+      console.error("authorize error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async callback(req: Request, res: Response): Promise<any> {
+    // export async function GET(request: Request) {
+    //   const incomingParams = new URLSearchParams(request.url.split("?")[1]);
+    //   const combinedPlatformAndState = incomingParams.get("state");
+    //   if (!combinedPlatformAndState) {
+    //     return Response.json({ error: "Invalid state" }, { status: 400 });
+    //   }
+    //   // strip platform to return state as it was set on the client
+    //   const platform = combinedPlatformAndState.split("|")[0];
+    //   const state = combinedPlatformAndState.split("|")[1];
+
+    //   const outgoingParams = new URLSearchParams({
+    //     code: incomingParams.get("code")?.toString() || "",
+    //     state,
+    //   });
+
+    //   return Response.redirect(
+    //     (platform === "web" ? BASE_URL : APP_SCHEME) +
+    //       "?" +
+    //       outgoingParams.toString()
+    //   );
+    // }
+
+    const incomingParams = new URLSearchParams(req.url.split("?")[1]);
+    const combinedPlatformAndState = incomingParams.get("state");
+    if (!combinedPlatformAndState) {
+      return res.status(400).json({ error: "Invalid state" });
+    }
+    const platform = combinedPlatformAndState.split("|")[0];
+    const state = combinedPlatformAndState.split("|")[1];
+
+    const outgoingParams = new URLSearchParams({
+      code: incomingParams.get("code")?.toString() || "",
+      state,
+    });
+
+    return res.redirect(APP_SCHEME + "?" + outgoingParams.toString());
   }
 }
 
