@@ -281,7 +281,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         if (!serverResponse.ok) {
           const data = await serverResponse.json();
-          console.error("Error handling auth response:", data);
+          console.error("Error handling auth response1:", data);
           return;
         }
 
@@ -292,7 +292,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         await tokenCache?.saveToken("accessToken", data.accessToken);
         await tokenCache?.saveToken("refreshToken", data.refreshToken);
       } catch (e) {
-        console.error("Error handling auth response:", e);
+        console.error("Error handling auth response2:", e);
       } finally {
         setIsLoading(false);
       }

@@ -10,7 +10,6 @@ import os from "os";
 import dotenv from "dotenv";
 import connectToMongoDB from "./services/mongodb";
 import path from "path";
-import { handler } from "./services/edgestore";
 
 dotenv.config();
 const __dirname = path.resolve();
@@ -37,7 +36,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(corsConfig);
 app.use(limiter);
-app.use(handler);
 app.use(router);
 
 const PORT = process.env.PORT || 3000;

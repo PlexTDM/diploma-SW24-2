@@ -439,8 +439,7 @@ class AuthController {
         prompt: "select_account",
       });
 
-      // TODO: GOOGLE_AUTH_URL needs to be defined
-      console.log("params", BASE_URL);
+      console.log("redirect_uri", BASE_URL);
       const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
       return res.redirect(GOOGLE_AUTH_URL + "?" + params.toString());
     } catch (e) {
