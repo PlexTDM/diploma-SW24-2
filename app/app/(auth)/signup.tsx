@@ -1,19 +1,21 @@
 import { ThemeView } from "@/components";
-import React from "react";
+import React, { use } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
+import { AuthContext } from "@/context/auth";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const SignUp = () => {
   const router = useRouter();
+  const { loginWithGoogle } = use(AuthContext);
   const handleEmail = () => router.push("/(auth)/EmailRegister");
   const LogIn = () => router.push("/(auth)/login");
+
   const handleGoogleSignIn = () => {
-    console.log("Google sign in");
+    loginWithGoogle();
   };
 
   return (

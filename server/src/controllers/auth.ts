@@ -368,7 +368,14 @@ class AuthController {
         .select("-password")
         .exec();
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(202).json({
+          message: "User not found. Ask to register.",
+          data: {
+            email: userInfo.email,
+            username: userInfo.name,
+            image: userInfo.picture,
+          },
+        });
       }
       const accessToken = generateAccessToken(user);
       const refreshToken = await generateRefreshToken(user);

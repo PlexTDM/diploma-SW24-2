@@ -30,6 +30,7 @@ export interface IUser extends Document {
   image?: string | null;
   posts?: string[];
   isEmailVerified: boolean;
+  hasOnboarded: boolean;
   emailVerificationToken?: string;
   emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
@@ -119,6 +120,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       default: [],
     },
     isEmailVerified: { type: Boolean, default: false, required: false },
+    hasOnboarded: { type: Boolean, default: false, required: false },
     emailVerificationToken: { type: String, required: false, default: null },
     emailVerificationTokenExpiry: {
       type: Date,

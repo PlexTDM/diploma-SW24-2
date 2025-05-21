@@ -12,11 +12,20 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView } from "@/components";
 import { AuthContext } from "@/context/auth";
+import RegisterPromptModal from "@/components/ui/registerPrompt";
 
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
-  const { login, user, loading, loginWithGoogle } = use(AuthContext);
+  const {
+    login,
+    register,
+    user,
+    loading,
+    loginWithGoogle,
+    needsRegistration,
+    setNeedsRegistration,
+  } = use(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +49,18 @@ const Login = () => {
 
   return (
     <ThemeView className="flex-1 relative">
-      {/* Gradient at the top only */}
+      {needsRegistration.visible && needsRegistration.data && (
+        <RegisterPromptModal
+          visible={needsRegistration.visible}
+          data={needsRegistration.data}
+          onConfirm={() => {
+            register(needsRegistration.data as unknown as registerFormType);
+          }}
+          onCancel={() => {
+            setNeedsRegistration({ visible: false, data: null });
+          }}
+        />
+      )}
       <View
         style={{
           position: "absolute",

@@ -36,6 +36,11 @@ export const AuthContext = createContext({
   signInWithAppleWebBrowser: () => Promise.resolve(),
   isLoading: true,
   error: null as AuthError | null,
+  needsRegistration: { visible: false, data: null },
+  setNeedsRegistration: (needsRegistration: {
+    visible: boolean;
+    data: any;
+  }) => {},
 });
 
 const config: AuthRequestConfig = {
@@ -71,6 +76,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [error, setError] = useState<AuthError | null>(null);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [needsRegistration, setNeedsRegistration] = useState<{
+    visible: boolean;
+    data: any;
+  }>({ visible: false, data: null });
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [request, response, promptAsync] = useAuthRequest(config, discovery);
   const refreshInProgressRef = useRef(false);
@@ -220,6 +229,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   );
 
   const signOut = async () => {
+    setNeedsRegistration({ visible: false, data: null });
     if (isWeb) {
       // For web: Call logout endpoint to clear the cookie
       try {
@@ -259,11 +269,23 @@ export function AuthProvider({ children }: PropsWithChildren) {
             code,
           }),
         });
+        if (!serverResponse.ok) {
+          console.error("Error handling auth response:", serverResponse.status);
+          return;
+        }
+
         const data = await serverResponse.json();
+
+        if (serverResponse.status === 202) {
+          setNeedsRegistration({
+            visible: true,
+            data: data.data,
+          });
+          return;
+        }
+
         console.log("handleResponse data", data);
         setUser(data.user);
-        setAccessToken(data.accessToken);
-        setRefreshToken(data.refreshToken);
         await tokenCache?.saveToken("accessToken", data.accessToken);
         await tokenCache?.saveToken("refreshToken", data.refreshToken);
       } catch (e) {
@@ -324,6 +346,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const loginWithGoogle = async () => {
+    setNeedsRegistration({ visible: false, data: null });
     try {
       if (!request) {
         console.log("No request");
@@ -336,8 +359,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const registerUser = async (formData: registerFormType): Promise<void> => {
+  const register = async (formData: registerFormType): Promise<void> => {
     setLoading(true);
+    setNeedsRegistration({ visible: false, data: null });
     console.log(formData);
     try {
       const res = await fetch(`${API_URL}/auth/register`, {
@@ -560,11 +584,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
         login: loginUser,
         loginWithGoogle,
         logout: signOut,
-        register: registerUser,
+        register,
         signInWithApple,
         signInWithAppleWebBrowser,
         isLoading,
         error,
+        needsRegistration,
+        setNeedsRegistration,
       }}
     >
       {children}

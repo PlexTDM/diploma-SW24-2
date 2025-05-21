@@ -13,7 +13,13 @@ export const generateAccessToken = (user: IUser): string => {
   if (!secret) throw new Error("SECRET_ACCESS_TOKEN is not defined");
 
   return jwt.sign(
-    { id: user.id, role: user.role, name: user.username, email: user.email },
+    {
+      id: user.id,
+      role: user.role,
+      name: user.username,
+      email: user.email,
+      hasOnboarded: user.hasOnboarded,
+    },
     secret,
     {
       expiresIn: "1d",
@@ -26,7 +32,13 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
   if (!secret) throw new Error("SECRET_REFRESH_TOKEN is not defined");
 
   const refreshToken = jwt.sign(
-    { id: user.id, role: user.role, name: user.username, email: user.email },
+    {
+      id: user.id,
+      role: user.role,
+      name: user.username,
+      email: user.email,
+      hasOnboarded: user.hasOnboarded,
+    },
     secret,
     {
       expiresIn: "7d",
