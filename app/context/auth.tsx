@@ -269,20 +269,23 @@ export function AuthProvider({ children }: PropsWithChildren) {
             code,
           }),
         });
-        if (!serverResponse.ok) {
-          console.error("Error handling auth response:", serverResponse.status);
-          return;
-        }
-
-        const data = await serverResponse.json();
 
         if (serverResponse.status === 202) {
+          const data = await serverResponse.json();
           setNeedsRegistration({
             visible: true,
             data: data.data,
           });
           return;
         }
+
+        if (!serverResponse.ok) {
+          const data = await serverResponse.json();
+          console.error("Error handling auth response:", data);
+          return;
+        }
+
+        const data = await serverResponse.json();
 
         console.log("handleResponse data", data);
         setUser(data.user);
