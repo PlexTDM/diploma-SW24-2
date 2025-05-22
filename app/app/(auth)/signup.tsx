@@ -1,13 +1,22 @@
 import { ThemeView } from "@/components";
-import React from "react";
+import React, { use } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import { AuthContext } from "@/context/auth";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const SignUp = () => {
   const router = useRouter();
+  const { loginWithGoogle } = use(AuthContext);
   const handleEmail = () => router.push("/(auth)/EmailRegister");
   const LogIn = () => router.push("/(auth)/login");
+
+  const handleGoogleSignIn = () => {
+    loginWithGoogle();
+  };
 
   return (
     <ThemeView className="flex-1 items-center justify-center">
@@ -60,7 +69,7 @@ const SignUp = () => {
           />
         </View>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleGoogleSignIn}>
             <Text className="text-black dark:text-gray-200 font-semibold text-[14px]">
               Continue with Google
             </Text>

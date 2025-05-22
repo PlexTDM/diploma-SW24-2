@@ -12,11 +12,20 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView } from "@/components";
 import { AuthContext } from "@/context/auth";
+import RegisterPromptModal from "@/components/ui/registerPrompt";
 
 const Login = () => {
   const router = useRouter();
   const { theme } = useAppTheme();
-  const { login, user, loading } = use(AuthContext);
+  const {
+    login,
+    register,
+    user,
+    loading,
+    loginWithGoogle,
+    needsRegistration,
+    setNeedsRegistration,
+  } = use(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -34,9 +43,24 @@ const Login = () => {
 
   const signUp = () => router.push("/(auth)/signup");
 
+  const handleGoogleLogin = () => {
+    loginWithGoogle();
+  };
+
   return (
     <ThemeView className="flex-1 relative">
-      {/* Gradient at the top only */}
+      {needsRegistration.visible && needsRegistration.data && (
+        <RegisterPromptModal
+          visible={needsRegistration.visible}
+          data={needsRegistration.data}
+          onConfirm={() => {
+            register(needsRegistration.data as unknown as registerFormType);
+          }}
+          onCancel={() => {
+            setNeedsRegistration({ visible: false, data: null });
+          }}
+        />
+      )}
       <View
         style={{
           position: "absolute",
@@ -57,7 +81,7 @@ const Login = () => {
       {/* Main login content */}
       <View className="flex-1 z-10 justify-center items-center pt-24 p-6">
         <View className="w-full h-full">
-          <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-1/2 w-[330px] h-10 -translate-x-1/2 rounded-t-3xl items-center justify-center z-10" />
+          <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
           <View className="flex-1 absolute bg-white dark:bg-gray-900 rounded-3xl inset-0 items-center justify-start pt-10 z-20">
             <Image
               source={require("@/assets/img/logoLarge.png")}
@@ -136,7 +160,10 @@ const Login = () => {
               </View>
 
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
-                <TouchableOpacity className="border border-gray-300 rounded-full px-8 py-3">
+                <TouchableOpacity
+                  onPress={handleGoogleLogin}
+                  className="border border-gray-300 rounded-full px-8 py-3"
+                >
                   <Image
                     source={require("@/assets/socialLogo/google.png")}
                     style={{ width: 25, height: 30 }}

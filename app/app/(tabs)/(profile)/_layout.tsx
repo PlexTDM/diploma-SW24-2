@@ -3,7 +3,8 @@ import { Stack } from "expo-router";
 import { useAppTheme } from "@/lib/theme";
 import { use } from "react";
 const RootLayout = () => {
-  const { loggedIn } = use(AuthContext);
+  const { user } = use(AuthContext);
+  const loggedIn = !!user;
   const { theme } = useAppTheme();
   return (
     <Stack

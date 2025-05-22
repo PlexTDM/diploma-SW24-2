@@ -21,11 +21,14 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   let ip = req.headers["cf-connecting-ip"] || req.ip || "unknown";
   if (Array.isArray(ip)) ip = ip[0];
   if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "IPv4 ");
-  console.log(`Request IP: ${ip}`);
+  // get type of request
+  const requestType = req.method;
+  const location = req.originalUrl;
+  console.log(`Request IP: ${ip} ~ ${requestType}: ${location}`);
 
   next();
 });
-
+app.set("trust proxy", 1);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bp.urlencoded({ limit: "16mb", extended: true }));
 app.use(redisMiddleware);

@@ -26,6 +26,7 @@ function WaterModal({
   const water = useRegisterStore((state) => state.water);
   const waterGoal = useRegisterStore((state) => state.waterGoal);
   const setField = useRegisterStore((state) => state.setField);
+  const [componentHeight, setComponentHeight] = useState(0);
 
   const percentage = useMemo(
     () => Math.min(Math.round((water / waterGoal) * 100), 100),
@@ -38,8 +39,6 @@ function WaterModal({
     },
     [water, waterGoal, setField]
   );
-
-  console.log(water, waterGoal);
 
   const waterOptions = useMemo(() => [100, 250, 500, 1000], []);
 
@@ -101,7 +100,12 @@ function WaterModal({
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
             <ThemeView className="flex-1 max-h-[90%] w-full p-8 rounded-3xl">
               {/* Water progress */}
-              <View className="w-full h-60 overflow-hidden rounded-[40px] justify-center items-start dark:border dark:border-t-0 dark:rounded-t-none dark:border-gray-100">
+              <View
+                onLayout={(e) => {
+                  setComponentHeight(e.nativeEvent.layout.height);
+                }}
+                className="w-full h-60 overflow-hidden rounded-[40px] justify-center items-start dark:border dark:border-t-0 dark:rounded-t-none dark:border-gray-100"
+              >
                 <View className="flex-row items-center mt-6 gap-2 z-10">
                   <Text className="text-[60px] ml-6 dark:text-slate-300">
                     {percentage}
@@ -113,11 +117,7 @@ function WaterModal({
                 <Text className="text-center text-sm mb-2 ml-10 z-10 dark:text-slate-300">
                   {water} ml of {waterGoal} ml
                 </Text>
-                <WaterAnimation
-                  currentWater={water}
-                  waterGoal={waterGoal}
-                  containerHeight={240}
-                />
+                <WaterAnimation containerHeight={componentHeight} />
               </View>
 
               {/* Add Water Section */}

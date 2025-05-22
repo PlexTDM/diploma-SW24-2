@@ -3,6 +3,9 @@ npm-debug.log
 
 /android
 /ios
+android/
+ios/
+
 android/.gradle/
 android/app/build/
 ios/Pods/

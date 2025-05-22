@@ -4,9 +4,19 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
 import User, { IUser } from "@/models/user";
-import { generateAccessToken, generateRefreshToken } from "./token";
+import {
+  AuthenticatedRequest,
+  generateAccessToken,
+  generateRefreshToken,
+} from "./token";
 import { transporter } from "@/services/nodemailer";
 import RefreshToken from "@/models/refreshToken";
+import axios from "axios";
+import * as jose from "jose";
+import { BASE_URL } from "@/routes/constants";
+import { APP_SCHEME } from "@/routes/constants";
+import { bucket } from "@/config/firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -155,24 +165,91 @@ class AuthController {
     }
   }
 
-  // update doesn't work for now
-  public static async update(req: Request, res: Response): Promise<any> {
-    const { password, newPassword, id } = req.body;
+  public static async update(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "Request is empty" });
+    }
 
+    const { password, newPassword, ...otherBodyFields } = req.body;
+    const image = req.file;
+    let willUpdatePassword = false;
+    let hashedPassword;
     try {
-      const user = await User.findById(id).exec();
+      const user = await User.findById(req.user.id).exec();
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      const match = compareSync(password, user.password);
-      if (!match)
-        return res.status(401).json({ message: "Passwords don't match" });
+      if (newPassword && password) {
+        const match = compareSync(password, user.password);
+        if (!match)
+          return res.status(401).json({ message: "Passwords don't match" });
+        if (newPassword === password)
+          return res.status(400).json({
+            message: "New password cannot be the same as the old password",
+          });
+        willUpdatePassword = true;
+        const salt = genSaltSync(hashRounds);
+        hashedPassword = hashSync(newPassword, salt);
+      }
 
-      const salt = genSaltSync(hashRounds);
-      const hashedPassword = hashSync(newPassword, salt);
+      const updateData: any = { ...otherBodyFields };
 
-      await User.findByIdAndUpdate(id, { password: hashedPassword });
+      if (image) {
+        // If user already has an image, delete it from Firebase Storage
+        if (user.image) {
+          try {
+            const oldImageUrl = new URL(user.image);
+            // Extract the path after the bucket name
+            const pathSegments = oldImageUrl.pathname.split("/");
+            const oldImagePath = pathSegments.slice(2).join("/");
+            if (oldImagePath) {
+              const oldFile = bucket.file(oldImagePath);
+              await oldFile.delete();
+            }
+          } catch (error: any) {
+            console.error("Error deleting old image:", error.message);
+          }
+        }
 
-      res.status(200).json({ message: "Password updated successfully" });
+        // Generate a unique filename
+        const filename = `users/${user._id}/pfp-${uuidv4()}`;
+
+        // Upload to Firebase Storage
+        const file = bucket.file(filename);
+        await file.save(image.buffer, {
+          metadata: {
+            contentType: image.mimetype,
+          },
+        });
+
+        await file.makePublic();
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+
+        updateData.image = publicUrl;
+      }
+
+      if (willUpdatePassword) {
+        updateData.password = hashedPassword;
+      }
+
+      const newUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+      })
+        .select("-password")
+        .exec();
+
+      const accessToken = generateAccessToken(newUser!);
+      const refreshToken = await generateRefreshToken(newUser!);
+
+      return res.status(200).json({
+        message: "User updated successfully",
+        user: newUser,
+        accessToken,
+        refreshToken,
+      });
     } catch (e) {
       console.error("update error:", e);
       res.status(500).json({ message: "Internal Server Error" });
@@ -214,10 +291,14 @@ class AuthController {
     res: Response
   ): Promise<any> {
     try {
+      let refreshToken = null;
       const authHeader = req.headers.authorization;
-      const refreshToken = authHeader?.startsWith("Bearer ")
-        ? authHeader.slice(7)
-        : null;
+      if (authHeader) {
+        refreshToken = authHeader.split(" ")[1];
+      }
+      if (req.body.refreshToken) {
+        refreshToken = req.body.refreshToken;
+      }
 
       if (!refreshToken)
         return res.status(400).json({ message: "Refresh token is required" });
@@ -335,6 +416,134 @@ class AuthController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  public static async google(req: Request, res: Response): Promise<any> {
+    const { code } = req.body;
+    try {
+      const response = await axios.post(
+        "https://oauth2.googleapis.com/token",
+        new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID as string,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
+          redirect_uri: `${BASE_URL}/auth/callback`,
+          grant_type: "authorization_code",
+          code: code,
+        }),
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+      const data = response.data;
+      const userInfo = jose.decodeJwt(data.id_token) as googleUser;
+      console.log("userInfo", userInfo);
+
+      const user = await User.findOne({ email: userInfo.email })
+        .select("-password")
+        .exec();
+      if (!user) {
+        return res.status(202).json({
+          message: "User not found. Ask to register.",
+          data: {
+            email: userInfo.email,
+            username: userInfo.name,
+            image: userInfo.picture,
+          },
+        });
+      }
+      const accessToken = generateAccessToken(user);
+      const refreshToken = await generateRefreshToken(user);
+
+      res.status(200).json({
+        user,
+        accessToken,
+        refreshToken,
+      });
+    } catch (e) {
+      console.error("Error verifying email:", e);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  public static async authorize(req: Request, res: Response): Promise<any> {
+    try {
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        return res
+          .status(500)
+          .json({ error: "Missing GOOGLE_CLIENT_ID environment variable" });
+      }
+
+      const url = new URL(
+        req.protocol + "://" + req.get("host") + req.originalUrl
+      );
+      let idpClientId: string;
+
+      const internalClient = url.searchParams.get("client_id");
+      const redirectUri = url.searchParams.get("redirect_uri");
+      let platform;
+
+      if (redirectUri === APP_SCHEME) {
+        platform = "mobile";
+      } else if (redirectUri === BASE_URL) {
+        platform = "web";
+      } else {
+        return res.status(400).json({ error: "Invalid redirect_uri" });
+      }
+
+      let state = platform + "|" + url.searchParams.get("state");
+
+      if (internalClient === "google") {
+        idpClientId = process.env.GOOGLE_CLIENT_ID;
+      } else {
+        return res.status(400).json({ error: "Invalid client" });
+      }
+
+      if (!state) {
+        return res.status(400).json({ error: "Invalid state" });
+      }
+
+      const params = new URLSearchParams({
+        client_id: idpClientId,
+        // TODO: GOOGLE_AUTH_URL needs to be defined, possibly from process.env
+        // For now, I'll use a placeholder. Replace with actual value.
+        redirect_uri: `${BASE_URL}/auth/callback`,
+        response_type: "code",
+        scope: url.searchParams.get("scope") || "identity",
+        state: state,
+        prompt: "select_account",
+      });
+
+      console.log("redirect_uri", BASE_URL);
+      const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+      return res.redirect(GOOGLE_AUTH_URL + "?" + params.toString());
+    } catch (e) {
+      console.error("authorize error:", e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  public static async callback(req: Request, res: Response): Promise<any> {
+    const incomingParams = new URLSearchParams(req.url.split("?")[1]);
+    const combinedPlatformAndState = incomingParams.get("state");
+    if (!combinedPlatformAndState) {
+      return res.status(400).json({ error: "Invalid state" });
+    }
+    const state = combinedPlatformAndState.split("|")[1];
+
+    const outgoingParams = new URLSearchParams({
+      code: incomingParams.get("code")?.toString() || "",
+      state,
+    });
+
+    return res.redirect(APP_SCHEME + "?" + outgoingParams.toString());
+  }
 }
 
 export default AuthController;
+
+type googleUser = {
+  email: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  name: string;
+};

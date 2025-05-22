@@ -1,4 +1,4 @@
-import { ThemeView, ThemeText } from "@/components";
+import { ThemeText } from "@/components";
 import { use, useCallback, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
@@ -6,7 +6,7 @@ import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
 import { useLanguage, languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
-import { Button, Icon } from "react-native-paper";
+import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
@@ -33,7 +33,15 @@ const Tabs = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: { key: string; component: React.ComponentType } }) => (
-      <View style={{ width: width, height: 400 }} key={item.key}>
+      <View
+        style={{
+          width: width,
+          minHeight: 400,
+          height: "auto",
+          paddingBottom: 100,
+        }}
+        key={item.key}
+      >
         <item.component />
       </View>
       //ene hesgiin unduriig uur hun ashiglah uyd ni tengis zasna geseen utsandaa taaruulad 350 iig uurchlurui ahh
@@ -74,10 +82,10 @@ const Tabs = () => {
     };
     const selected = selectedTab === tab;
     return (
-
       <View
-        className={`flex-1 overflow-hidden  ${selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
-          }`}
+        className={`flex-1 overflow-hidden  ${
+          selected ? "bg-white dark:bg-blue-600 rounded-full h-9" : ""
+        }`}
       >
         <Pressable
           android_ripple={{
@@ -96,7 +104,6 @@ const Tabs = () => {
   };
 
   return (
-
     <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
         <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
@@ -124,7 +131,7 @@ const Tabs = () => {
   );
 };
 
-export default function Tab() {
+export default function Profile() {
   const { language } = useLanguage();
   const router = useRouter();
   const { theme } = useAppTheme();
@@ -139,15 +146,17 @@ export default function Tab() {
   const { user } = use(AuthContext);
 
   const handlePfp = () => {
-    router.push("/settings/Edit");
+    router.push("/(settings)/Edit");
   };
 
   return (
-
     <SafeAreaView className="items-center justify-center dark:bg-gray-900 bg-white flex-1">
-      <View className="flex-row items-center px-6 justify-between w-full">
+      <View className="flex-row items-center px-6 justify-between w-full mt-5">
         <View className="border-2 border-gray-200 p-2 dark:border-gray-700 rounded-full">
-          <Pressable onPress={handleBack}>
+          <Pressable
+            android_ripple={{ color: "#00000020", radius: 40 }}
+            onPress={handleBack}
+          >
             <Icon
               source="chevron-left"
               size={25}
@@ -169,7 +178,10 @@ export default function Tab() {
           />
         </Pressable>
       </View>
-      <Pressable onPress={handlePfp}>
+      <Pressable
+        className="items-center justify-center mt-5"
+        onPress={handlePfp}
+      >
         <Image
           source={
             user?.image
@@ -177,9 +189,9 @@ export default function Tab() {
               : require("@/assets/img/profile.png")
           }
           style={{
-            width: 101,
+            width: 100,
             height: 100,
-            marginTop: 20,
+            borderRadius: 999,
           }}
         />
       </Pressable>
@@ -195,7 +207,9 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">247</ThemeText>
-          <ThemeText className="color-gray-400">{languages[language].profile1.calories}</ThemeText>
+          <ThemeText className="color-gray-400">
+            {languages[language].profile1.calories}
+          </ThemeText>
         </View>
         <View className="items-center">
           <Icon
@@ -204,11 +218,12 @@ export default function Tab() {
             size={30}
           />
           <ThemeText className="font-semibold text-xl">682</ThemeText>
-          <ThemeText className="color-gray-400">{languages[language].profile1.followers}</ThemeText>
+          <ThemeText className="color-gray-400">
+            {languages[language].profile1.followers}
+          </ThemeText>
         </View>
       </View>
       <Tabs />
     </SafeAreaView>
-
   );
 }
