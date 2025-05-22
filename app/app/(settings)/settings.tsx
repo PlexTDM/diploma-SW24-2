@@ -39,6 +39,7 @@ export default function Settings() {
 
   useEffect(() => {
     setIsSwitchOn(theme === "dark");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -61,10 +62,10 @@ export default function Settings() {
             />
           </Pressable>
         </View>
-        <ThemeText className="text-2xl text-center font-semibold">
+        <ThemeText className="text-2xl text-center font-semibold absolute left-1/2 -translate-x-1/2">
           {languages[language].settings.title}
         </ThemeText>
-        <Pressable
+        {/* <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
           onPress={handleBack}
         >
@@ -73,7 +74,7 @@ export default function Settings() {
             size={25}
             color={theme === "dark" ? "#fff" : "#000"}
           />
-        </Pressable>
+        </Pressable> */}
       </View>
 
       {/* Account section */}

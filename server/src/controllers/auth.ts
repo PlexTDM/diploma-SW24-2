@@ -169,7 +169,7 @@ class AuthController {
     req: AuthenticatedRequest,
     res: Response
   ): Promise<any> {
-    if (!req.body || Object.keys(req.body).length === 0) {
+    if ((!req.body || Object.keys(req.body).length === 0) && !req.file) {
       return res.status(400).json({ message: "Request is empty" });
     }
 
@@ -197,7 +197,7 @@ class AuthController {
       const updateData: any = { ...otherBodyFields };
 
       if (image) {
-        // If user already has an image, delete it from Firebase Storage
+        console.log(image);
         if (user.image) {
           try {
             const oldImageUrl = new URL(user.image);
@@ -305,13 +305,13 @@ class AuthController {
 
       jwt.verify(
         refreshToken,
-        process.env.REFRESH_TOKEN_SECRET as string,
+        process.env.SECRET_REFRESH_TOKEN as string,
         async (err: Error | null, decoded: any) => {
           if (err) {
             return res.status(403).json({ message: "Invalid refresh token" });
           }
 
-          const user = await User.findById(decoded.userId)
+          const user = await User.findById(decoded.id)
             .select("-password")
             .exec();
           if (!user) {

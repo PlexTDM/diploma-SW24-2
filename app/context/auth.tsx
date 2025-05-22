@@ -41,7 +41,8 @@ export const AuthContext = createContext({
     visible: boolean;
     data: any;
   }) => {},
-  update: async (user: Partial<User>) => {},
+  update: async (user: Partial<User>): Promise<boolean> => false,
+  isUpdating: false,
 });
 
 const config: AuthRequestConfig = {
@@ -89,8 +90,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleConfig,
     appleDiscovery
   );
-
-  console.log(API_URL);
 
   const refreshAccessToken = useCallback(
     async (tokenToUse?: string) => {
@@ -204,9 +203,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
             // Check if we have all required user fields
             const hasRequiredFields =
               decoded &&
-              (decoded as any).name &&
+              (decoded as any).username &&
               (decoded as any).email &&
-              (decoded as any).picture;
+              (decoded as any).image;
 
             if (!hasRequiredFields) {
               console.warn(
@@ -218,7 +217,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
             setUser(decoded as User);
           }
 
-          return newAccessToken; // Return the new access token
+          return newAccessToken;
         }
       } catch (error) {
         console.error("Error refreshing token:", error);
@@ -403,15 +402,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
     password?: string
   ): Promise<void> => {
     setLoading(true);
-    const response = await login(email, password);
-    if (!response?.user) {
+    const res = await login(email, password);
+    if (!res?.user) {
       setLoggedIn(false);
       setLoading(false);
       return;
     }
-    setUser(response.user);
+
+    setUser(res.user);
     setLoggedIn(true);
     setLoading(false);
+    tokenCache?.saveToken("accessToken", res.accessToken);
+    tokenCache?.saveToken("refreshToken", res.refreshToken);
+    setAccessToken(res.accessToken);
+    setRefreshToken(res.refreshToken);
   };
 
   const signInWithAppleWebBrowser = async (): Promise<void> => {
@@ -515,25 +519,45 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const update = async (user: Partial<User>) => {
+  const update = async (user: Partial<User>): Promise<boolean> => {
     setIsUpdating(true);
     try {
+      const formData = new FormData();
+      // Add all user info to formData
+      Object.entries(user).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (key === "image") {
+            const filename = value.split("/").pop();
+            const match = /\.(\w+)$/.exec(filename ?? "");
+            const type = match ? `image/${match[1]}` : `image`;
+            formData.append("image", {
+              uri: value,
+              name: filename,
+              type,
+            } as any);
+          } else {
+            formData.append(key, value as any);
+          }
+        }
+      });
+      console.log(formData.get("image"));
       const res = await fetch(`${API_URL}/auth/update`, {
-        method: "POST",
+        method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(user),
+        body: formData,
       });
       if (!res.ok) {
-        console.error("Error updating user:", res.statusText);
-        return;
+        console.error("Error updating user:", res.status, await res.json());
+        return false;
       }
       const data = await res.json();
       setUser(data.user);
+      return true;
     } catch (e) {
       console.error("Error updating user:", e);
+      return false;
     } finally {
       setIsUpdating(false);
     }
@@ -552,6 +576,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           try {
             // Check if the access token is still valid
             const decoded = jose.decodeJwt(storedAccessToken);
+            console.log(decoded);
             const exp = (decoded as any).exp;
             const now = Math.floor(Date.now() / 1000);
 
@@ -623,6 +648,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         needsRegistration,
         setNeedsRegistration,
         update,
+        isUpdating,
       }}
     >
       {children}

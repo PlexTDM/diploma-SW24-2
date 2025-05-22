@@ -21,7 +21,7 @@ export const generateAccessToken = (user: IUser): string => {
     {
       id: user.id,
       role: user.role,
-      name: user.username,
+      username: user.username,
       email: user.email,
       image: user.image,
       hasOnboarded: user.hasOnboarded,
@@ -41,7 +41,7 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
     {
       id: user.id,
       role: user.role,
-      name: user.username,
+      username: user.username,
       email: user.email,
       image: user.image,
       hasOnboarded: user.hasOnboarded,
