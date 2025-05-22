@@ -42,7 +42,8 @@ export async function login(
 
       if (!res.ok) {
         console.log(await res.text());
-        throw new Error("Login failed");
+        // throw new Error("Login failed");
+        return null
       }
       const data = await res.json();
       console.log(data);
