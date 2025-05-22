@@ -28,7 +28,7 @@ export const generateAccessToken = (user: IUser): string => {
     },
     secret,
     {
-      expiresIn: "1d",
+      expiresIn: "3h",
     }
   );
 };
@@ -48,14 +48,14 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
     },
     secret,
     {
-      expiresIn: "7d",
+      expiresIn: "30d",
     }
   );
   const hashedToken = await bcryptjs.hash(refreshToken, 10);
 
   await RefreshToken.create({
     tokenHash: hashedToken,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     userId: user.id,
   });
 

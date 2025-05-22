@@ -60,7 +60,7 @@ class AuthController {
       if (!password || !email)
         return res.status(400).json({ message: "Missing password or email" });
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const match = compareSync(password, user.password);
@@ -197,7 +197,6 @@ class AuthController {
       const updateData: any = { ...otherBodyFields };
 
       if (image) {
-        console.log(image);
         if (user.image) {
           try {
             const oldImageUrl = new URL(user.image);

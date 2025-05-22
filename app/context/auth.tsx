@@ -103,8 +103,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
       try {
         console.log("Refreshing access token...");
+        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
 
-        const currentRefreshToken = tokenToUse || refreshToken;
+        const currentRefreshToken =
+          tokenToUse || refreshToken || storedRefreshToken;
 
         console.log(
           "Current refresh token:",
@@ -190,16 +192,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
           if (newAccessToken) setAccessToken(newAccessToken);
           if (newRefreshToken) setRefreshToken(newRefreshToken);
 
-          // Save both tokens to cache
-          if (newAccessToken)
-            await tokenCache?.saveToken("accessToken", newAccessToken);
-          if (newRefreshToken)
-            await tokenCache?.saveToken("refreshToken", newRefreshToken);
+          await tokenCache?.saveToken("accessToken", newAccessToken);
+          await tokenCache?.saveToken("refreshToken", newRefreshToken);
 
           // Update user data from the new access token
           if (newAccessToken) {
             const decoded = jose.decodeJwt(newAccessToken);
-            console.log("Decoded user data:", decoded);
+            // console.log("Decoded user data:", decoded);
             // Check if we have all required user fields
             const hasRequiredFields =
               decoded &&
@@ -576,7 +575,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
           try {
             // Check if the access token is still valid
             const decoded = jose.decodeJwt(storedAccessToken);
-            console.log(decoded);
             const exp = (decoded as any).exp;
             const now = Math.floor(Date.now() / 1000);
 
@@ -584,12 +582,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
               // Access token is still valid
               console.log("Access token is still valid, using it");
               setAccessToken(storedAccessToken);
+              setUser(decoded as User);
 
               if (storedRefreshToken) {
+                // getting new data from server
                 setRefreshToken(storedRefreshToken);
+                refreshAccessToken(storedRefreshToken);
               }
-
-              setUser(decoded as User);
             } else if (storedRefreshToken) {
               // Access token expired, but we have a refresh token
               console.log("Access token expired, using refresh token");
@@ -621,15 +620,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     };
     checkLogin();
-  }, [refreshAccessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     handleResponse();
-  }, [response, handleResponse]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
 
   useEffect(() => {
     handleAppleResponse();
   }, [appleResponse]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshAccessToken(refreshToken as string);
+    }, 1000 * 60 * 5);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshToken]);
 
   return (
     <AuthContext.Provider

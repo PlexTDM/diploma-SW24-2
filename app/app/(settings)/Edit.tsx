@@ -26,7 +26,6 @@ export default function Edit() {
   const [name, setName] = useState(user?.username || "");
   const [image, setImage] = useState<string | null>(user?.image || null);
   const [showImagePicker, setShowImagePicker] = useState(false);
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [saveDisabled, setSaveDisabled] = useState(true);
 
   const handleBack = () => {
@@ -67,7 +66,6 @@ export default function Edit() {
 
   const requestCameraPermission = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === "granted");
     return status === "granted";
   };
 
