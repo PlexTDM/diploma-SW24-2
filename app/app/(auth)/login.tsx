@@ -81,7 +81,7 @@ const Login = () => {
       {/* Main login content */}
       <View className="flex-1 z-10 justify-center items-center pt-24 p-6">
         <View className="w-full h-full">
-          <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-1/2 w-[330px] h-10 -translate-x-1/2 rounded-t-3xl items-center justify-center z-10" />
+          <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
           <View className="flex-1 absolute bg-white dark:bg-gray-900 rounded-3xl inset-0 items-center justify-start pt-10 z-20">
             <Image
               source={require("@/assets/img/logoLarge.png")}

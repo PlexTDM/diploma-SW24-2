@@ -41,6 +41,7 @@ export const AuthContext = createContext({
     visible: boolean;
     data: any;
   }) => {},
+  update: async (user: Partial<User>) => {},
 });
 
 const config: AuthRequestConfig = {
@@ -76,6 +77,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [error, setError] = useState<AuthError | null>(null);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [needsRegistration, setNeedsRegistration] = useState<{
     visible: boolean;
     data: any;
@@ -87,6 +89,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleConfig,
     appleDiscovery
   );
+
+  console.log(API_URL);
 
   const refreshAccessToken = useCallback(
     async (tokenToUse?: string) => {
@@ -511,6 +515,30 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
+  const update = async (user: Partial<User>) => {
+    setIsUpdating(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/update`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(user),
+      });
+      if (!res.ok) {
+        console.error("Error updating user:", res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setUser(data.user);
+    } catch (e) {
+      console.error("Error updating user:", e);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // check login
   useEffect(() => {
     const checkLogin = async () => {
@@ -594,6 +622,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         error,
         needsRegistration,
         setNeedsRegistration,
+        update,
       }}
     >
       {children}

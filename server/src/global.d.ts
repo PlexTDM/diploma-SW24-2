@@ -12,13 +12,3 @@ declare global {
     }
   }
 }
-
-export type AuthenticatedRequest<
-  P = Record<string, string>,
-  ResBody = any,
-  ReqBody = any,
-  ReqQuery = Query
-> = Request<P, ResBody, ReqBody, ReqQuery> & {
-  user: UserPayload;
-  redis: RedisService;
-};

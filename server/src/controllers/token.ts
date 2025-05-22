@@ -1,12 +1,17 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import bcryptjs from "bcryptjs";
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import RefreshToken from "@/models/refreshToken";
 import { IUser } from "@/models/user";
-import { AuthenticatedRequest } from "@/global";
+import { redisService } from "@/services/redis";
 
 config();
+
+export type AuthenticatedRequest = Request & {
+  user: UserPayload;
+  redis: typeof redisService;
+};
 
 export const generateAccessToken = (user: IUser): string => {
   const secret = process.env.SECRET_ACCESS_TOKEN as string;
@@ -18,6 +23,7 @@ export const generateAccessToken = (user: IUser): string => {
       role: user.role,
       name: user.username,
       email: user.email,
+      image: user.image,
       hasOnboarded: user.hasOnboarded,
     },
     secret,
@@ -37,6 +43,7 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
       role: user.role,
       name: user.username,
       email: user.email,
+      image: user.image,
       hasOnboarded: user.hasOnboarded,
     },
     secret,

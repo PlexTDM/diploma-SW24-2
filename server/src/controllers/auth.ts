@@ -4,13 +4,19 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
 import User, { IUser } from "@/models/user";
-import { generateAccessToken, generateRefreshToken } from "./token";
+import {
+  AuthenticatedRequest,
+  generateAccessToken,
+  generateRefreshToken,
+} from "./token";
 import { transporter } from "@/services/nodemailer";
 import RefreshToken from "@/models/refreshToken";
 import axios from "axios";
 import * as jose from "jose";
 import { BASE_URL } from "@/routes/constants";
 import { APP_SCHEME } from "@/routes/constants";
+import { bucket } from "@/config/firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -159,24 +165,91 @@ class AuthController {
     }
   }
 
-  // update doesn't work for now
-  public static async update(req: Request, res: Response): Promise<any> {
-    const { password, newPassword, id } = req.body;
+  public static async update(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "Request is empty" });
+    }
 
+    const { password, newPassword, ...otherBodyFields } = req.body;
+    const image = req.file;
+    let willUpdatePassword = false;
+    let hashedPassword;
     try {
-      const user = await User.findById(id).exec();
+      const user = await User.findById(req.user.id).exec();
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      const match = compareSync(password, user.password);
-      if (!match)
-        return res.status(401).json({ message: "Passwords don't match" });
+      if (newPassword && password) {
+        const match = compareSync(password, user.password);
+        if (!match)
+          return res.status(401).json({ message: "Passwords don't match" });
+        if (newPassword === password)
+          return res.status(400).json({
+            message: "New password cannot be the same as the old password",
+          });
+        willUpdatePassword = true;
+        const salt = genSaltSync(hashRounds);
+        hashedPassword = hashSync(newPassword, salt);
+      }
 
-      const salt = genSaltSync(hashRounds);
-      const hashedPassword = hashSync(newPassword, salt);
+      const updateData: any = { ...otherBodyFields };
 
-      await User.findByIdAndUpdate(id, { password: hashedPassword });
+      if (image) {
+        // If user already has an image, delete it from Firebase Storage
+        if (user.image) {
+          try {
+            const oldImageUrl = new URL(user.image);
+            // Extract the path after the bucket name
+            const pathSegments = oldImageUrl.pathname.split("/");
+            const oldImagePath = pathSegments.slice(2).join("/");
+            if (oldImagePath) {
+              const oldFile = bucket.file(oldImagePath);
+              await oldFile.delete();
+            }
+          } catch (error: any) {
+            console.error("Error deleting old image:", error.message);
+          }
+        }
 
-      res.status(200).json({ message: "Password updated successfully" });
+        // Generate a unique filename
+        const filename = `users/${user._id}/pfp-${uuidv4()}`;
+
+        // Upload to Firebase Storage
+        const file = bucket.file(filename);
+        await file.save(image.buffer, {
+          metadata: {
+            contentType: image.mimetype,
+          },
+        });
+
+        await file.makePublic();
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+
+        updateData.image = publicUrl;
+      }
+
+      if (willUpdatePassword) {
+        updateData.password = hashedPassword;
+      }
+
+      const newUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+      })
+        .select("-password")
+        .exec();
+
+      const accessToken = generateAccessToken(newUser!);
+      const refreshToken = await generateRefreshToken(newUser!);
+
+      return res.status(200).json({
+        message: "User updated successfully",
+        user: newUser,
+        accessToken,
+        refreshToken,
+      });
     } catch (e) {
       console.error("update error:", e);
       res.status(500).json({ message: "Internal Server Error" });
