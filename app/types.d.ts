@@ -71,7 +71,7 @@ type User = {
   updatedAt?: Date;
 };
 
-export interface Message {
+interface Message {
   id: string;
   content: string;
   role: "user" | "model" | "system";
