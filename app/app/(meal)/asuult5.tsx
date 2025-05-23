@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, useColorScheme, StyleSheet, Animated } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, useColorScheme, Animated } from "react-native";
+import LottieView from "lottie-react-native";
 import { languages, useLanguage } from "@/lib/language";
 import { useRouter } from "expo-router";
 
@@ -8,13 +9,16 @@ const Asuult5 = () => {
   const question5 = languages[language].question5;
 
   const colorScheme = useColorScheme();
-  const textColor = colorScheme === "dark" ? "#ffffff" : "#000000";
-  const backgroundColor = colorScheme === "dark" ? "#1e1e1e" : "#ffffff";
+  const isDark = colorScheme === "dark";
+  const textColor = isDark ? "text-white" : "text-black";
+  const backgroundColor = isDark ? "bg-[#1e1e1e]" : "bg-white";
 
   const router = useRouter();
 
   const [progress, setProgress] = useState(new Animated.Value(0));
   const [progressText, setProgressText] = useState("0%");
+
+  const animationRef = useRef(null);
 
   useEffect(() => {
     Animated.timing(progress, {
@@ -44,32 +48,42 @@ const Asuult5 = () => {
   }, []);
 
   return (
-    <View style={[styles.wrapper, { backgroundColor }]}>
+    <View className={`flex-1 justify-end items-center px-5 pb-40 ${backgroundColor}`}>
+      {/* Overlayed DotLottie Animation */}
+      <View className="absolute top-10 left-0 right-0 items-center mt-10">
+        <LottieView
+          ref={animationRef}
+          source={require("@/assets/mascot/bluvifood.json")}
+          loop
+          autoPlay
+          style={{ width: 400, height: 420 }} // Equivalent to w-48 h-48
+        />
+
+      </View>
+
       {/* Text Section */}
-      <View style={styles.textContainer}>
-        <Text style={[styles.question, { color: textColor }]}>
+      <View className="items-center mb-8">
+        <Text className={`text-lg font-bold text-center ${textColor}`}>
           {question5.zori}
         </Text>
       </View>
 
       {/* Progress Bar */}
-      <View style={styles.progressWrapper}>
-        <View style={styles.progressBarContainer}>
+      <View className="w-full items-center">
+        <View className="w-full h-2 bg-gray-200 rounded-full">
           <Animated.View
-            style={[
-              styles.progressBar,
-              {
-                width: progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ["0%", "100%"],
-                }),
-              },
-            ]}
+            style={{
+              width: progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: ["0%", "100%"],
+              }),
+            }}
+            className="h-full bg-blue-600 rounded-full"
           />
         </View>
 
         {/* Progress Percentage Text under the bar */}
-        <Text style={[styles.progressText, { color: textColor }]}>
+        <Text className={`text-base mt-2 ${textColor}`}>
           {progressText}
         </Text>
       </View>
@@ -78,42 +92,3 @@ const Asuult5 = () => {
 };
 
 export default Asuult5;
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    justifyContent: "flex-end", // ← Доош төвлөрүүлэх
-    alignItems: "center",
-    padding: 20,
-    paddingBottom: 160, // ← Доош арай зайтай болгох бол энэ нэмэлт тохиргоо
-  },
-
-  textContainer: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  question: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  progressWrapper: {
-    width: "100%",
-    alignItems: "center",
-  },
-  progressBarContainer: {
-    width: "100%",
-    height: 8,
-    backgroundColor: "#E6E6E6",
-    borderRadius: 5,
-  },
-  progressBar: {
-    height: "100%",
-    backgroundColor: "#136CF1",
-    borderRadius: 5,
-  },
-  progressText: {
-    fontSize: 18,
-    marginTop: 8,
-  },
-});

@@ -1,14 +1,18 @@
 import { ThemeView } from "@/components";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { addMonths, subMonths } from "date-fns";
 import MiniCalendar from "@/components/MiniCalendar";
+import ConfettiCannon from "react-native-confetti-cannon";
 
 export default function Streak() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [completedDays, setCompletedDays] = useState<number[]>([]);
 
   const today = new Date();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const previouslyUnlocked = useRef<number[]>([]);
 
   const onToggleComplete = (day: number) => {
     setCompletedDays((prev) =>
@@ -59,44 +63,134 @@ export default function Streak() {
 
   const { currentStreak, longestStreak } = calculateStreaks(completedDays);
 
+  const achievements = [
+    { days: 7, label: "7-Day Streak" },
+    { days: 14, label: "14-Day Streak" },
+    { days: 30, label: "30-Day Streak" },
+    { days: 60, label: "60-Day Streak" },
+  ];
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-    <ThemeView className="flex-1 bg-white dark:bg-gray-900">
-      <View className="w-full px-2 mb-2">
-        <Text className="text-lg font-bold text-black dark:text-white mt-10 text-center">
-          Streak Days
-        </Text>
-      </View>
-      <View className="p-4 dark:bg-gray-900 ">
-        <View className="flex-row justify-between mb-4 ">
-          <View className="flex-1 bg-blue-100 p-3 rounded-xl mr-2 ">
-            <Text className="text-md font-semibold text-blue-800">
-              Current Streak
-            </Text>
-            <Text className="text-2xl font-bold text-blue-900">
-              {currentStreak}
-            </Text>
-          </View>
-          <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
-            <Text className="text-md font-semibold text-yellow-800">
-              Longest Streak
-            </Text>
-            <Text className="text-2xl font-bold text-yellow-900">
-              {longestStreak}
-            </Text>
-          </View>
+      <ThemeView className="flex-1 bg-white dark:bg-gray-900">
+        <View className="w-full px-2 mb-2">
+          <Text className="text-lg font-bold text-black dark:text-white mt-10 text-center">
+            Streak Days
+          </Text>
         </View>
 
-        <MiniCalendar
-          currentDate={currentDate}
-          completedDays={completedDays}
-          onToggleComplete={onToggleComplete}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
-          isNextDisabled={isNextDisabled}
-        />
-      </View>
-    </ThemeView>
+        <View className="p-4 dark:bg-gray-900">
+          <View className="flex-row justify-between mb-4">
+            <View className="flex-1 bg-blue-100 p-3 rounded-xl mr-2">
+              <Text className="text-md font-semibold text-blue-800">
+                Current Streak
+              </Text>
+              <Text className="text-2xl font-bold text-blue-900">
+                {currentStreak}
+              </Text>
+            </View>
+            <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
+              <Text className="text-md font-semibold text-yellow-800">
+                Longest Streak
+              </Text>
+              <Text className="text-2xl font-bold text-yellow-900">
+                {longestStreak}
+              </Text>
+            </View>
+          </View>
+
+          <MiniCalendar
+            currentDate={currentDate}
+            completedDays={completedDays}
+            onToggleComplete={onToggleComplete}
+            onPrevMonth={handlePrevMonth}
+            onNextMonth={handleNextMonth}
+            isNextDisabled={isNextDisabled}
+          />
+
+          {/* Achievements */}
+          <View className="mt-6">
+            <Text className="text-lg font-semibold text-black dark:text-white mb-4 text-center">
+              Streak Achievements
+            </Text>
+            <View className="flex-row flex-wrap justify-between gap-4">
+              {achievements.map((achievement, index) => {
+                const unlocked = longestStreak >= achievement.days;
+                useEffect(() => {
+                  const isNewRecord = currentStreak > 0 && currentStreak === longestStreak
+
+                  if (isNewRecord) {
+                    setShowConfetti(true)
+                    setTimeout(() => setShowConfetti(false), 3000)
+                  }
+                }, [currentStreak, longestStreak])
+
+
+
+                const progress = Math.min(longestStreak / achievement.days, 1);
+
+                return (
+                  <View
+                    key={index}
+                    className={`w-[48%] items-center p-4 rounded-xl ${
+                      unlocked ? "bg-green-100" : "bg-gray-200 dark:bg-gray-700"
+                    }`}
+                  >
+                    <View
+                      className={`h-12 w-12 rounded-full mb-2 items-center justify-center ${
+                        unlocked
+                          ? "bg-green-200"
+                          : "bg-gray-400 dark:bg-gray-600"
+                      }`}
+                    >
+                      <Text className="text-xl">{unlocked ? "🏆" : "🔒"}</Text>
+                    </View>
+
+                    <Text
+                      className={`text-sm font-medium ${
+                        unlocked
+                          ? "text-green-800"
+                          : "text-gray-500 dark:text-gray-300"
+                      }`}
+                    >
+                      {achievement.label}
+                    </Text>
+
+                    <Text
+                      className={`text-xs mt-1 px-2 py-1 rounded-full ${
+                        unlocked
+                          ? "bg-green-300 text-green-900"
+                          : "bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300"
+                      }`}
+                    >
+                      {unlocked ? "Unlocked" : "Locked"}
+                    </Text>
+
+                    {!unlocked && (
+                      <View className="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-full mt-2">
+                        <View
+                          className="h-full bg-green-400 rounded-full"
+                          style={{ width: `${progress * 100}%` }}
+                        />
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </View>
+            {showConfetti && (
+              <ConfettiCannon
+                count={50}
+                origin={{ x: 200, y: -20 }}
+                fadeOut
+                explosionSpeed={300}
+                fallSpeed={3000}
+              />
+            )}
+
+          </View>
+        </View>
+      </ThemeView>
     </ScrollView>
   );
 }
