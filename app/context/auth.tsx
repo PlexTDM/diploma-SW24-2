@@ -41,7 +41,8 @@ export const AuthContext = createContext({
     visible: boolean;
     data: any;
   }) => {},
-  update: async (user: Partial<User>) => {},
+  update: async (user: Partial<User>): Promise<boolean> => false,
+  isUpdating: false,
 });
 
 const config: AuthRequestConfig = {
@@ -90,8 +91,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleDiscovery
   );
 
-  console.log(API_URL);
-
   const refreshAccessToken = useCallback(
     async (tokenToUse?: string) => {
       // Prevent multiple simultaneous refresh attempts
@@ -104,8 +103,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
       try {
         console.log("Refreshing access token...");
+        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
 
-        const currentRefreshToken = tokenToUse || refreshToken;
+        const currentRefreshToken =
+          tokenToUse || refreshToken || storedRefreshToken;
 
         console.log(
           "Current refresh token:",
@@ -191,22 +192,19 @@ export function AuthProvider({ children }: PropsWithChildren) {
           if (newAccessToken) setAccessToken(newAccessToken);
           if (newRefreshToken) setRefreshToken(newRefreshToken);
 
-          // Save both tokens to cache
-          if (newAccessToken)
-            await tokenCache?.saveToken("accessToken", newAccessToken);
-          if (newRefreshToken)
-            await tokenCache?.saveToken("refreshToken", newRefreshToken);
+          await tokenCache?.saveToken("accessToken", newAccessToken);
+          await tokenCache?.saveToken("refreshToken", newRefreshToken);
 
           // Update user data from the new access token
           if (newAccessToken) {
             const decoded = jose.decodeJwt(newAccessToken);
-            console.log("Decoded user data:", decoded);
+            // console.log("Decoded user data:", decoded);
             // Check if we have all required user fields
             const hasRequiredFields =
               decoded &&
-              (decoded as any).name &&
+              (decoded as any).username &&
               (decoded as any).email &&
-              (decoded as any).picture;
+              (decoded as any).image;
 
             if (!hasRequiredFields) {
               console.warn(
@@ -218,7 +216,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
             setUser(decoded as User);
           }
 
-          return newAccessToken; // Return the new access token
+          return newAccessToken;
         }
       } catch (error) {
         console.error("Error refreshing token:", error);
@@ -403,15 +401,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
     password?: string
   ): Promise<void> => {
     setLoading(true);
-    const response = await login(email, password);
-    if (!response?.user) {
+    const res = await login(email, password);
+    if (!res?.user) {
       setLoggedIn(false);
       setLoading(false);
       return;
     }
-    setUser(response.user);
+
+    setUser(res.user);
     setLoggedIn(true);
     setLoading(false);
+    tokenCache?.saveToken("accessToken", res.accessToken);
+    tokenCache?.saveToken("refreshToken", res.refreshToken);
+    setAccessToken(res.accessToken);
+    setRefreshToken(res.refreshToken);
   };
 
   const signInWithAppleWebBrowser = async (): Promise<void> => {
@@ -515,25 +518,45 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-  const update = async (user: Partial<User>) => {
+  const update = async (user: Partial<User>): Promise<boolean> => {
     setIsUpdating(true);
     try {
+      const formData = new FormData();
+      // Add all user info to formData
+      Object.entries(user).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (key === "image") {
+            const filename = value.split("/").pop();
+            const match = /\.(\w+)$/.exec(filename ?? "");
+            const type = match ? `image/${match[1]}` : `image`;
+            formData.append("image", {
+              uri: value,
+              name: filename,
+              type,
+            } as any);
+          } else {
+            formData.append(key, value as any);
+          }
+        }
+      });
+      console.log(formData.get("image"));
       const res = await fetch(`${API_URL}/auth/update`, {
-        method: "POST",
+        method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(user),
+        body: formData,
       });
       if (!res.ok) {
-        console.error("Error updating user:", res.statusText);
-        return;
+        console.error("Error updating user:", res.status, await res.json());
+        return false;
       }
       const data = await res.json();
       setUser(data.user);
+      return true;
     } catch (e) {
       console.error("Error updating user:", e);
+      return false;
     } finally {
       setIsUpdating(false);
     }
@@ -559,12 +582,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
               // Access token is still valid
               console.log("Access token is still valid, using it");
               setAccessToken(storedAccessToken);
+              setUser(decoded as User);
 
               if (storedRefreshToken) {
+                // getting new data from server
                 setRefreshToken(storedRefreshToken);
+                refreshAccessToken(storedRefreshToken);
               }
-
-              setUser(decoded as User);
             } else if (storedRefreshToken) {
               // Access token expired, but we have a refresh token
               console.log("Access token expired, using refresh token");
@@ -596,15 +620,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     };
     checkLogin();
-  }, [refreshAccessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     handleResponse();
-  }, [response, handleResponse]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
 
   useEffect(() => {
     handleAppleResponse();
   }, [appleResponse]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshAccessToken(refreshToken as string);
+    }, 1000 * 60 * 5);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshToken]);
 
   return (
     <AuthContext.Provider
@@ -623,6 +657,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         needsRegistration,
         setNeedsRegistration,
         update,
+        isUpdating,
       }}
     >
       {children}

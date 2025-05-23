@@ -24,7 +24,7 @@ export default function FloatingButton() {
 
   const translateX = useSharedValue(screenWidth - BUTTON_SIZE - PADDING);
   const translateY = useSharedValue(
-    screenHeight - BUTTON_SIZE - SAFE_BOTTOM_OFFSET
+    screenHeight - BUTTON_SIZE - SAFE_BOTTOM_OFFSET - PADDING - 150
   );
 
   // Shared values to store the starting position of the gesture

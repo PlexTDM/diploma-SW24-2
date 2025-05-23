@@ -1,11 +1,11 @@
-import React, { use } from "react";
+import React, { use, useEffect, useState } from "react";
 import { View, Pressable, Switch, Text } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { ThemeView, ThemeText } from "@/components";
 import { Image } from "expo-image";
 import { useAppTheme } from "@/lib/theme";
 import { useLanguage, languages } from "@/lib/language";
-import { Button, Icon } from "react-native-paper";
+import { Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
 import { SettingsItem } from "@/components/SettingsItem";
 
@@ -15,6 +15,8 @@ export default function Settings() {
   const router = useRouter();
   const navigation = useNavigation();
   const { language, setLanguage } = useLanguage();
+  const [isSwitchOn, setIsSwitchOn] = useState<boolean>(false);
+
   const toggleLang = () => {
     const newLang = language === "en" ? "mn" : "en";
     setLanguage(newLang);
@@ -23,6 +25,7 @@ export default function Settings() {
   const isDark = theme === "dark";
   const toggleSwitch = () => {
     const newTheme = isDark ? "light" : "dark";
+    setIsSwitchOn(newTheme === "dark");
     setTheme(newTheme);
   };
 
@@ -34,22 +37,35 @@ export default function Settings() {
     }
   };
 
+  useEffect(() => {
+    setIsSwitchOn(theme === "dark");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <ThemeView className="pt-8 px-10 flex-1">
       <View className="flex-row items-center justify-between w-full">
-        <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
-          <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
+        <View className="border-2 overflow-hidden border-gray-200 dark:border-gray-700 rounded-full">
+          <Pressable
+            android_disableSound
+            android_ripple={{
+              color: "#dddddd",
+              radius: 20,
+            }}
+            className="p-2"
+            onPress={handleBack}
+          >
             <Icon
               source="chevron-left"
               size={25}
               color={theme === "dark" ? "#fff" : "#000"}
             />
-          </Button>
+          </Pressable>
         </View>
-        <ThemeText className="text-2xl text-center font-semibold">
+        <ThemeText className="text-2xl text-center font-semibold absolute left-1/2 -translate-x-1/2">
           {languages[language].settings.title}
         </ThemeText>
-        <Pressable
+        {/* <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
           onPress={handleBack}
         >
@@ -58,7 +74,7 @@ export default function Settings() {
             size={25}
             color={theme === "dark" ? "#fff" : "#000"}
           />
-        </Pressable>
+        </Pressable> */}
       </View>
 
       {/* Account section */}
@@ -139,7 +155,7 @@ export default function Settings() {
         showChevron={false}
         rightElement={
           <Switch
-            value={isDark}
+            value={isSwitchOn}
             onValueChange={toggleSwitch}
             trackColor={{ false: "#ccc", true: "#93c5fd" }}
             thumbColor={isDark ? "#1d4ed8" : "#f4f3f4"}

@@ -1,4 +1,4 @@
-import { ThemeText } from "@/components";
+import { Avatar, ThemeText } from "@/components";
 import { use, useCallback, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
@@ -8,7 +8,6 @@ import { useLanguage, languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
-import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Tabs = () => {
@@ -152,10 +151,11 @@ export default function Profile() {
   return (
     <SafeAreaView className="items-center justify-center dark:bg-gray-900 bg-white flex-1">
       <View className="flex-row items-center px-6 justify-between w-full mt-5">
-        <View className="border-2 border-gray-200 p-2 dark:border-gray-700 rounded-full">
+        <View className="border-2 border-gray-200 dark:border-gray-700 overflow-hidden rounded-full">
           <Pressable
             android_ripple={{ color: "#00000020", radius: 40 }}
             onPress={handleBack}
+            className="p-2"
           >
             <Icon
               source="chevron-left"
@@ -182,18 +182,7 @@ export default function Profile() {
         className="items-center justify-center mt-5"
         onPress={handlePfp}
       >
-        <Image
-          source={
-            user?.image
-              ? { uri: user.image }
-              : require("@/assets/img/profile.png")
-          }
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 999,
-          }}
-        />
+        <Avatar />
       </Pressable>
       <ThemeText className="text-2xl font-bold mt-2">
         {user?.username}
@@ -217,7 +206,7 @@ export default function Profile() {
             color={theme === "dark" ? "#fff" : "#000"}
             size={30}
           />
-          <ThemeText className="font-semibold text-xl">682</ThemeText>
+          <ThemeText className="font-semibold text-xl">0</ThemeText>
           <ThemeText className="color-gray-400">
             {languages[language].profile1.followers}
           </ThemeText>

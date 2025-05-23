@@ -1,21 +1,32 @@
-import { View, Text, Pressable, TextInput } from "react-native";
-import { useState, useContext, use } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+import { useState, use, useEffect } from "react";
 import { useNavigation, useRouter } from "expo-router";
-import { ThemeView, ThemeText } from "@/components";
-import { Image } from "expo-image";
+import { ThemeView, ThemeText, Avatar } from "@/components";
 import { useAppTheme } from "@/lib/theme";
 import { useLanguage } from "@/lib/language";
-import { Button, Icon } from "react-native-paper";
+import { Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
+import * as ImagePicker from "expo-image-picker";
+import { ImagePickerModal } from "@/components/ImagePickerModal";
+import { Camera } from "expo-camera";
 
 export default function Edit() {
   const { language } = useLanguage();
   const { theme } = useAppTheme();
   const router = useRouter();
   const navigation = useNavigation();
-  const { user } = use(AuthContext);
+  const { user, isUpdating, update } = use(AuthContext);
 
-  const [name, setName] = useState(user?.username || ""); // ✅ анхны утгыг оруулсан
+  const [name, setName] = useState(user?.username || "");
+  const [image, setImage] = useState<string | null>(user?.image || null);
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [saveDisabled, setSaveDisabled] = useState(true);
 
   const handleBack = () => {
     if (navigation.canGoBack()) {
@@ -25,10 +36,71 @@ export default function Edit() {
     }
   };
 
-  // const handleSave = () => {
-  //   setUser({ ...user, username: name });
-  //   router.back();
-  // };
+  useEffect(() => {
+    if ((name === "" || name === user?.username) && image === user?.image) {
+      setSaveDisabled(true);
+    } else {
+      setSaveDisabled(false);
+    }
+  }, [image, name, user]);
+
+  const handleSave = async () => {
+    console.log("saving");
+    const updatedData: Record<string, any> = {};
+
+    if (image !== user?.image) {
+      updatedData.image = image;
+    }
+
+    if (name !== user?.username) {
+      updatedData.username = name;
+    }
+
+    if (Object.keys(updatedData).length > 0) {
+      const success: boolean = await update(updatedData);
+      if (success) {
+        router.replace("/(tabs)/(profile)/profile");
+      }
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    return status === "granted";
+  };
+
+  const handleCameraPress = async () => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) return;
+
+    setShowImagePicker(false);
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handleGalleryPress = async () => {
+    setShowImagePicker(false);
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const isDisabled = saveDisabled || isUpdating;
 
   return (
     <ThemeView className="pt-4 px-8 flex-1 justify-between">
@@ -36,13 +108,21 @@ export default function Edit() {
         {/* Header */}
         <View className="flex-row items-center justify-between w-full">
           <View className="border-2 border-gray-200 dark:border-gray-700 rounded-full">
-            <Button mode="text" rippleColor="#ddd" onPress={handleBack}>
+            <Pressable
+              android_disableSound
+              android_ripple={{
+                color: "#dddddd",
+                radius: 20,
+              }}
+              className="p-2"
+              onPress={handleBack}
+            >
               <Icon
                 source="chevron-left"
                 size={25}
                 color={theme === "dark" ? "#fff" : "#000"}
               />
-            </Button>
+            </Pressable>
           </View>
           <ThemeText className="text-2xl text-center font-semibold">
             Edit
@@ -63,28 +143,20 @@ export default function Edit() {
           Profile picture
         </Text>
         <View className="flex-row justify-center relative mt-4">
-          <View className="relative p-2">
-            <Image
-              source={
-                user?.image
-                  ? { uri: user.image }
-                  : require("@/assets/img/profile.png")
-              }
-              style={{
-                width: 120,
-                height: 120,
-                borderRadius: 60,
-              }}
-            />
+          <Pressable
+            className="relative p-2"
+            onPress={() => setShowImagePicker(true)}
+          >
+            <Avatar size={120} image={image} />
             <View className="border-2 border-white bg-black p-2 rounded-full absolute z-10 right-0 bottom-0">
               <Icon source="pencil" size={20} color="white" />
             </View>
-          </View>
+          </Pressable>
         </View>
 
-        {/* Name input */}
+        {/* Name */}
         <Text className="mt-8 text-lg text-gray-400 dark:text-gray-400">
-          Full name
+          Username
         </Text>
         <TextInput
           className="border border-gray-300 dark:border-gray-600 px-8 py-4 rounded-full text-black dark:text-white mt-4"
@@ -92,18 +164,33 @@ export default function Edit() {
           value={name}
           onChangeText={setName}
           style={{ fontSize: 18 }}
+          aria-disabled={isDisabled}
         />
       </View>
 
       {/* Save button */}
       <Pressable
-        // onPress={handleSave}
-        className=" bg-blue-500 py-4 rounded-full mb-20"
+        onPress={handleSave}
+        disabled={isDisabled}
+        className={`bg-blue-500 py-4 rounded-full mb-20 ${
+          isDisabled && "bg-blue-900"
+        }`}
       >
-        <Text className="text-white text-center text-xl font-semibold">
-          Save
-        </Text>
+        {isUpdating ? (
+          <ActivityIndicator color="white" size="small" />
+        ) : (
+          <Text className="text-white text-center text-xl font-semibold">
+            Save
+          </Text>
+        )}
       </Pressable>
+
+      <ImagePickerModal
+        visible={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onCameraPress={handleCameraPress}
+        onGalleryPress={handleGalleryPress}
+      />
     </ThemeView>
   );
 }

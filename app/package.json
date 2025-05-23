@@ -96,6 +96,10 @@
   "overrides": {
     "lucide-react-native": {
       "react": "^19"
+    },
+    "@lottiefiles/dotlottie-react": {
+      "react": "^19",
+      "react-dom": "^19"
     }
   }
 }

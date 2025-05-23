@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import EventSource from "react-native-sse";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Message } from "@/types";
+import { tokenCache } from "@/utils/cache";
 
 interface ChatState {
   messages: Message[];
@@ -28,7 +27,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   sendMessage: async (message: string, onChunk: (chunk: string) => void) => {
     set({ isSending: true });
     try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       return new Promise((resolve, reject) => {
         const es = new EventSource(`${api}/chatbot/message`, {
           method: "POST",
@@ -84,7 +83,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   clearChat: async () => {
     try {
       set({ isLoading: true, error: null });
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       const response = await fetch(`${api}/chatbot/clear`, {
         method: "DELETE",
         headers: {
@@ -108,7 +107,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   getConversationHistory: async () => {
     set({ isLoadingHistory: true, error: null });
     try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       if (!accessToken) {
         set({
           error: "Authentication token not found. Please log in.",
@@ -140,9 +139,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         try {
           const data = await response.json();
           errorBody = JSON.stringify(data.detail || data);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           try {
             errorBody = (await response.text()) || errorBody;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (e2) {}
         }
         throw new Error(`Failed to get conversation history: ${errorBody}`);
