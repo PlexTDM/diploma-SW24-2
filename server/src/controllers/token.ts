@@ -8,6 +8,15 @@ import { redisService } from "@/services/redis";
 
 config();
 
+export interface UserPayload {
+  id: string;
+  role: "ADMIN" | "USER";
+  username: string;
+  email: string;
+  image: string;
+  hasOnboarded: boolean;
+}
+
 export type AuthenticatedRequest = Request & {
   user: UserPayload;
   redis: typeof redisService;
@@ -39,7 +48,7 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
 
   const refreshToken = jwt.sign(
     {
-      id: user.id,
+      id: user._id,
       role: user.role,
       username: user.username,
       email: user.email,
@@ -56,7 +65,7 @@ export const generateRefreshToken = async (user: IUser): Promise<string> => {
   await RefreshToken.create({
     tokenHash: hashedToken,
     expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    userId: user.id,
+    userId: user._id,
   });
 
   return refreshToken;

@@ -78,7 +78,7 @@ export const mn = {
     },
     steps: {
       goal: {
-        title: "Таны зорилго?",
+        title: "Таны зорилго юу вэ?",
         desc: "Таны сонголт дасгалын хөтөлбөрт тань нөлөөлнө",
         choices: [
           "Жингээ хасах",
@@ -306,7 +306,7 @@ export const en = {
     },
     steps: {
       goal: {
-        title: "Your Goal?",
+        title: "What is your goal?",
         desc: "Your choice will affect your workout plan",
         choices: [
           "Lose weight",

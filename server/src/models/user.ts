@@ -11,6 +11,7 @@ export enum Gender {
 }
 
 export interface IUser extends Document {
+  _id: string;
   username: string;
   email: string;
   stats?: Record<string, any>;
@@ -135,7 +136,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
   {
     timestamps: true,
   }
-);
+).index({ email: 1 }, { unique: true });
 
 const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 export default User;

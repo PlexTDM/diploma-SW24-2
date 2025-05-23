@@ -23,6 +23,7 @@ import { BASE_URL, API_URL } from "@/utils/constants";
 import { handleAppleAuthError } from "@/utils/handleAppleError";
 import { randomUUID } from "expo-crypto";
 import { Platform } from "react-native";
+import { useRegisterStore } from "@/stores/statsStore";
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -90,6 +91,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleConfig,
     appleDiscovery
   );
+  const { setField } = useRegisterStore();
+
+  const loadGoals = async (goals: DailyGoals) => {
+    setField("stepsGoal", goals.stepsGoal);
+    setField("waterGoal", goals.waterGoal);
+    setField("caloriesGoal", goals.caloriesGoal);
+    setField("proteinGoal", goals.proteinGoal);
+    setField("carbsGoal", goals.carbsGoal);
+    setField("fatGoal", goals.fatGoal);
+    setField("sleepGoal", goals.sleepGoal);
+    setField("rdcGoal", goals.rdcGoal);
+  };
 
   const refreshAccessToken = useCallback(
     async (tokenToUse?: string) => {
@@ -108,116 +121,56 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const currentRefreshToken =
           tokenToUse || refreshToken || storedRefreshToken;
 
+        if (!currentRefreshToken) {
+          console.error("No refresh token available");
+          signOut();
+          return null;
+        }
+
+        console.log("Using refresh token to get new tokens");
+        const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${currentRefreshToken}`,
+          },
+        });
+
+        if (!refreshResponse.ok) {
+          const errorData = await refreshResponse.json();
+          console.error("Token refresh failed:", errorData);
+
+          // If refresh fails due to expired token, sign out
+          if (refreshResponse.status === 401) {
+            signOut();
+          }
+          return null;
+        }
+
+        // For native: Update both tokens
+        const data = await refreshResponse.json();
+        console.log("data+++++++++++++++++++++++++++", data);
+        const newAccessToken = data.accessToken;
+        const newRefreshToken = data.refreshToken;
+        setUser(data.user as User);
+        loadGoals(data.user.dailyGoals as DailyGoals);
+
         console.log(
-          "Current refresh token:",
-          currentRefreshToken ? "exists" : "missing"
+          "Received new access token:",
+          newAccessToken ? "exists" : "missing"
+        );
+        console.log(
+          "Received new refresh token:",
+          newRefreshToken ? "exists" : "missing"
         );
 
-        if (isWeb) {
-          // For web: Use JSON for the request
-          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ platform: "web" }),
-            credentials: "include",
-          });
+        if (newAccessToken) setAccessToken(newAccessToken);
+        if (newRefreshToken) setRefreshToken(newRefreshToken);
 
-          if (!refreshResponse.ok) {
-            const errorData = await refreshResponse.json();
-            console.error("Token refresh failed:", errorData);
+        await tokenCache?.saveToken("accessToken", newAccessToken);
+        await tokenCache?.saveToken("refreshToken", newRefreshToken);
 
-            // If refresh fails due to expired token, sign out
-            if (refreshResponse.status === 401) {
-              signOut();
-            }
-            return null;
-          }
-
-          // Fetch the session to get updated user data
-          const sessionResponse = await fetch(`${API_URL}/auth/session`, {
-            method: "GET",
-            credentials: "include",
-          });
-
-          if (sessionResponse.ok) {
-            const sessionData = await sessionResponse.json();
-            setUser(sessionData as User);
-          }
-
-          return null; // Web doesn't use access token directly
-        } else {
-          // For native: Use the refresh token
-          if (!currentRefreshToken) {
-            console.error("No refresh token available");
-            signOut();
-            return null;
-          }
-
-          console.log("Using refresh token to get new tokens");
-          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${currentRefreshToken}`,
-            },
-          });
-
-          if (!refreshResponse.ok) {
-            const errorData = await refreshResponse.json();
-            console.error("Token refresh failed:", errorData);
-
-            // If refresh fails due to expired token, sign out
-            if (refreshResponse.status === 401) {
-              signOut();
-            }
-            return null;
-          }
-
-          // For native: Update both tokens
-          const tokens = await refreshResponse.json();
-          const newAccessToken = tokens.accessToken;
-          const newRefreshToken = tokens.refreshToken;
-
-          console.log(
-            "Received new access token:",
-            newAccessToken ? "exists" : "missing"
-          );
-          console.log(
-            "Received new refresh token:",
-            newRefreshToken ? "exists" : "missing"
-          );
-
-          if (newAccessToken) setAccessToken(newAccessToken);
-          if (newRefreshToken) setRefreshToken(newRefreshToken);
-
-          await tokenCache?.saveToken("accessToken", newAccessToken);
-          await tokenCache?.saveToken("refreshToken", newRefreshToken);
-
-          // Update user data from the new access token
-          if (newAccessToken) {
-            const decoded = jose.decodeJwt(newAccessToken);
-            // console.log("Decoded user data:", decoded);
-            // Check if we have all required user fields
-            const hasRequiredFields =
-              decoded &&
-              (decoded as any).username &&
-              (decoded as any).email &&
-              (decoded as any).image;
-
-            if (!hasRequiredFields) {
-              console.warn(
-                "Refreshed token is missing some user fields:",
-                decoded
-              );
-            }
-
-            setUser(decoded as User);
-          }
-
-          return newAccessToken;
-        }
+        return newAccessToken;
       } catch (error) {
         console.error("Error refreshing token:", error);
         // If there's an error refreshing, we should sign out
@@ -227,6 +180,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         refreshInProgressRef.current = false;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [refreshToken]
   );
 
@@ -585,7 +539,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
               setUser(decoded as User);
 
               if (storedRefreshToken) {
-                // getting new data from server
                 setRefreshToken(storedRefreshToken);
                 refreshAccessToken(storedRefreshToken);
               }

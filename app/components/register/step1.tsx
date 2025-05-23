@@ -7,6 +7,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { languages, useLanguage } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 
 export default function Step1() {
   const { setField } = useRegisterStore();
@@ -90,7 +91,7 @@ export default function Step1() {
   };
 
   return (
-    <View className="flex-1 gap-4 items-center px-6 mt-24 bg-white dark:bg-black">
+    <View className="flex-1 gap-4 items-center px-6 mt-24">
       <Text className="text-2xl font-bold text-center text-black dark:text-white">
         {languages[language].register.steps.step1.title}
       </Text>
@@ -111,25 +112,43 @@ export default function Step1() {
           placeholder={languages[language].register.steps.step1.question1.title}
           style={{
             borderRadius: 12,
-            borderColor: "#ccc",
+            borderColor: theme === "dark" ? "#4b5563" : "#ccc",
             paddingHorizontal: 16,
             paddingVertical: 16,
+            backgroundColor: theme === "dark" ? "#ffffff15" : "#fff",
           }}
           dropDownContainerStyle={{
-            borderColor: "#ccc",
+            borderColor: theme === "dark" ? "#4b5563" : "#ccc",
+            backgroundColor: theme === "dark" ? "#111827" : "#fff",
             borderRadius: 12,
           }}
-          placeholderStyle={{ fontSize: 15, color: "gray" , fontWeight: "semibold" }}
-          textStyle={{ fontSize: 15, color: "#000" }}
+          placeholderStyle={{
+            fontSize: 15,
+            color: theme === "dark" ? "#ffffff" : "#000",
+            fontWeight: "semibold",
+          }}
+          textStyle={{
+            fontSize: 15,
+            color: theme === "dark" ? "#ffffff" : "#000",
+          }}
+          ArrowUpIconComponent={() => (
+            <ChevronUpIcon color={theme === "dark" ? "#ffffff" : "#000"} />
+          )}
+          ArrowDownIconComponent={() => (
+            <ChevronDownIcon color={theme === "dark" ? "#ffffff" : "#000"} />
+          )}
+          TickIconComponent={() => (
+            <CheckIcon color={theme === "dark" ? "#ffffff" : "#000"} />
+          )}
         />
       </View>
 
       {/* Date Picker */}
       <Pressable
         onPress={() => setShowDatePicker(true)}
-        className="w-full border border-gray-300 rounded-xl py-5 px-4 bg-white"
+        className="w-full border border-gray-300 dark:border-gray-600 rounded-xl py-5 px-4 bg-white dark:bg-[#ffffff15]"
       >
-        <Text className="text-gray-500 font-normal text-base">
+        <Text className="text-gray-500 dark:text-white font-normal text-base">
           {dob ? dob.toDateString() : "Төрсөн өдрөө сонгоно уу"}
         </Text>
       </Pressable>
@@ -138,58 +157,60 @@ export default function Step1() {
         <DateTimePicker
           value={dob || new Date()}
           mode="date"
-          display="default"
-          themeVariant={theme}
-          design="default"
+          display={"calendar"}
+          design={"default"}
           minimumDate={new Date(1900, 0, 1)}
           maximumDate={new Date()}
           onChange={handleDob}
         />
       )}
 
-      // Weight Input
+      {/* Weight Input */}
       <View className="w-full flex-row items-center justify-between gap-4">
-        <View className="flex-1 flex-row items-center border border-gray-300 rounded-2xl bg-white px-4 py-5 ">
-          
+        <View className="flex-1 flex-row items-center border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-500 dark:text-white bg-white dark:bg-[#ffffff15] px-4 py-3 ">
           <TextInput
             placeholder={languages[language].register.steps.step1.weight}
             placeholderTextColor="#A9A9A9"
             value={weight}
             onChangeText={handleWeight}
             keyboardType="numeric"
-            className="flex-1 text-base text-gray-800 font-medium"
+            placeholderClassName="text-gray-500 dark:text-white"
+            className="flex-1 text-base text-gray-800 dark:text-white font-medium"
           />
         </View>
         <Pressable
-          onPress={() => setWeightUnit((prev) => (prev === "kg" ? "lbs" : "kg"))}
+          onPress={() =>
+            setWeightUnit((prev) => (prev === "kg" ? "lbs" : "kg"))
+          }
           className="w-16 h-[60px] bg-[#0066FF] rounded-2xl items-center justify-center shadow-md shadow-blue-600/50"
         >
-          <Text className="text-white font-bold">{weightUnit.toUpperCase()}</Text>
+          <Text className="text-white font-bold">
+            {weightUnit.toUpperCase()}
+          </Text>
         </Pressable>
       </View>
 
-// Height Input
+      {/* Height Input */}
       <View className="w-full flex-row items-center justify-between gap-4 ">
-        <View className="flex-1 flex-row items-center border border-gray-300 rounded-2xl bg-white px-4 py-5">
-          
+        <View className="flex-1 flex-row items-center border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-[#ffffff15] px-4 py-3">
           <TextInput
             placeholder={languages[language].register.steps.step1.height}
             placeholderTextColor="#A9A9A9"
             value={height}
             onChangeText={handleHeight}
             keyboardType="numeric"
-            className="flex-1 text-base text-gray-800 font-medium"
+            className="flex-1 text-base text-gray-800 dark:text-white font-medium"
           />
         </View>
         <Pressable
           onPress={() => setHeightUnit((prev) => (prev === "cm" ? "ft" : "cm"))}
           className="w-16 h-[60px] bg-[#0066FF] rounded-2xl items-center justify-center shadow-md shadow-blue-600/50"
         >
-          <Text className="text-white font-bold">{heightUnit.toUpperCase()}</Text>
+          <Text className="text-white font-bold">
+            {heightUnit.toUpperCase()}
+          </Text>
         </Pressable>
       </View>
-
-
     </View>
   );
 }

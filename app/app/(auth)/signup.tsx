@@ -27,8 +27,13 @@ const SignUp = () => {
         contentFit={"contain"}
         focusable={false}
       />
-      <Text className="text-black text-2xl font-semibold mt-3">Register</Text>
-      <View className="w-3/4 bg-black rounded-full items-center justify-wtart mb-2 space-x-4 mt-24 p-4 flex-row">
+      <Text className="text-black dark:text-gray-200 text-3xl font-medium mt-3">
+        Welcome to
+      </Text>
+      <Text className="text-black dark:text-gray-200 text-3xl tracking-wider font-semibold">
+        Bluvi Fitness
+      </Text>
+      <View className="w-3/4 bg-black rounded-full items-center justify-wtart mb-2 space-x-4 mt-16 p-4 flex-row">
         <View className="mr-14 mb-1 ml-2">
           <Image
             source={require("@/assets/socialLogo/apple_white.png")}
@@ -87,8 +92,11 @@ const SignUp = () => {
         </Text>
       </TouchableOpacity>
       <View className="flex-row justify-center mt-24">
-        <Text>Already have an account? </Text>
-        <Text className="text-blue-700 font-semibold" onPress={LogIn}>
+        <Text className="dark:text-gray-200">Already have an account? </Text>
+        <Text
+          className="text-blue-700 dark:text-gray-200 font-semibold dark:underline"
+          onPress={LogIn}
+        >
           Login
         </Text>
       </View>
