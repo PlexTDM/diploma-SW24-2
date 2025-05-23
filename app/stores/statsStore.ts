@@ -37,7 +37,7 @@ const getPersistentState = (state: StatsState): StatsData => {
   return persistentData;
 };
 
-export const useRegisterStore = create<StatsState>((set, get) => ({
+export const useStatsStore = create<StatsState>((set, get) => ({
   steps: 0,
   water: 0,
   calories: 0,

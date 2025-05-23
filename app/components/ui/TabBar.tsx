@@ -89,7 +89,7 @@ const TabBarButton = ({
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
       onLongPress={onLongPress}
-      className="flex-1 items-center justify-center relative z-10 h-[50px] flex-row gap-1"
+      className="flex-1 items-center justify-center relative z-10 h-[50px] flex-row gap-1 pl-4"
       style={buttonStyle}
     >
       <Animated.View style={inimatedIconStyle}>

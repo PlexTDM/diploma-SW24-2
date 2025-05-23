@@ -13,7 +13,7 @@ import {
 import { ThemeView, ThemeText } from "@/components";
 import WaterAnimation from "@/components/home/WaterAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import { useRegisterStore } from "@/stores/statsStore";
+import { useStatsStore } from "@/stores/statsStore";
 
 function WaterModal({
   visible,
@@ -23,9 +23,7 @@ function WaterModal({
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { language } = useLanguage();
-  const water = useRegisterStore((state) => state.water);
-  const waterGoal = useRegisterStore((state) => state.waterGoal);
-  const setField = useRegisterStore((state) => state.setField);
+  const { water, waterGoal, setField } = useStatsStore();
   const [componentHeight, setComponentHeight] = useState(0);
 
   const percentage = useMemo(

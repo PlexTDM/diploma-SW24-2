@@ -23,7 +23,7 @@ import { BASE_URL, API_URL } from "@/utils/constants";
 import { handleAppleAuthError } from "@/utils/handleAppleError";
 import { randomUUID } from "expo-crypto";
 import { Platform } from "react-native";
-import { useRegisterStore } from "@/stores/statsStore";
+import { useStatsStore } from "@/stores/statsStore";
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleConfig,
     appleDiscovery
   );
-  const { setField } = useRegisterStore();
+  const { setField } = useStatsStore();
 
   const loadGoals = async (goals: DailyGoals) => {
     setField("stepsGoal", goals.stepsGoal);
