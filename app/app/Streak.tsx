@@ -1,5 +1,5 @@
 import { ThemeView } from "@/components";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { addMonths, subMonths } from "date-fns";
 import MiniCalendar from "@/components/MiniCalendar";
@@ -8,11 +8,9 @@ import ConfettiCannon from "react-native-confetti-cannon";
 export default function Streak() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [completedDays, setCompletedDays] = useState<number[]>([]);
+  const confettiRef = useRef<ConfettiCannon>(null);
 
   const today = new Date();
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  const previouslyUnlocked = useRef<number[]>([]);
 
   const onToggleComplete = (day: number) => {
     setCompletedDays((prev) =>
@@ -39,7 +37,7 @@ export default function Streak() {
   const calculateStreaks = (completed: number[]) => {
     const sorted = [...completed].sort((a, b) => a - b);
     let currentStreak = 0;
-    let longestStreak = 0;
+    let longestStreak = 10;
     let tempStreak = 1;
 
     for (let i = 1; i < sorted.length; i++) {
@@ -57,18 +55,30 @@ export default function Streak() {
     if (lastCompleted === todayDate || lastCompleted === todayDate - 1) {
       currentStreak = tempStreak;
     }
-
     return { currentStreak, longestStreak };
   };
 
   const { currentStreak, longestStreak } = calculateStreaks(completedDays);
+  const achievements = useMemo(
+    () => [
+      { days: 7, label: "7-Day Streak" },
+      { days: 14, label: "14-Day Streak" },
+      { days: 30, label: "30-Day Streak" },
+      { days: 60, label: "60-Day Streak" },
+    ],
+    []
+  );
 
-  const achievements = [
-    { days: 7, label: "7-Day Streak" },
-    { days: 14, label: "14-Day Streak" },
-    { days: 30, label: "30-Day Streak" },
-    { days: 60, label: "60-Day Streak" },
-  ];
+  useEffect(() => {
+    const isNewRecord = currentStreak > 0 && currentStreak === longestStreak;
+    const isAchievementMilestone = achievements.some(
+      (ach) => ach.days === currentStreak
+    );
+
+    if (isNewRecord && isAchievementMilestone) {
+      confettiRef.current?.start();
+    }
+  }, [currentStreak, longestStreak, achievements]);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -116,17 +126,6 @@ export default function Streak() {
             <View className="flex-row flex-wrap justify-between gap-4">
               {achievements.map((achievement, index) => {
                 const unlocked = longestStreak >= achievement.days;
-                useEffect(() => {
-                  const isNewRecord = currentStreak > 0 && currentStreak === longestStreak
-
-                  if (isNewRecord) {
-                    setShowConfetti(true)
-                    setTimeout(() => setShowConfetti(false), 3000)
-                  }
-                }, [currentStreak, longestStreak])
-
-
-
                 const progress = Math.min(longestStreak / achievement.days, 1);
 
                 return (
@@ -178,16 +177,16 @@ export default function Streak() {
                 );
               })}
             </View>
-            {showConfetti && (
-              <ConfettiCannon
-                count={50}
-                origin={{ x: 200, y: -20 }}
-                fadeOut
-                explosionSpeed={300}
-                fallSpeed={3000}
-              />
-            )}
-
+            <ConfettiCannon
+              count={50}
+              origin={{ x: 200, y: -20 }}
+              fadeOut
+              explosionSpeed={300}
+              fallSpeed={3000}
+              ref={confettiRef}
+              // set on for testing
+              autoStart={false}
+            />
           </View>
         </View>
       </ThemeView>
