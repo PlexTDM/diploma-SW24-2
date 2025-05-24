@@ -461,7 +461,9 @@ class AuthController {
       state,
     });
 
-    return res.redirect(APP_SCHEME + "?" + outgoingParams.toString());
+    return res.redirect(
+      APP_SCHEME + "/(auth)/signup" + "?" + outgoingParams.toString()
+    );
   }
 }
 
