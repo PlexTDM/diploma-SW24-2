@@ -30,6 +30,7 @@ export default function HomeTab() {
     <>
       <ScrollView className="p-8 dark:bg-gray-900 bg-white flex-1">
         <View className="w-full flex-row items-center justify-between  gap-2 pb-4">
+          {/* top buttons */}
           <View className="flex-row justify-between w-full items-center gap-2">
             <Pressable
               onPressIn={() =>

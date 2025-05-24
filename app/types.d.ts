@@ -69,6 +69,18 @@ type User = {
   emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  dailyGoals?: DailyGoals;
+};
+
+type DailyGoals = {
+  stepsGoal: number;
+  waterGoal: number;
+  caloriesGoal: number;
+  proteinGoal: number;
+  carbsGoal: number;
+  fatGoal: number;
+  sleepGoal: number;
+  rdcGoal: number;
 };
 
 interface Message {

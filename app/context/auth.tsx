@@ -23,6 +23,7 @@ import { BASE_URL, API_URL } from "@/utils/constants";
 import { handleAppleAuthError } from "@/utils/handleAppleError";
 import { randomUUID } from "expo-crypto";
 import { Platform } from "react-native";
+import { useStatsStore } from "@/stores/statsStore";
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -41,6 +42,8 @@ export const AuthContext = createContext({
     visible: boolean;
     data: any;
   }) => {},
+  update: async (user: Partial<User>): Promise<boolean> => false,
+  isUpdating: false,
 });
 
 const config: AuthRequestConfig = {
@@ -76,6 +79,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [error, setError] = useState<AuthError | null>(null);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [needsRegistration, setNeedsRegistration] = useState<{
     visible: boolean;
     data: any;
@@ -87,6 +91,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
     appleConfig,
     appleDiscovery
   );
+  const { setField } = useStatsStore();
+
+  const loadGoals = async (goals: DailyGoals) => {
+    setField("stepsGoal", goals.stepsGoal);
+    setField("waterGoal", goals.waterGoal);
+    setField("caloriesGoal", goals.caloriesGoal);
+    setField("proteinGoal", goals.proteinGoal);
+    setField("carbsGoal", goals.carbsGoal);
+    setField("fatGoal", goals.fatGoal);
+    setField("sleepGoal", goals.sleepGoal);
+    setField("rdcGoal", goals.rdcGoal);
+  };
 
   const refreshAccessToken = useCallback(
     async (tokenToUse?: string) => {
@@ -100,122 +116,61 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
       try {
         console.log("Refreshing access token...");
+        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
 
-        const currentRefreshToken = tokenToUse || refreshToken;
+        const currentRefreshToken =
+          tokenToUse || refreshToken || storedRefreshToken;
+
+        if (!currentRefreshToken) {
+          console.error("No refresh token available");
+          signOut();
+          return null;
+        }
+
+        console.log("Using refresh token to get new tokens");
+        const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${currentRefreshToken}`,
+          },
+        });
+
+        if (!refreshResponse.ok) {
+          const errorData = await refreshResponse.json();
+          console.error("Token refresh failed:", errorData);
+
+          // If refresh fails due to expired token, sign out
+          if (refreshResponse.status === 401) {
+            signOut();
+          }
+          return null;
+        }
+
+        // For native: Update both tokens
+        const data = await refreshResponse.json();
+        console.log("data+++++++++++++++++++++++++++", data);
+        const newAccessToken = data.accessToken;
+        const newRefreshToken = data.refreshToken;
+        setUser(data.user as User);
+        loadGoals(data.user.dailyGoals as DailyGoals);
 
         console.log(
-          "Current refresh token:",
-          currentRefreshToken ? "exists" : "missing"
+          "Received new access token:",
+          newAccessToken ? "exists" : "missing"
+        );
+        console.log(
+          "Received new refresh token:",
+          newRefreshToken ? "exists" : "missing"
         );
 
-        if (isWeb) {
-          // For web: Use JSON for the request
-          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ platform: "web" }),
-            credentials: "include",
-          });
+        if (newAccessToken) setAccessToken(newAccessToken);
+        if (newRefreshToken) setRefreshToken(newRefreshToken);
 
-          if (!refreshResponse.ok) {
-            const errorData = await refreshResponse.json();
-            console.error("Token refresh failed:", errorData);
+        await tokenCache?.saveToken("accessToken", newAccessToken);
+        await tokenCache?.saveToken("refreshToken", newRefreshToken);
 
-            // If refresh fails due to expired token, sign out
-            if (refreshResponse.status === 401) {
-              signOut();
-            }
-            return null;
-          }
-
-          // Fetch the session to get updated user data
-          const sessionResponse = await fetch(`${API_URL}/auth/session`, {
-            method: "GET",
-            credentials: "include",
-          });
-
-          if (sessionResponse.ok) {
-            const sessionData = await sessionResponse.json();
-            setUser(sessionData as User);
-          }
-
-          return null; // Web doesn't use access token directly
-        } else {
-          // For native: Use the refresh token
-          if (!currentRefreshToken) {
-            console.error("No refresh token available");
-            signOut();
-            return null;
-          }
-
-          console.log("Using refresh token to get new tokens");
-          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${currentRefreshToken}`,
-            },
-          });
-
-          if (!refreshResponse.ok) {
-            const errorData = await refreshResponse.json();
-            console.error("Token refresh failed:", errorData);
-
-            // If refresh fails due to expired token, sign out
-            if (refreshResponse.status === 401) {
-              signOut();
-            }
-            return null;
-          }
-
-          // For native: Update both tokens
-          const tokens = await refreshResponse.json();
-          const newAccessToken = tokens.accessToken;
-          const newRefreshToken = tokens.refreshToken;
-
-          console.log(
-            "Received new access token:",
-            newAccessToken ? "exists" : "missing"
-          );
-          console.log(
-            "Received new refresh token:",
-            newRefreshToken ? "exists" : "missing"
-          );
-
-          if (newAccessToken) setAccessToken(newAccessToken);
-          if (newRefreshToken) setRefreshToken(newRefreshToken);
-
-          // Save both tokens to cache
-          if (newAccessToken)
-            await tokenCache?.saveToken("accessToken", newAccessToken);
-          if (newRefreshToken)
-            await tokenCache?.saveToken("refreshToken", newRefreshToken);
-
-          // Update user data from the new access token
-          if (newAccessToken) {
-            const decoded = jose.decodeJwt(newAccessToken);
-            console.log("Decoded user data:", decoded);
-            // Check if we have all required user fields
-            const hasRequiredFields =
-              decoded &&
-              (decoded as any).name &&
-              (decoded as any).email &&
-              (decoded as any).picture;
-
-            if (!hasRequiredFields) {
-              console.warn(
-                "Refreshed token is missing some user fields:",
-                decoded
-              );
-            }
-
-            setUser(decoded as User);
-          }
-
-          return newAccessToken; // Return the new access token
-        }
+        return newAccessToken;
       } catch (error) {
         console.error("Error refreshing token:", error);
         // If there's an error refreshing, we should sign out
@@ -225,6 +180,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         refreshInProgressRef.current = false;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [refreshToken]
   );
 
@@ -399,15 +355,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
     password?: string
   ): Promise<void> => {
     setLoading(true);
-    const response = await login(email, password);
-    if (!response?.user) {
+    const res = await login(email, password);
+    if (!res?.user) {
       setLoggedIn(false);
       setLoading(false);
       return;
     }
-    setUser(response.user);
+
+    setUser(res.user);
     setLoggedIn(true);
     setLoading(false);
+    tokenCache?.saveToken("accessToken", res.accessToken);
+    tokenCache?.saveToken("refreshToken", res.refreshToken);
+    setAccessToken(res.accessToken);
+    setRefreshToken(res.refreshToken);
   };
 
   const signInWithAppleWebBrowser = async (): Promise<void> => {
@@ -511,6 +472,50 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
+  const update = async (user: Partial<User>): Promise<boolean> => {
+    setIsUpdating(true);
+    try {
+      const formData = new FormData();
+      // Add all user info to formData
+      Object.entries(user).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (key === "image") {
+            const filename = value.split("/").pop();
+            const match = /\.(\w+)$/.exec(filename ?? "");
+            const type = match ? `image/${match[1]}` : `image`;
+            formData.append("image", {
+              uri: value,
+              name: filename,
+              type,
+            } as any);
+          } else {
+            formData.append(key, value as any);
+          }
+        }
+      });
+      console.log(formData.get("image"));
+      const res = await fetch(`${API_URL}/auth/update`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+      if (!res.ok) {
+        console.error("Error updating user:", res.status, await res.json());
+        return false;
+      }
+      const data = await res.json();
+      setUser(data.user);
+      return true;
+    } catch (e) {
+      console.error("Error updating user:", e);
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // check login
   useEffect(() => {
     const checkLogin = async () => {
@@ -531,12 +536,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
               // Access token is still valid
               console.log("Access token is still valid, using it");
               setAccessToken(storedAccessToken);
+              setUser(decoded as User);
 
               if (storedRefreshToken) {
                 setRefreshToken(storedRefreshToken);
+                refreshAccessToken(storedRefreshToken);
               }
-
-              setUser(decoded as User);
             } else if (storedRefreshToken) {
               // Access token expired, but we have a refresh token
               console.log("Access token expired, using refresh token");
@@ -568,15 +573,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     };
     checkLogin();
-  }, [refreshAccessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     handleResponse();
-  }, [response, handleResponse]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
 
   useEffect(() => {
     handleAppleResponse();
   }, [appleResponse]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshAccessToken(refreshToken as string);
+    }, 1000 * 60 * 5);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshToken]);
 
   return (
     <AuthContext.Provider
@@ -594,6 +609,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         error,
         needsRegistration,
         setNeedsRegistration,
+        update,
+        isUpdating,
       }}
     >
       {children}

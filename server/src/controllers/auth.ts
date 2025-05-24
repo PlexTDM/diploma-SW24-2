@@ -4,16 +4,62 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import mongoose from "mongoose";
 import User, { IUser } from "@/models/user";
-import { generateAccessToken, generateRefreshToken } from "./token";
+import {
+  AuthenticatedRequest,
+  generateAccessToken,
+  generateRefreshToken,
+  UserPayload,
+} from "./token";
 import { transporter } from "@/services/nodemailer";
 import RefreshToken from "@/models/refreshToken";
 import axios from "axios";
 import * as jose from "jose";
 import { BASE_URL } from "@/routes/constants";
 import { APP_SCHEME } from "@/routes/constants";
+import { bucket } from "@/config/firebase";
+import { v4 as uuidv4 } from "uuid";
+import { redisService } from "@/services/redis";
+import DailyGoal from "@/models/dailyGoal";
+import { generateDailyGoals } from "@/services/aiGoals";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
+
+async function updateUserGoals(user: IUser) {
+  try {
+    let dailyGoal = await DailyGoal.findOne({ userId: user._id });
+
+    if (!dailyGoal) {
+      dailyGoal = new DailyGoal({ userId: user._id });
+    }
+
+    if (dailyGoal.needsUpdate()) {
+      const newGoals = await generateDailyGoals({
+        age: user.birthday
+          ? Math.floor(
+              (Date.now() - new Date(user.birthday).getTime()) /
+                (365.25 * 24 * 60 * 60 * 1000)
+            )
+          : undefined,
+        weight: user.weight,
+        height: user.height,
+        gender: user.gender,
+        activityLevel: user.activityLevel,
+        healthConditions: user.healthCondition
+          ? [user.healthCondition]
+          : undefined,
+      });
+
+      Object.assign(dailyGoal, newGoals);
+      await dailyGoal.save();
+    }
+
+    return dailyGoal.toJSON();
+  } catch (error) {
+    console.error("Error updating user goals:", error);
+    return null;
+  }
+}
 
 class AuthController {
   public static async login(req: Request, res: Response): Promise<any> {
@@ -33,18 +79,44 @@ class AuthController {
           return res.status(403).json({ message: "Invalid token" });
         }
 
-        const user = await User.findById(decoded.id);
+        // redis get
+        const redisUser = await redisService.get(`user:${decoded.id}`);
+
+        if (redisUser) {
+          const parsedUser = JSON.parse(redisUser);
+          const accessToken = generateAccessToken(parsedUser);
+          const refreshToken = await generateRefreshToken(parsedUser);
+          return res.status(200).json({
+            message: "User logged in successfully with token",
+            user: parsedUser,
+            accessToken,
+            refreshToken,
+          });
+        }
+
+        const user = await User.findById(decoded.id).select([
+          "-password",
+          "-emailVerificationToken",
+        ]);
 
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
+
+        const dailyGoal = await updateUserGoals(user);
+        const userData = {
+          ...user.toJSON(),
+          dailyGoals: dailyGoal,
+        };
+
+        await redisService.set(`user:${user._id}`, JSON.stringify(userData));
 
         const accessToken = generateAccessToken(user);
         const refreshToken = await generateRefreshToken(user);
 
         return res.json({
           message: "User logged in successfully with token",
-          user,
+          user: userData,
           accessToken,
           refreshToken,
         });
@@ -54,37 +126,33 @@ class AuthController {
       if (!password || !email)
         return res.status(400).json({ message: "Missing password or email" });
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email.toLowerCase() })
+        .select("-emailVerificationToken")
+        .exec();
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const match = compareSync(password, user.password);
       if (!match)
         return res.status(401).json({ message: "Password does not match" });
 
+      const dailyGoal = await updateUserGoals(user);
+      const userData = {
+        ...user.toJSON(),
+        dailyGoals: dailyGoal,
+      };
+
+      if ("password" in userData) {
+        delete (userData as { password?: string }).password;
+      }
+
+      await redisService.set(`user:${user._id}`, JSON.stringify(userData));
+
       const accessToken = generateAccessToken(user);
       const refreshToken = await generateRefreshToken(user);
 
       res.json({
         message: "User logged in successfully",
-        user: {
-          id: user._id,
-          image: user.image,
-          email: user.email,
-          role: user.role,
-          username: user.username,
-          gender: user.gender,
-          birthday: user.birthday,
-          height: user.height,
-          weight: user.weight,
-          goal: user.goal,
-          activityLevel: user.activityLevel,
-          mealPerDay: user.mealPerDay,
-          waterPerDay: user.waterPerDay,
-          workSchedule: user.workSchedule,
-          healthCondition: user.healthCondition,
-          isEmailVerified: user.isEmailVerified,
-          posts: user.posts,
-        },
+        user: userData,
         accessToken,
         refreshToken,
       });
@@ -116,37 +184,30 @@ class AuthController {
       const salt = genSaltSync(hashRounds);
       const hashedPassword = hashSync(password, salt);
 
-      const newUser = (await User.create(
-        [{ ...req.body, password: hashedPassword }],
-        { session }
-      )) as IUser[];
+      const newUser = (
+        await User.create([{ ...req.body, password: hashedPassword }], {
+          session,
+        })
+      )[0] as IUser;
 
-      const accessToken = generateAccessToken(newUser[0]);
-      const refreshToken = await generateRefreshToken(newUser[0]);
+      const accessToken = generateAccessToken(newUser);
+      const refreshToken = await generateRefreshToken(newUser);
+      const dailyGoal = await updateUserGoals(newUser);
 
       await session.commitTransaction();
 
+      const userObj = {
+        ...newUser.toJSON(),
+        dailyGoals: dailyGoal,
+      };
+
+      if ("password" in userObj) {
+        delete userObj.password;
+      }
+
       res.status(201).json({
         message: "User registered successfully",
-        user: {
-          id: newUser[0]._id,
-          image: newUser[0].image,
-          email: newUser[0].email,
-          role: newUser[0].role,
-          username: newUser[0].username,
-          gender: newUser[0].gender,
-          birthday: newUser[0].birthday,
-          height: newUser[0].height,
-          weight: newUser[0].weight,
-          goal: newUser[0].goal,
-          activityLevel: newUser[0].activityLevel,
-          mealPerDay: newUser[0].mealPerDay,
-          waterPerDay: newUser[0].waterPerDay,
-          workSchedule: newUser[0].workSchedule,
-          healthCondition: newUser[0].healthCondition,
-          isEmailVerified: newUser[0].isEmailVerified,
-          posts: newUser[0].posts,
-        },
+        user: userObj,
         accessToken,
         refreshToken,
       });
@@ -159,24 +220,90 @@ class AuthController {
     }
   }
 
-  // update doesn't work for now
-  public static async update(req: Request, res: Response): Promise<any> {
-    const { password, newPassword, id } = req.body;
+  public static async update(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    if ((!req.body || Object.keys(req.body).length === 0) && !req.file) {
+      return res.status(400).json({ message: "Request is empty" });
+    }
 
+    const { password, newPassword, ...otherBodyFields } = req.body;
+    const image = req.file;
+    let willUpdatePassword = false;
+    let hashedPassword;
     try {
-      const user = await User.findById(id).exec();
+      const user = await User.findById(req.user.id).exec();
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      const match = compareSync(password, user.password);
-      if (!match)
-        return res.status(401).json({ message: "Passwords don't match" });
+      if (newPassword && password) {
+        const match = compareSync(password, user.password);
+        if (!match)
+          return res.status(401).json({ message: "Passwords don't match" });
+        if (newPassword === password)
+          return res.status(400).json({
+            message: "New password cannot be the same as the old password",
+          });
+        willUpdatePassword = true;
+        const salt = genSaltSync(hashRounds);
+        hashedPassword = hashSync(newPassword, salt);
+      }
 
-      const salt = genSaltSync(hashRounds);
-      const hashedPassword = hashSync(newPassword, salt);
+      const updateData: any = { ...otherBodyFields };
 
-      await User.findByIdAndUpdate(id, { password: hashedPassword });
+      if (image) {
+        if (user.image) {
+          try {
+            const oldImageUrl = new URL(user.image);
+            // Extract the path after the bucket name
+            const pathSegments = oldImageUrl.pathname.split("/");
+            const oldImagePath = pathSegments.slice(2).join("/");
+            if (oldImagePath) {
+              const oldFile = bucket.file(oldImagePath);
+              await oldFile.delete();
+            }
+          } catch (error: any) {
+            console.error("Error deleting old image:", error.message);
+          }
+        }
 
-      res.status(200).json({ message: "Password updated successfully" });
+        // Generate a unique filename
+        const filename = `users/${user._id}/pfp-${uuidv4()}`;
+
+        // Upload to Firebase Storage
+        const file = bucket.file(filename);
+        await file.save(image.buffer, {
+          metadata: {
+            contentType: image.mimetype,
+          },
+        });
+
+        await file.makePublic();
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+
+        updateData.image = publicUrl;
+      }
+
+      if (willUpdatePassword) {
+        updateData.password = hashedPassword;
+      }
+
+      const newUser = await User.findByIdAndUpdate(req.user.id, updateData, {
+        new: true,
+      })
+        .select("-password -emailVerificationToken")
+        .exec();
+
+      const accessToken = generateAccessToken(newUser!);
+      const refreshToken = await generateRefreshToken(newUser!);
+
+      return res.status(200).json({
+        message: "User updated successfully",
+        user: newUser?.toJSON(),
+        accessToken,
+        refreshToken,
+      });
     } catch (e) {
       console.error("update error:", e);
       res.status(500).json({ message: "Internal Server Error" });
@@ -222,39 +349,69 @@ class AuthController {
       const authHeader = req.headers.authorization;
       if (authHeader) {
         refreshToken = authHeader.split(" ")[1];
-      }
-      if (req.body.refreshToken) {
+      } else if (req.body.refreshToken) {
         refreshToken = req.body.refreshToken;
       }
 
-      if (!refreshToken)
+      if (!refreshToken) {
         return res.status(400).json({ message: "Refresh token is required" });
+      }
 
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET as string,
-        async (err: Error | null, decoded: any) => {
-          if (err) {
-            return res.status(403).json({ message: "Invalid refresh token" });
-          }
+      try {
+        const decoded = jwt.verify(
+          refreshToken,
+          process.env.SECRET_REFRESH_TOKEN as string
+        ) as UserPayload;
 
-          const user = await User.findById(decoded.userId)
-            .select("-password")
-            .exec();
-          if (!user) {
-            return res.status(404).json({ message: "User not found" });
-          }
+        if (!decoded) {
+          return res.status(403).json({ message: "Invalid refresh token" });
+        }
 
-          const accessToken = generateAccessToken(user);
-          const newRefreshToken = await generateRefreshToken(user);
+        // Try to get user from Redis first
+        const redisUser = await redisService.get(`user:${decoded.id}`);
+        if (redisUser) {
+          const parsedUser = JSON.parse(redisUser);
+          const accessToken = generateAccessToken(parsedUser);
+          const newRefreshToken = await generateRefreshToken(parsedUser);
 
-          res.json({
+          return res.json({
             message: "Tokens generated successfully",
+            user: parsedUser,
             accessToken,
             refreshToken: newRefreshToken,
           });
         }
-      );
+
+        // If not in Redis, get from DB
+        const user = await User.findById(decoded.id)
+          .select("-password -emailVerificationToken")
+          .exec();
+
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const dailyGoal = await updateUserGoals(user);
+        const userData = {
+          ...user.toJSON(),
+          dailyGoals: dailyGoal,
+        };
+
+        await redisService.set(`user:${user._id}`, JSON.stringify(userData));
+
+        const accessToken = generateAccessToken(user);
+        const newRefreshToken = await generateRefreshToken(user);
+
+        return res.json({
+          message: "Tokens generated successfully",
+          user: userData,
+          accessToken,
+          refreshToken: newRefreshToken,
+        });
+      } catch (jwtError) {
+        console.error("JWT verification error:", jwtError);
+        return res.status(403).json({ message: "Invalid refresh token" });
+      }
     } catch (e) {
       console.error("generateNewToken error:", e);
       res.status(500).json({ message: "Internal Server Error" });
@@ -365,7 +522,7 @@ class AuthController {
       console.log("userInfo", userInfo);
 
       const user = await User.findOne({ email: userInfo.email })
-        .select("-password")
+        .select("-password -emailVerificationToken")
         .exec();
       if (!user) {
         return res.status(202).json({
@@ -379,9 +536,13 @@ class AuthController {
       }
       const accessToken = generateAccessToken(user);
       const refreshToken = await generateRefreshToken(user);
+      const dailyGoal = await updateUserGoals(user);
 
       res.status(200).json({
-        user,
+        user: {
+          ...user.toJSON(),
+          dailyGoals: dailyGoal,
+        },
         accessToken,
         refreshToken,
       });

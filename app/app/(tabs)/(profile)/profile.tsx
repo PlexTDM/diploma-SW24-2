@@ -1,4 +1,4 @@
-import { ThemeText } from "@/components";
+import { Avatar, ThemeText } from "@/components";
 import { use, useCallback, useRef, useState } from "react";
 import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
@@ -8,7 +8,6 @@ import { useLanguage, languages } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
-import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Tabs = () => {
@@ -33,7 +32,15 @@ const Tabs = () => {
 
   const renderItem = useCallback(
     ({ item }: { item: { key: string; component: React.ComponentType } }) => (
-      <View style={{ width: width, height: 400 }} key={item.key}>
+      <View
+        style={{
+          width: width,
+          minHeight: 400,
+          height: "auto",
+          paddingBottom: 100,
+        }}
+        key={item.key}
+      >
         <item.component />
       </View>
       //ene hesgiin unduriig uur hun ashiglah uyd ni tengis zasna geseen utsandaa taaruulad 350 iig uurchlurui ahh
@@ -123,7 +130,7 @@ const Tabs = () => {
   );
 };
 
-export default function Tab() {
+export default function Profile() {
   const { language } = useLanguage();
   const router = useRouter();
   const { theme } = useAppTheme();
@@ -138,14 +145,18 @@ export default function Tab() {
   const { user } = use(AuthContext);
 
   const handlePfp = () => {
-    router.push("/settings/Edit");
+    router.push("/(settings)/Edit");
   };
 
   return (
     <SafeAreaView className="items-center justify-center dark:bg-gray-900 bg-white flex-1">
-      <View className="flex-row items-center px-6 justify-between w-full">
-        <View className="border-2 border-gray-200 p-2 dark:border-gray-700 rounded-full">
-          <Pressable onPress={handleBack}>
+      <View className="flex-row items-center px-6 justify-between w-full mt-5">
+        <View className="border-2 border-gray-200 dark:border-gray-700 overflow-hidden rounded-full">
+          <Pressable
+            android_ripple={{ color: "#00000020", radius: 40 }}
+            onPress={handleBack}
+            className="p-2"
+          >
             <Icon
               source="chevron-left"
               size={25}
@@ -167,19 +178,11 @@ export default function Tab() {
           />
         </Pressable>
       </View>
-      <Pressable onPress={handlePfp}>
-        <Image
-          source={
-            user?.image
-              ? { uri: user.image }
-              : require("@/assets/img/profile.png")
-          }
-          style={{
-            width: 101,
-            height: 100,
-            marginTop: 20,
-          }}
-        />
+      <Pressable
+        className="items-center justify-center mt-5"
+        onPress={handlePfp}
+      >
+        <Avatar />
       </Pressable>
       <ThemeText className="text-2xl font-bold mt-2">
         {user?.username}
@@ -203,7 +206,7 @@ export default function Tab() {
             color={theme === "dark" ? "#fff" : "#000"}
             size={30}
           />
-          <ThemeText className="font-semibold text-xl">682</ThemeText>
+          <ThemeText className="font-semibold text-xl">0</ThemeText>
           <ThemeText className="color-gray-400">
             {languages[language].profile1.followers}
           </ThemeText>

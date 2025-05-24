@@ -1,7 +1,11 @@
 import express from "express";
 import auth from "@/controllers/auth";
 import { body } from "express-validator";
+import { authenticate } from "@/controllers/token";
+import multer from "multer";
+
 const app = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 const validateUser = [
   body("username").exists(),
@@ -11,10 +15,11 @@ const validateUser = [
 
 app.post("/login", auth.login);
 app.post("/register", validateUser, auth.register);
-app.post("/logout", auth.logout);
+app.put("/update", authenticate, upload.single("image"), auth.update);
 app.post("/refresh", auth.generateNewToken);
 app.post("/google", auth.google);
 app.get("/authorize", auth.authorize);
 app.get("/callback", auth.callback);
+app.post("/logout", auth.logout);
 
 export default app;

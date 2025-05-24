@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { Image } from "expo-image";
-import { useRegisterStore } from "@/stores/statsStore";
+import { useStatsStore } from "@/stores/statsStore";
 
 export default function WaterAnimation({
   containerHeight,
@@ -19,8 +19,7 @@ export default function WaterAnimation({
   const animateHeight = useSharedValue(0);
   const [imgWidth] = useState(1000);
 
-  const waterGoal = useRegisterStore((state) => state.waterGoal);
-  const currentWater = useRegisterStore((state) => state.water);
+  const { waterGoal, water } = useStatsStore();
 
   const wave1 = useSharedValue(0);
   const wave2 = useSharedValue(0);
@@ -28,11 +27,11 @@ export default function WaterAnimation({
   const wave4 = useSharedValue(0);
 
   useEffect(() => {
-    animateHeight.value = withTiming(Math.min(currentWater / waterGoal, 1), {
+    animateHeight.value = withTiming(Math.min(water / waterGoal, 1), {
       duration: 500,
       easing: Easing.inOut(Easing.ease),
     });
-  }, [currentWater, waterGoal, animateHeight]);
+  }, [water, waterGoal, animateHeight]);
 
   useEffect(() => {
     const config = { duration: 8000, easing: Easing.linear };

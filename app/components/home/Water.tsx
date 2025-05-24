@@ -12,7 +12,7 @@ import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
 import WaterModal from "./WaterModal";
 import { Droplets } from "lucide-react-native";
-import { useRegisterStore } from "@/stores/statsStore";
+import { useStatsStore } from "@/stores/statsStore";
 import WaterAnimation from "./WaterAnimation";
 
 export default function Water() {
@@ -20,7 +20,7 @@ export default function Water() {
   const [componentHeight, setComponentHeight] = useState<number>(0);
   const { language } = useLanguage();
 
-  const waterGoal = useRegisterStore((state) => state.waterGoal);
+  const { waterGoal } = useStatsStore();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handlePressIn = () => {

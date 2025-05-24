@@ -118,7 +118,7 @@ export default function DailyTasks() {
   const completedCount = tasks.filter((t) => t.completed).length;
 
   return (
-    <View className="px-1 mt-6">
+    <View className="px-1 mt-6 pb-40">
       <View className="flex-row justify-between mb-4 items-center">
         <ThemeText className="text-xl font-bold  dark:text-white ">
           {languages[language].home.task}

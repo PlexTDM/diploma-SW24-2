@@ -8,7 +8,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRegisterStore } from "@/stores/statsStore";
+import { useStatsStore } from "@/stores/statsStore";
 // import * as NavigationBar from "expo-navigation-bar";
 SplashScreen.preventAutoHideAsync();
 
@@ -28,7 +28,7 @@ const RootLayout = () => {
   // }, []);
 
   useEffect(() => {
-    useRegisterStore.getState().load();
+    useStatsStore?.getState()?.load();
   }, []);
 
   useEffect(() => {
