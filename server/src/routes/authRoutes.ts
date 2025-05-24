@@ -1,5 +1,5 @@
 import express from "express";
-import auth from "@/controllers/auth";
+import auth from "@/controllers/auth.controller";
 import { body } from "express-validator";
 import { authenticate } from "@/controllers/token";
 import multer from "multer";
@@ -21,5 +21,6 @@ app.post("/google", auth.google);
 app.get("/authorize", auth.authorize);
 app.get("/callback", auth.callback);
 app.post("/logout", auth.logout);
+app.get("/food", authenticate, auth.food);
 
 export default app;

@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import { redisService } from "@/services/redis";
 import DailyGoal from "@/models/dailyGoal";
 import { generateDailyGoals } from "@/services/aiGoals";
+import genFoodPlan from "@/services/aiFood";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -625,6 +626,37 @@ class AuthController {
     return res.redirect(
       APP_SCHEME + "/(auth)/signup" + "?" + outgoingParams.toString()
     );
+  }
+
+  public static async food(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    let user = null;
+    let goal = null;
+    const redisUser = await redisService.get(`user:${req.user.id}`);
+    if (redisUser) {
+      user = JSON.parse(redisUser);
+    } else {
+      user = await User.findById(req.user.id)
+        .select("weight height gender activityLevel healthCondition goal")
+        .exec();
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      goal = await DailyGoal.findOne({
+        userId: req.user.id,
+      }).exec();
+      if (!goal) {
+        return res.status(404).json({ message: "User goals not found" });
+      }
+    }
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const foodPlan = await genFoodPlan(user, goal);
+
+    return res.status(200).json(foodPlan);
   }
 }
 
