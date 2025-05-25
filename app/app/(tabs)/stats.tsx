@@ -200,7 +200,7 @@ const Blog = () => {
 
             <TouchableOpacity
               onPress={() => router.push("/mnkv")}
-              className="absolute w-[100px] items-center justify-center overflow-hidden"
+              className="absolute w-[150px] items-center justify-center rounded-full"
               style={{
                 bottom: 45,
                 left: 35,
