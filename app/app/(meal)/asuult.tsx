@@ -19,10 +19,6 @@ const Asuult = () => {
   const question1 = languages[language].question1;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  if (!question1) {
-    return <Text>Ачааллаж байна...</Text>;
-  }
-
   const isDarkMode = theme === "dark";
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
   const textColor = isDarkMode ? "#ffffff" : "#000000";
@@ -150,7 +146,7 @@ const Asuult = () => {
       >
         {/* Буцах */}
         <TouchableOpacity
-          onPress={() => router.push("/mnkv")}
+          onPress={() => router.back()}
           style={{
             padding: 8,
             borderRadius: 8,

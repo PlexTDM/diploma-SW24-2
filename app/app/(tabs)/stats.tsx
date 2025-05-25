@@ -18,6 +18,7 @@ import { ThemeText } from "@/components";
 import QuizLottie from "@/components/home/Quizlottie";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useStatsStore } from "@/stores/statsStore";
+import { Check, Plus } from "lucide-react-native";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -30,6 +31,7 @@ const Blog = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { language } = useLanguage();
+  const { dailyFoods } = useStatsStore();
 
   const NUTRIENT_BAR_HEIGHT = 170;
   const {
@@ -258,9 +260,100 @@ const Blog = () => {
               </Pressable>
             </View>
           ))}
+
+          {dailyFoods && Object.keys(dailyFoods).length > 0 && (
+            <DailyRecommendation />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+};
+
+const DailyRecommendation = () => {
+  const { language } = useLanguage();
+  const {
+    dailyFoods,
+    breakFastEaten,
+    lunchEaten,
+    dinnerEaten,
+    snackEaten,
+    setField,
+  } = useStatsStore();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
+  return (
+    <View className="mt-6 w-full">
+      <Text
+        className={`text-xl font-bold mb-3 ${
+          isDark ? "text-white" : "text-black"
+        }`}
+      >
+        {languages[language].meal.recommendation}
+      </Text>
+      {Object.keys(dailyFoods).map((food) => {
+        const { food_name, image, calories, protein, carbs, fat } =
+          dailyFoods[food];
+
+        const isEaten =
+          (food === "breakfast" && breakFastEaten) ||
+          (food === "lunch" && lunchEaten) ||
+          (food === "dinner" && dinnerEaten) ||
+          (food === "snack" && snackEaten);
+        return (
+          <View
+            key={food}
+            className={`flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-3 mb-3 items-center`}
+          >
+            <Image
+              source={{ uri: image }}
+              className="w-32 h-32 rounded-lg mr-3"
+            />
+            <View className="flex-1">
+              <Text
+                className={`text-base font-semibold mb-1 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                {food_name}
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
+                {languages[language].meal.calories}: {calories}
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
+                {languages[language].meal.protein}: {protein}
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
+                {languages[language].meal.carbs}: {carbs}
+              </Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm">
+                {languages[language].meal.fat}: {fat}
+              </Text>
+            </View>
+            <View className="absolute right-2 bottom-2">
+              <Pressable
+                onPress={() => {
+                  if (!isEaten) {
+                    setField("breakFastEaten", true);
+                  } else {
+                    setField("breakFastEaten", false);
+                  }
+                }}
+                android_ripple={{ color: "gray", radius: 10 }}
+                className="bg-gray-200 dark:bg-gray-700 rounded-full p-2"
+              >
+                {isEaten ? (
+                  <Check size={20} color={isDark ? "white" : "black"} />
+                ) : (
+                  <Plus size={20} color={isDark ? "white" : "black"} />
+                )}
+              </Pressable>
+            </View>
+          </View>
+        );
+      })}
+    </View>
   );
 };
 

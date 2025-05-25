@@ -12,6 +12,25 @@ type LanguageContextType = {
 };
 
 export const mn = {
+  imageScan: {
+    cameraPermissionDenied: "Камер ашиглах зөвшөөрөл олгоно уу.",
+    galleryPermissionDenied: "Зургийн сан ашиглах зөвшөөрөл олгоно уу.",
+    noImageSelected: "Эхлээд зураг сонгоно уу.",
+    scanError: "Зураг уншихад алдаа гарлаа. Дахин оролдоно уу.",
+    title: "Хоолны зураг уншуулах",
+    tapToUpload: "Зураг оруулахын тулд энд дарна уу",
+    scanButton: "Уншуулах",
+    changeImageButton: "Зураг солих",
+    selectImageButton: "Зураг сонгох",
+    loadingText: "Уншиж байна...",
+    selectSource: "Зургийн эх үүсвэр сонгох",
+    fromGallery: "Зургийн сангаас",
+    takePhoto: "Зураг авах",
+    cancel: "Цуцлах",
+    noFoodDetected: "Зурагт хоол илэрсэнгүй.",
+    retry: "Дахин оролдох",
+    close: "Хаах",
+  },
   question1: {
     tanid:
       "Танд анхаарах ёстой хоолны ямар нэгэн хорио цээр, дэглэм байгаа юу? ",
@@ -54,6 +73,17 @@ export const mn = {
       { name: "Оройн хоол", desc: "Оройн хоолоо идсэн үү?" },
       { name: "Зууш", desc: "Зууш идсэн үү?" },
     ],
+    image: "Зураг",
+    barcode: "Баркод",
+    recommendation: "Өнөөдрийн зууш",
+    protein: "Уураг",
+    carbs: "Нүүрс ус",
+    fat: "Өөх тос",
+    calories: "Калори",
+    breakfast: "Өглөөний хоол",
+    lunch: "Өдрийн хоол",
+    dinner: "Оройн хоол",
+    snack: "Зууш",
   },
 
   mascot: {
@@ -241,6 +271,25 @@ export const mn = {
 };
 
 export const en = {
+  imageScan: {
+    cameraPermissionDenied: "Allow camera permission",
+    galleryPermissionDenied: "Allow gallery permission",
+    noImageSelected: "No image selected",
+    scanError: "Error scanning image",
+    title: "Scan your food",
+    tapToUpload: "Tap to upload",
+    scanButton: "Scan",
+    changeImageButton: "Scan Image",
+    selectImageButton: "Select Image",
+    loadingText: "Scanning...",
+    selectSource: "Select Source",
+    fromGallery: "From Gallery",
+    takePhoto: "Take Photo",
+    cancel: "Cancel",
+    noFoodDetected: "No food detected in the image.",
+    retry: "Retry",
+    close: "Close",
+  },
   question1: {
     tanid: "Do you have any dietary restrictions we should know about?",
     suun: ["Lactose Free", "Sugar Free", "Gluten free", "Nut Free", "None"],
@@ -287,6 +336,17 @@ export const en = {
       { name: "Dinner", desc: "Do you eat dinner?" },
       { name: "Snack", desc: "Do you eat snacks?" },
     ],
+    recommendation: "Daily Recommendation",
+    protein: "Protein",
+    carbs: "Carbs",
+    fat: "Fat",
+    calories: "Calories",
+    breakfast: "Breakfast",
+    lunch: "Lunch",
+    dinner: "Dinner",
+    snack: "Snack",
+    image: "Image",
+    barcode: "Barcode",
   },
   login: {
     title1: "Hi There! I'm Bluvi",

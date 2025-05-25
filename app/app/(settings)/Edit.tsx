@@ -9,15 +9,15 @@ import { useState, use, useEffect } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { ThemeView, ThemeText, Avatar } from "@/components";
 import { useAppTheme } from "@/lib/theme";
-import { useLanguage } from "@/lib/language";
+// import { useLanguage } from "@/lib/language";
 import { Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
 import * as ImagePicker from "expo-image-picker";
-import { ImagePickerModal } from "@/components/ImagePickerModal";
+import ImagePickerModal from "@/components/ImagePickerModal";
 import { Camera } from "expo-camera";
 
 export default function Edit() {
-  const { language } = useLanguage();
+  // const { language } = useLanguage();
   const { theme } = useAppTheme();
   const router = useRouter();
   const navigation = useNavigation();

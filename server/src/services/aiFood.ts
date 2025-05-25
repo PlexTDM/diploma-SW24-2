@@ -101,7 +101,7 @@ const genFoodPlan = async (user: IUser, goal?: IDailyGoal | null) => {
     "protein": "XXg",
     "fat": "XXg",
     "carbs": "XXg",
-    "calorie": "XXXkcal"
+    "calories": "XXXkcal"
   }
   // ... other meals like lunch, dinner, snack
 }
@@ -115,31 +115,30 @@ Example structure for output (ensure all meals are included if requested):
       "protein":"11g",
       "fat":"13g",
       "carbs":"72g",
-      "calorie":"400kcal"
+      "calories":"400kcal"
   },
   "lunch": {
     "food_name": "Tuna Salad Sandwich",
     "protein": "25g",
     "fat": "15g",
     "carbs": "30g",
-    "calorie": "350kcal"
+    "calories": "350kcal"
   },
   "dinner": {
     "food_name": "Baked Cod with Asparagus",
     "protein": "30g",
     "fat": "10g",
     "carbs": "20g",
-    "calorie": "400kcal"
+    "calories": "400kcal"
   },
   "snack": {
     "food_name": "Apple with Peanut Butter",
     "protein": "8g",
     "fat": "16g",
     "carbs": "25g",
-    "calorie": "280kcal"
+    "calories": "280kcal"
   }
-}
-`;
+}`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();

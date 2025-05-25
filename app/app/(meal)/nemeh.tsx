@@ -4,10 +4,12 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useColorScheme } from "nativewind";
+import { languages, useLanguage } from "@/lib/language";
 
 export default function Meal() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
+  const { language } = useLanguage();
   const isDark = colorScheme === "dark";
 
   const [selectedTab, setSelectedTab] = useState<"recent" | "favorites">(
@@ -113,9 +115,19 @@ export default function Meal() {
       {/* Scan Button */}
       <Pressable
         className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
+        onPress={() => router.push("/(meal)/imageScan")}
+      >
+        <Text className="text-base text-white">
+          {languages[language].meal.image}
+        </Text>
+      </Pressable>
+      <Pressable
+        className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
         onPress={() => router.push("./scan")}
       >
-        <Text className="text-base text-white">Scan your meals</Text>
+        <Text className="text-base text-white">
+          {languages[language].meal.barcode}
+        </Text>
       </Pressable>
 
       {/* More Scanners */}
@@ -179,7 +191,11 @@ export default function Meal() {
           return visibleMeals.length ? (
             <View key={day} className="mt-4">
               <Text className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
-                {day}
+                {day === "Өнөөдөр"
+                  ? "Today"
+                  : day === "Өчигдөр"
+                  ? "Yesterday"
+                  : ""}
               </Text>
               {visibleMeals.map((meal) =>
                 renderMealCard(meal.title, meal.calories)

@@ -8,6 +8,8 @@
     "**/Thumbs.db": true,
     "**/node_modules": true,
     "LICENSE": true,
-    "**/LICENSE": true
+    "**/LICENSE": true,
+    "**/expo-env.d.ts": true,
+    "app/tailwind.config.js": true
   }
 }

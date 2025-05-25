@@ -44,6 +44,8 @@ export const AuthContext = createContext({
   }) => {},
   update: async (user: Partial<User>): Promise<boolean> => false,
   isUpdating: false,
+  getFoodImage: async (image: string): Promise<FoodImage | null> => null,
+  foodImageLoading: false,
 });
 
 const config: AuthRequestConfig = {
@@ -80,6 +82,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [foodImageLoading, setFoodImageLoading] = useState(false);
   const [needsRegistration, setNeedsRegistration] = useState<{
     visible: boolean;
     data: any;
@@ -516,6 +519,83 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
+  const getDailyFood = async (): Promise<void> => {
+    const cachedDailyFoods = await tokenCache?.getToken("dailyFoods");
+    if (cachedDailyFoods) {
+      const parsedCache = JSON.parse(cachedDailyFoods);
+      const cacheDate = new Date(parsedCache.timestamp);
+      const today = new Date();
+
+      // Check if the cached data is from today
+      if (cacheDate.toDateString() === today.toDateString()) {
+        setField("dailyFoods", parsedCache);
+        return;
+      }
+    }
+
+    if (!accessToken) {
+      console.log("No access token, skipping daily food");
+      return;
+    }
+
+    const res = await fetch(`${API_URL}/auth/food`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (!res.ok) {
+      console.error("Error getting daily food:", res.status, await res.json());
+      return;
+    }
+
+    const data = await res.json();
+    await tokenCache?.saveToken(
+      "dailyFoods",
+      JSON.stringify({ ...data, timestamp: new Date().toISOString() })
+    );
+    setField("dailyFoods", data);
+    console.log("🍎 daily food", data);
+  };
+
+  const getFoodImage = async (image: string): Promise<FoodImage | null> => {
+    setFoodImageLoading(true);
+    try {
+      const formData = new FormData();
+      const filename = image.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename ?? "");
+      const type = match ? `image/${match[1]}` : `image`;
+      formData.append("image", {
+        uri: image,
+        name: filename,
+        type,
+      } as any);
+      const res = await fetch(`${API_URL}/auth/food/image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+      if (!res.ok) {
+        console.error(
+          "Error getting food image:",
+          res.status,
+          await res.json()
+        );
+        return null;
+      }
+      const data = await res.json();
+      console.log("🍎 food image", data);
+      return data;
+    } catch (e) {
+      console.log("Error getting food image:", e);
+      return null;
+    } finally {
+      setFoodImageLoading(false);
+    }
+  };
+
   // check login
   useEffect(() => {
     const checkLogin = async () => {
@@ -541,12 +621,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
               if (storedRefreshToken) {
                 setRefreshToken(storedRefreshToken);
                 refreshAccessToken(storedRefreshToken);
+                getDailyFood();
               }
             } else if (storedRefreshToken) {
               // Access token expired, but we have a refresh token
               console.log("Access token expired, using refresh token");
               setRefreshToken(storedRefreshToken);
               await refreshAccessToken(storedRefreshToken);
+              getDailyFood();
             }
           } catch (e) {
             console.error("Error decoding stored token:", e);
@@ -556,6 +638,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
               console.log("Error with access token, trying refresh token");
               setRefreshToken(storedRefreshToken);
               await refreshAccessToken(storedRefreshToken);
+              getDailyFood();
             }
           }
         } else if (storedRefreshToken) {
@@ -610,6 +693,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         needsRegistration,
         setNeedsRegistration,
         update,
+        getFoodImage,
+        foodImageLoading,
         isUpdating,
       }}
     >
