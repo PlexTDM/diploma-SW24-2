@@ -36,6 +36,9 @@ export interface IUser extends Document {
   emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  streak?: number;
+  highestStreak?: number;
+  totalCalories?: number;
 }
 
 // Define the schema
@@ -93,7 +96,21 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: String,
       required: true,
     },
-
+    streak: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    highestStreak: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    totalCalories: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     password: {
       type: String,
       required: true,

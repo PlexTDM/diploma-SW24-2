@@ -11,12 +11,12 @@ interface ImagePickerModalProps {
   onGalleryPress: () => void;
 }
 
-export function ImagePickerModal({
+const ImagePickerModal = ({
   visible,
   onClose,
   onCameraPress,
   onGalleryPress,
-}: ImagePickerModalProps) {
+}: ImagePickerModalProps) => {
   const { theme } = useAppTheme();
 
   return (
@@ -63,4 +63,6 @@ export function ImagePickerModal({
       </Pressable>
     </Modal>
   );
-}
+};
+
+export default ImagePickerModal;

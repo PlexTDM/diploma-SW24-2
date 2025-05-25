@@ -144,7 +144,7 @@ const Asuult2 = () => {
       >
         {/* Буцах */}
         <TouchableOpacity
-          onPress={() => router.push("/asuult")}
+          onPress={() => router.back()}
           style={{
             padding: 8,
             borderRadius: 8,

@@ -90,3 +90,11 @@ interface Message {
   timestamp: Date | string; // Allow string from API, convert to Date
   isStreaming?: boolean;
 }
+
+type FoodImage = {
+  food_name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+};

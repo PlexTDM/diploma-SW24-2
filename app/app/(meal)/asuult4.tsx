@@ -23,9 +23,11 @@ const Asuult4 = () => {
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
   const textColor = isDarkMode ? "#ffffff" : "#000000";
   const backButtonColor = isDarkMode ? "#FFFFFF" : "#000000";
-  
+
   const [dates, setDates] = useState<Moment[]>([]);
-  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
 
   useEffect(() => {
     const today = moment();
@@ -43,66 +45,68 @@ const Asuult4 = () => {
   return (
     <View style={[styles.wrapper, { backgroundColor }]}>
       {/* Progress Bar */}
-     <View style={styles.progressBar}>
-                   {[0, 1, 2, 3, 4].map((_, i) => (
-                     <View
-                       key={i}
-                       style={{
-                         width: 46,
-                         height: 8,
-                         borderRadius: 8,
-                         backgroundColor:
-                           i === 3
-                             ? isDarkMode
-                               ? "#ffffff" // active step in dark mode
-                               : "#2c2c2c" // active step in light mode
-                             : isDarkMode
-                               ? "#2c2c2c" // inactive step in dark mode
-                               : "#D1D5DB", // inactive step in light mode
-                       }}
-                     />
-                   ))}
-                 </View>
+      <View style={styles.progressBar}>
+        {[0, 1, 2, 3, 4].map((_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 46,
+              height: 8,
+              borderRadius: 8,
+              backgroundColor:
+                i === 3
+                  ? isDarkMode
+                    ? "#ffffff" // active step in dark mode
+                    : "#2c2c2c" // active step in light mode
+                  : isDarkMode
+                  ? "#2c2c2c" // inactive step in dark mode
+                  : "#D1D5DB", // inactive step in light mode
+            }}
+          />
+        ))}
+      </View>
 
       {/* Question Section */}
-       <View style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}>
-                          <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center", // "flex-start"-ыг "center" болгоно
-                      paddingHorizontal: 10,
-                      gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
-                    }}
-                  >
-                    <LottieView
-                      source={require("@/assets/icons/gem.json")}
-                      autoPlay
-                      loop
-                      style={{
-                        width: 35, // хэмжээг багасгаж
-                        height: 35,
-                        marginRight: 1, // эсвэл gap оронд хэрэглэж болно
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 24, // багасгаж болно
-                        fontWeight: "bold",
-                        textAlign: "left",
-                        color: textColor,
-                        flexShrink: 1,
-                      }}
-                    >
-                      {question4.chi}
-                    </Text>
-                  </View>
-                  
-                  
-                        </View>
+      <View
+        style={{ paddingTop: 100, marginBottom: 10, paddingHorizontal: 20 }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center", // "flex-start"-ыг "center" болгоно
+            paddingHorizontal: 10,
+            gap: 1, // Lottie болон текстийн хоорондын зайг тохируулна
+          }}
+        >
+          <LottieView
+            source={require("@/assets/icons/gem.json")}
+            autoPlay
+            loop
+            style={{
+              width: 35, // хэмжээг багасгаж
+              height: 35,
+              marginRight: 1, // эсвэл gap оронд хэрэглэж болно
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 24, // багасгаж болно
+              fontWeight: "bold",
+              textAlign: "left",
+              color: textColor,
+              flexShrink: 1,
+            }}
+          >
+            {question4.chi}
+          </Text>
+        </View>
+      </View>
 
       {/* Calendar Section */}
       <View style={styles.calendarSection}>
-        <Text style={[styles.weekLabel, { color: textColor }]}>{question4.ene}</Text>
+        <Text style={[styles.weekLabel, { color: textColor }]}>
+          {question4.ene}
+        </Text>
         <View style={styles.weekRow}>
           {dates.slice(0, 7).map((date) => {
             const isSelected = selectedDate === date.format("YYYY-MM-DD");
@@ -110,7 +114,10 @@ const Asuult4 = () => {
               <TouchableOpacity
                 key={date.format("YYYY-MM-DD")}
                 onPress={() => handleSelectDate(date)}
-                style={[styles.dayContainer, isSelected && styles.selectedDayContainer]}
+                style={[
+                  styles.dayContainer,
+                  isSelected && styles.selectedDayContainer,
+                ]}
               >
                 <Text style={[styles.dayText, isDarkMode && { color: "#aaa" }]}>
                   {date.format("dd").charAt(0)}
@@ -129,7 +136,9 @@ const Asuult4 = () => {
           })}
         </View>
 
-        <Text style={[styles.weekLabel, { color: textColor }]}>{question4.dar}</Text>
+        <Text style={[styles.weekLabel, { color: textColor }]}>
+          {question4.dar}
+        </Text>
         <View style={styles.weekRow}>
           {dates.slice(7, 14).map((date) => {
             const isSelected = selectedDate === date.format("YYYY-MM-DD");
@@ -137,7 +146,10 @@ const Asuult4 = () => {
               <TouchableOpacity
                 key={date.format("YYYY-MM-DD")}
                 onPress={() => handleSelectDate(date)}
-                style={[styles.dayContainer, isSelected && styles.selectedDayContainer]}
+                style={[
+                  styles.dayContainer,
+                  isSelected && styles.selectedDayContainer,
+                ]}
               >
                 <Text style={[styles.dayText, isDarkMode && { color: "#aaa" }]}>
                   {date.format("dd").charAt(0)}
@@ -165,55 +177,55 @@ const Asuult4 = () => {
       </View>
 
       {/* Footer Section - same as Asuult3 */}
-  <View
-  style={{
-    position: "absolute",
-    bottom: 60, // арай дээш
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "center", // голд төвлөрүүлсэн
-    gap: 16,
-  }}
->
-  {/* Буцах товч */}
-  <TouchableOpacity
-    onPress={() => router.replace("/asuult3")}
-    style={{
-      padding: 10,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: "#d3d3d3",
-      alignItems: "center",
-      justifyContent: "center",
-      width: 60,
-      backgroundColor: isDarkMode ? "transparent" : "#FFFFFF",
-    }}
-  >
-    <Text style={{ color: backButtonColor, fontWeight: "bold", fontSize: 28 }}>
-      {"<"}
-    </Text>
-  </TouchableOpacity>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 60, // арай дээш
+          left: 0,
+          right: 0,
+          flexDirection: "row",
+          justifyContent: "center", // голд төвлөрүүлсэн
+          gap: 16,
+        }}
+      >
+        {/* Буцах товч */}
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "#d3d3d3",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 60,
+            backgroundColor: isDarkMode ? "transparent" : "#FFFFFF",
+          }}
+        >
+          <Text
+            style={{ color: backButtonColor, fontWeight: "bold", fontSize: 28 }}
+          >
+            {"<"}
+          </Text>
+        </TouchableOpacity>
 
-  {/* Дараах товч */}
-  <TouchableOpacity
-    onPress={() => router.push("/(meal)/asuult5")}
-    style={{
-      paddingVertical: 14,
-      paddingHorizontal: 94,
-      borderRadius: 12,
-      backgroundColor: "#136CF1",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-    <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-      {question4.daraah}
-    </Text>
-  </TouchableOpacity>
-</View>
-
-
+        {/* Дараах товч */}
+        <TouchableOpacity
+          onPress={() => router.push("/(meal)/asuult5")}
+          style={{
+            paddingVertical: 14,
+            paddingHorizontal: 94,
+            borderRadius: 12,
+            backgroundColor: "#136CF1",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
+            {question4.daraah}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -236,7 +248,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   progressStep: {
-     width: 46,
+    width: 46,
     height: 8,
     borderRadius: 8,
     backgroundColor: "#D1D5DB",
@@ -303,16 +315,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-

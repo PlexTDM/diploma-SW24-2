@@ -22,5 +22,6 @@ app.get("/authorize", auth.authorize);
 app.get("/callback", auth.callback);
 app.post("/logout", auth.logout);
 app.get("/food", authenticate, auth.food);
+app.post("/food/image", authenticate, upload.single("image"), auth.foodImage);
 
 export default app;

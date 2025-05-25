@@ -22,6 +22,7 @@ import { redisService } from "@/services/redis";
 import DailyGoal from "@/models/dailyGoal";
 import { generateDailyGoals } from "@/services/aiGoals";
 import genFoodPlan from "@/services/aiFood";
+import analyzeFoodImage from "@/services/aiFoodImage";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -657,6 +658,21 @@ class AuthController {
     const foodPlan = await genFoodPlan(user, goal);
 
     return res.status(200).json(foodPlan);
+  }
+
+  public static async foodImage(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    console.log("req.body", req.file);
+    const image = req.file;
+    if (!image) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+    // turn img multer memory to base64
+    const base64Image = image.buffer.toString("base64");
+    const food = await analyzeFoodImage(base64Image);
+    return res.status(200).json(food);
   }
 }
 
