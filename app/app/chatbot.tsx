@@ -20,7 +20,6 @@ import MessageBubble from "@/components/chat/messageBubble";
 import Header from "@/components/chat/Header";
 import { StatusBar } from "expo-status-bar";
 import ListFooterElement from "@/components/chat/ListFooterElement";
-import { Message } from "@/types";
 // import CameraTracking from "@/components/cameraTracking";
 
 const LoadingIndicator = () => {
@@ -170,10 +169,7 @@ export default function ChatScreen() {
   };
 
   return (
-    <SafeAreaView
-      className="dark:bg-[#1A202C] bg-white flex-1"
-      edges={["top", "bottom"]}
-    >
+    <SafeAreaView className="dark:bg-[#1A202C] bg-white flex-1" edges={["top"]}>
       {/* <CameraTracking /> */}
       <StatusBar style={theme === "dark" ? "light" : "dark"} hidden={false} />
       <Header title="Chatbot" />

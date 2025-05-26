@@ -23,5 +23,6 @@ app.get("/callback", auth.callback);
 app.post("/logout", auth.logout);
 app.get("/food", authenticate, auth.food);
 app.post("/food/image", authenticate, upload.single("image"), auth.foodImage);
+app.get("/exercise", authenticate, auth.exercise);
 
 export default app;

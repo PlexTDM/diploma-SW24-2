@@ -30,6 +30,11 @@ export const mn = {
     noFoodDetected: "Зурагт хоол илэрсэнгүй.",
     retry: "Дахин оролдох",
     close: "Хаах",
+    addToStatsButton: "Өдрийн хоолонд нэмэх",
+    addingToStats: "Нэмж байна...",
+    addedToStatsSuccess: "Хоолыг өдрийн статистикт нэмлээ!",
+    addedToStatsError:
+      "Хоолыг статистикт нэмэхэд алдаа гарлаа. Дахин оролдоно уу.",
   },
   question1: {
     tanid:
@@ -289,6 +294,10 @@ export const en = {
     noFoodDetected: "No food detected in the image.",
     retry: "Retry",
     close: "Close",
+    addToStatsButton: "Add to Daily Intake",
+    addingToStats: "Adding...",
+    addedToStatsSuccess: "Food added to your daily stats!",
+    addedToStatsError: "Could not add food to stats. Please try again.",
   },
   question1: {
     tanid: "Do you have any dietary restrictions we should know about?",

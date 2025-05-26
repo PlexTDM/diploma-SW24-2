@@ -78,7 +78,7 @@ const genFoodPlan = async (user: IUser, goal?: IDailyGoal | null) => {
       ],
     });
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = `Generate varied and creative food recommendations for USER for breakfast, lunch, dinner, and a snack, aiming for different suggestions each time this is run.
     USER's weight is ${user.weight}kg, height is ${user.height}cm, gender is ${
       user.gender
@@ -98,47 +98,36 @@ const genFoodPlan = async (user: IUser, goal?: IDailyGoal | null) => {
 {
   "breakfast": {
     "food_name": "Food Name",
-    "protein": "XXg",
-    "fat": "XXg",
-    "carbs": "XXg",
-    "calories": "XXXkcal"
+    "protein": "XX",
+    "fat": "XX",
+    "carbs": "XX",
+    "calories": "XXX"
+  },
+  "lunch": { 
+    "food_name": "Food Name", 
+    "protein": "XX", 
+    "fat": "XX", 
+    "carbs": "XX", 
+    "calories": "XXX" 
+  },
+  "dinner": { 
+    "food_name": "Food Name", 
+    "protein": "XX", 
+    "fat": "XX", 
+    "carbs": "XX", 
+    "calories": "XXX" 
+  },
+  "snack": { 
+    "food_name": "Food Name", 
+    "protein": "XX", 
+    "fat": "XX", 
+    "carbs": "XX", 
+    "calories": "XXX" 
   }
-  // ... other meals like lunch, dinner, snack
 }
 
 The nutritional values (protein, fat, carbs, calorie) should be approximate for a standard serving.
-
-Example structure for output (ensure all meals are included if requested):
-{
-  "breakfast":{
-     "food_name":"Oatmeal with Berries",
-      "protein":"11g",
-      "fat":"13g",
-      "carbs":"72g",
-      "calories":"400kcal"
-  },
-  "lunch": {
-    "food_name": "Tuna Salad Sandwich",
-    "protein": "25g",
-    "fat": "15g",
-    "carbs": "30g",
-    "calories": "350kcal"
-  },
-  "dinner": {
-    "food_name": "Baked Cod with Asparagus",
-    "protein": "30g",
-    "fat": "10g",
-    "carbs": "20g",
-    "calories": "400kcal"
-  },
-  "snack": {
-    "food_name": "Apple with Peanut Butter",
-    "protein": "8g",
-    "fat": "16g",
-    "carbs": "25g",
-    "calories": "280kcal"
-  }
-}`;
+only return number values, no units for protein, fat, carbs, calories.`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
@@ -146,9 +135,12 @@ Example structure for output (ensure all meals are included if requested):
     if (!jsonMatch) {
       throw new Error("Failed to parse AI response");
     }
-    const res = JSON.parse(jsonMatch[0]);
+    console.log("AI Response for food plan:", jsonMatch[0]);
+    const aiFoodPlan = JSON.parse(jsonMatch[0]);
 
-    const scrapePromises = Object.keys(res).map(async (mealType) => {
+    const mealTypes = Object.keys(aiFoodPlan);
+
+    const scrapePromises = mealTypes.map(async (mealType) => {
       let page: Page | null = null;
       try {
         page = await browser!.newPage();
@@ -161,21 +153,26 @@ Example structure for output (ensure all meals are included if requested):
           }
         });
 
-        const foodName = res[mealType].food_name;
+        const foodName = aiFoodPlan[mealType].food_name;
         const imageUrl = await scrapeFoodiesfeed(page, foodName);
         return {
-          ...res[mealType],
-          image: imageUrl,
+          mealType: mealType,
+          data: {
+            ...aiFoodPlan[mealType],
+            image: imageUrl,
+          },
         };
       } catch (err: any) {
-        // Added :any to err to satisfy typescript for now
         console.error(
           `Error processing ${mealType}:`,
           err.message ? err.message : err
         );
         return {
-          ...res[mealType],
-          image: null,
+          mealType: mealType,
+          data: {
+            ...aiFoodPlan[mealType],
+            image: null,
+          },
         };
       } finally {
         if (page) {
@@ -184,11 +181,19 @@ Example structure for output (ensure all meals are included if requested):
       }
     });
 
-    const meals = await Promise.all(scrapePromises);
-    return meals;
+    const mealsWithImagesArray = await Promise.all(scrapePromises);
+
+    const finalFoodPlan: { [key: string]: any } = {};
+    mealsWithImagesArray.forEach((meal) => {
+      if (meal && meal.mealType) {
+        finalFoodPlan[meal.mealType] = meal.data;
+      }
+    });
+
+    return finalFoodPlan;
   } catch (error: any) {
     console.error(
-      "Error generating daily goals:",
+      "Error in genFoodPlan function:",
       error.message ? error.message : error
     );
     return null;

@@ -69,12 +69,16 @@ export default function Meal() {
         <Text className="font-bold text-xl text-black dark:text-white">
           Breakfast
         </Text>
-        <Pressable
-          onPress={() => router.push("/(tabs)/blogs")}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-800"
-        >
-          <Text className="font-bold text-lg text-[#758FF6]">Done</Text>
-        </Pressable>
+        <View className="overflow-hidden">
+          <Pressable
+            onPress={() => router.back()}
+            android_ripple={{ color: "#DDDDDDD", radius: 30 }}
+            android_disableSound
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden"
+          >
+            <Text className="font-bold text-lg text-[#758FF6]">Done</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Search */}

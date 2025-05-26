@@ -23,6 +23,7 @@ import DailyGoal from "@/models/dailyGoal";
 import { generateDailyGoals } from "@/services/aiGoals";
 import genFoodPlan from "@/services/aiFood";
 import analyzeFoodImage from "@/services/aiFoodImage";
+import genExercisePlan from "@/services/aiExercisePlan";
 
 const { genSaltSync, hashSync, compareSync } = bcryptjs;
 const hashRounds = 10;
@@ -656,6 +657,7 @@ class AuthController {
       return res.status(404).json({ message: "User not found" });
     }
     const foodPlan = await genFoodPlan(user, goal);
+    console.log(foodPlan);
 
     return res.status(200).json(foodPlan);
   }
@@ -673,6 +675,26 @@ class AuthController {
     const base64Image = image.buffer.toString("base64");
     const food = await analyzeFoodImage(base64Image);
     return res.status(200).json(food);
+  }
+
+  public static async exercise(
+    req: AuthenticatedRequest,
+    res: Response
+  ): Promise<any> {
+    try {
+      const user = await User.findById(req.user.id)
+        .select("weight height gender activityLevel healthCondition goal")
+        .exec();
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const exercisePlan = await genExercisePlan(user);
+      return res.status(200).json(exercisePlan);
+    } catch (e) {
+      console.error("Error generating exercise plan:", e);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 }
 
