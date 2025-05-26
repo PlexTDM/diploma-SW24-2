@@ -2,7 +2,7 @@ import { languages, useLanguage } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import StepHeader from "./StepHeader";
 import ChoiceButton from "./ChoiceButton";
 
@@ -30,7 +30,7 @@ export default function Step6() {
           {workDesc}
         </Text>
       </View>
-      <View className="space-y-4 my-4 w-full px-14">
+      <ScrollView className="space-y-4 my-4 w-full px-14">
         {choices.map((choice, i) => (
           <ChoiceButton
             key={i}
@@ -40,7 +40,7 @@ export default function Step6() {
             iconColor={iconColor}
           />
         ))}
-      </View>
+      </ScrollView>
       <View className="mb-4"></View>
     </View>
   );

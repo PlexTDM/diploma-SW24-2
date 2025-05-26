@@ -1,3 +1,4 @@
+import Language from "@/app/(auth)/Language";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
 interface LanguageProviderProps {
@@ -12,6 +13,7 @@ type LanguageContextType = {
 };
 
 export const mn = {
+  a: "Нэвтрэх",
   imageScan: {
     cameraPermissionDenied: "Камер ашиглах зөвшөөрөл олгоно уу.",
     galleryPermissionDenied: "Зургийн сан ашиглах зөвшөөрөл олгоно уу.",
@@ -35,6 +37,9 @@ export const mn = {
     addedToStatsSuccess: "Хоолыг өдрийн статистикт нэмлээ!",
     addedToStatsError:
       "Хоолыг статистикт нэмэхэд алдаа гарлаа. Дахин оролдоно уу.",
+  },
+  language: {
+    asuult: "Та өөрийн хэлээ сонгоно уу!",
   },
   question1: {
     tanid:
@@ -276,6 +281,7 @@ export const mn = {
 };
 
 export const en = {
+  a:"login",
   imageScan: {
     cameraPermissionDenied: "Allow camera permission",
     galleryPermissionDenied: "Allow gallery permission",
@@ -298,6 +304,9 @@ export const en = {
     addingToStats: "Adding...",
     addedToStatsSuccess: "Food added to your daily stats!",
     addedToStatsError: "Could not add food to stats. Please try again.",
+  },
+  language: {
+    asuult: "Please select your language!",
   },
   question1: {
     tanid: "Do you have any dietary restrictions we should know about?",
