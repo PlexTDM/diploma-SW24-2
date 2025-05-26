@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
-interface StatsData {
+export interface StatsData {
   steps: number;
   water: number;
   calories: number;
@@ -34,7 +34,7 @@ interface StatsData {
   highestStreak: number;
   totalCalories: number;
 
-  breakFastEaten: boolean;
+  breakfastEaten: boolean;
   lunchEaten: boolean;
   dinnerEaten: boolean;
   snackEaten: boolean;
@@ -49,6 +49,12 @@ export interface StatsState extends StatsData {
   load: () => Promise<void>;
   _hasHydrated: boolean;
   calculateStatsFromFoods: () => void;
+  addScannedFood: (food: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  }) => Promise<void>;
 }
 
 const ASYNC_STORAGE_KEY = "appStatsStore";
@@ -82,7 +88,7 @@ export const useStatsStore = create<StatsState>((set, get) => ({
   highestStreak: 0,
   totalCalories: 0,
 
-  breakFastEaten: false,
+  breakfastEaten: false,
   lunchEaten: false,
   dinnerEaten: false,
   snackEaten: false,
@@ -92,55 +98,84 @@ export const useStatsStore = create<StatsState>((set, get) => ({
   _hasHydrated: false,
 
   calculateStatsFromFoods: () => {
-    const { dailyFoods, breakFastEaten, lunchEaten, dinnerEaten, snackEaten } =
+    console.log("🍎 calculating stats from foods");
+    const { dailyFoods, breakfastEaten, lunchEaten, dinnerEaten, snackEaten } =
       get();
-    let totalCalories = 0;
-    let totalProtein = 0;
-    let totalCarbs = 0;
-    let totalFat = 0;
+    let currentCalories = 0;
+    let currentProtein = 0;
+    let currentCarbs = 0;
+    let currentFat = 0;
 
     // Calculate totals only for eaten meals
-    if (breakFastEaten && dailyFoods.breakfast) {
+    if (breakfastEaten && dailyFoods.breakfast) {
       const { calories, protein, carbs, fat } = dailyFoods.breakfast;
-      totalCalories += Number(calories);
-      totalProtein += Number(protein);
-      totalCarbs += Number(carbs);
-      totalFat += Number(fat);
+      currentCalories += Number(calories);
+      currentProtein += Number(protein);
+      currentCarbs += Number(carbs);
+      currentFat += Number(fat);
     }
 
     if (lunchEaten && dailyFoods.lunch) {
       const { calories, protein, carbs, fat } = dailyFoods.lunch;
-      totalCalories += Number(calories);
-      totalProtein += Number(protein);
-      totalCarbs += Number(carbs);
-      totalFat += Number(fat);
+      currentCalories += Number(calories);
+      currentProtein += Number(protein);
+      currentCarbs += Number(carbs);
+      currentFat += Number(fat);
     }
 
     if (dinnerEaten && dailyFoods.dinner) {
       const { calories, protein, carbs, fat } = dailyFoods.dinner;
-      totalCalories += Number(calories);
-      totalProtein += Number(protein);
-      totalCarbs += Number(carbs);
-      totalFat += Number(fat);
+      currentCalories += Number(calories);
+      currentProtein += Number(protein);
+      currentCarbs += Number(carbs);
+      currentFat += Number(fat);
     }
 
     if (snackEaten && dailyFoods.snack) {
       const { calories, protein, carbs, fat } = dailyFoods.snack;
-      totalCalories += Number(calories);
-      totalProtein += Number(protein);
-      totalCarbs += Number(carbs);
-      totalFat += Number(fat);
+      currentCalories += Number(calories);
+      currentProtein += Number(protein);
+      currentCarbs += Number(carbs);
+      currentFat += Number(fat);
     }
 
-    // Update the store with calculated values
+    // Add any manually added food from addScannedFood
+    // const manuallyAddedCalories = get().calories - currentCalories;
+    console.log("🍎 currentCalories", currentCalories, Number(currentCalories));
+
     set((state) => ({
       ...state,
-      calories: totalCalories,
-      protein: totalProtein,
-      carbs: totalCarbs,
-      fat: totalFat,
-      totalCalories: state.totalCalories + totalCalories,
+      calories: currentCalories,
+      protein: currentProtein,
+      carbs: currentCarbs,
+      fat: currentFat,
+      totalCalories: state.totalCalories + currentCalories,
     }));
+  },
+
+  addScannedFood: async (food) => {
+    set((state) => ({
+      ...state,
+      calories: state.calories + Number(food.calories),
+      protein: state.protein + Number(food.protein),
+      carbs: state.carbs + Number(food.carbs),
+      fat: state.fat + Number(food.fat),
+      totalCalories: state.totalCalories + Number(food.calories),
+      lastUpdated: new Date().toISOString(),
+    }));
+    try {
+      const currentState = get();
+      const dataToPersist = getPersistentState(currentState);
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE_KEY,
+        JSON.stringify(dataToPersist)
+      );
+    } catch (error) {
+      console.error(
+        `StatsStore: Error saving field after adding scanned food to AsyncStorage:`,
+        error
+      );
+    }
   },
 
   load: async () => {
@@ -173,7 +208,7 @@ export const useStatsStore = create<StatsState>((set, get) => ({
               fat: 0,
               sleep: 0,
               rdc: 0,
-              breakFastEaten: false,
+              breakfastEaten: false,
               lunchEaten: false,
               dinnerEaten: false,
               snackEaten: false,
@@ -205,7 +240,7 @@ export const useStatsStore = create<StatsState>((set, get) => ({
 
     // Recalculate stats if a meal eaten status changes
     if (
-      key === "breakFastEaten" ||
+      key === "breakfastEaten" ||
       key === "lunchEaten" ||
       key === "dinnerEaten" ||
       key === "snackEaten"

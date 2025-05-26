@@ -17,7 +17,7 @@ import { useRouter } from "expo-router";
 import { ThemeText } from "@/components";
 import QuizLottie from "@/components/home/Quizlottie";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useStatsStore } from "@/stores/statsStore";
+import { StatsData, useStatsStore } from "@/stores/statsStore";
 import { Check, Plus } from "lucide-react-native";
 
 const screenWidth = Dimensions.get("window").width;
@@ -39,12 +39,12 @@ const Blog = () => {
     protein,
     carbs,
     fat,
-    rdc,
+    // rdc,
     caloriesGoal,
     proteinGoal,
     carbsGoal,
     fatGoal,
-    rdcGoal,
+    // rdcGoal,
   } = useStatsStore();
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const Blog = () => {
           </View>
 
           {/* Nutrient Bars */}
-          <View className="flex-row justify-between gap-7 mt-6">
+          <View className="flex-row gap-7 mt-6">
             {[
               {
                 label: "Cal",
@@ -149,14 +149,17 @@ const Blog = () => {
                 value: fat,
                 goal: fatGoal,
               },
-              {
-                label: "RDC",
-                color: "bg-orange-200",
-                value: rdc,
-                goal: rdcGoal,
-              },
+              // {
+              //   label: "RDC",
+              //   color: "bg-orange-200",
+              //   value: rdc,
+              //   goal: rdcGoal,
+              // },
             ].map((item, i) => (
-              <View className="gap-3 justify-center flex-1" key={i}>
+              <View
+                className="gap-3 justify-center flex-1 items-center"
+                key={i}
+              >
                 <Text className="justify-center text-center text-gray-500">
                   {item.goal}
                 </Text>
@@ -167,11 +170,14 @@ const Blog = () => {
                   <View
                     className={`w-15 ${item.color} rounded-full items-center`}
                     style={{
-                      height: (item.value / item.goal) * NUTRIENT_BAR_HEIGHT,
+                      height: Math.min(
+                        (item.value / item.goal) * NUTRIENT_BAR_HEIGHT,
+                        NUTRIENT_BAR_HEIGHT - 2
+                      ),
                       minHeight: 45,
                     }}
                   >
-                    <View className="top-2 flex bg-white w-10 h-10 rounded-full items-center justify-center">
+                    <View className="top-1 flex bg-white w-[40px] aspect-square rounded-full items-center justify-center">
                       <Text className="text-[10px]">{item.value}</Text>
                     </View>
                   </View>
@@ -184,7 +190,7 @@ const Blog = () => {
           </View>
 
           {/* AI Suggestion Box */}
-          <View className="w-full h-[200px] rounded-3xl mt-5 items-center justify-center relative">
+          <View className="w-full h-[180px] rounded-3xl mt-5 items-center justify-center relative">
             <Image
               source={require("@/assets/img/foodPoster.png")}
               className="w-full h-full rounded-3xl"
@@ -194,7 +200,7 @@ const Blog = () => {
               className={`absolute text-center font-bold text-white ${
                 language === "mn"
                   ? "w-48 left-8 top-12"
-                  : "w-36 text-xl top-10 left-12"
+                  : "w-36 text-xl top-8 left-10"
               }`}
             >
               {languages[language].quiz.desc}
@@ -202,11 +208,11 @@ const Blog = () => {
 
             <TouchableOpacity
               onPress={() => router.push("/mnkv")}
-              className="absolute w-[150px] items-center justify-center rounded-full"
+              className="absolute w-[100px] items-center rounded-full justify-center overflow-hidden"
               style={{
-                bottom: 45,
+                bottom: 40,
                 left: 35,
-                height: 35,
+                height: 40,
               }}
             >
               <QuizLottie />
@@ -274,7 +280,7 @@ const DailyRecommendation = () => {
   const { language } = useLanguage();
   const {
     dailyFoods,
-    breakFastEaten,
+    breakfastEaten,
     lunchEaten,
     dinnerEaten,
     snackEaten,
@@ -297,10 +303,12 @@ const DailyRecommendation = () => {
           dailyFoods[food];
 
         const isEaten =
-          (food === "breakfast" && breakFastEaten) ||
+          (food === "breakfast" && breakfastEaten) ||
           (food === "lunch" && lunchEaten) ||
           (food === "dinner" && dinnerEaten) ||
           (food === "snack" && snackEaten);
+
+        const eaten = food + "Eaten";
         return (
           <View
             key={food}
@@ -335,9 +343,9 @@ const DailyRecommendation = () => {
               <Pressable
                 onPress={() => {
                   if (!isEaten) {
-                    setField("breakFastEaten", true);
+                    setField(eaten as keyof StatsData, true);
                   } else {
-                    setField("breakFastEaten", false);
+                    setField(eaten as keyof StatsData, false);
                   }
                 }}
                 android_ripple={{ color: "gray", radius: 10 }}

@@ -22,17 +22,21 @@ import {
   Zap,
   Droplet,
   Hash,
+  PlusCircle,
 } from "lucide-react-native";
 import { languages, useLanguage } from "@/lib/language";
-import ImagePickerModal from "@/components/ImagePickerModal"; // Import your existing modal
+import ImagePickerModal from "@/components/ImagePickerModal";
+import { useStatsStore } from "@/stores/statsStore";
 
 export default function ImageScan() {
   const router = useRouter();
   const { getFoodImage } = useContext(AuthContext);
+  const { addScannedFood } = useStatsStore();
   const { language } = useLanguage();
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAddingFood, setIsAddingFood] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [foodData, setFoodData] = useState<FoodImage | null>(null);
 
@@ -74,8 +78,8 @@ export default function ImageScan() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
-      base64: true,
     });
+    console.log("🍎 result", result);
     handleImagePicked(result);
   };
 
@@ -88,7 +92,6 @@ export default function ImageScan() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
-      base64: true,
     });
     handleImagePicked(result);
   };
@@ -103,7 +106,7 @@ export default function ImageScan() {
     try {
       const scannedData = await getFoodImage(imageUri);
       if (scannedData) {
-        setFoodData(scannedData);
+        setFoodData(scannedData as FoodImage);
       } else {
         alert(languages[language].imageScan.noFoodDetected);
       }
@@ -112,6 +115,25 @@ export default function ImageScan() {
       alert(languages[language].imageScan.scanError);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAddFoodToStats = async () => {
+    if (!foodData) return;
+    setIsAddingFood(true);
+    try {
+      await addScannedFood({
+        calories: foodData.calories,
+        protein: foodData.protein,
+        carbs: foodData.carbs,
+        fat: foodData.fat,
+      });
+      alert(languages[language].imageScan.addedToStatsSuccess);
+    } catch (error) {
+      console.error("Error adding food to stats:", error);
+      alert(languages[language].imageScan.addedToStatsError);
+    } finally {
+      setIsAddingFood(false);
     }
   };
 
@@ -124,6 +146,7 @@ export default function ImageScan() {
   const cardBgColor = isDark ? "bg-gray-800" : "bg-gray-50";
   const textColorPrimary = isDark ? "text-white" : "text-black";
   const textColorSecondary = isDark ? "text-gray-300" : "text-gray-600";
+  const buttonDisabledColor = isDark ? "bg-gray-600" : "bg-gray-400";
 
   return (
     <SafeAreaView className={`flex-1 ${bgColor}`}>
@@ -262,6 +285,32 @@ export default function ImageScan() {
                   </Text>
                 </View>
               </View>
+              <TouchableOpacity
+                onPress={handleAddFoodToStats}
+                disabled={isAddingFood}
+                className={`w-full py-3 rounded-xl mt-6 flex-row justify-center items-center ${
+                  isAddingFood
+                    ? buttonDisabledColor
+                    : isDark
+                    ? "bg-green-600"
+                    : "bg-green-500"
+                }`}
+              >
+                {isAddingFood ? (
+                  <ActivityIndicator
+                    size="small"
+                    color="white"
+                    className="mr-2"
+                  />
+                ) : (
+                  <PlusCircle size={20} color="white" className="mr-2" />
+                )}
+                <Text className="text-white text-center text-base font-semibold">
+                  {isAddingFood
+                    ? languages[language].imageScan.addingToStats
+                    : languages[language].imageScan.addToStatsButton}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
 

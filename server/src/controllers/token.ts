@@ -28,7 +28,7 @@ export const generateAccessToken = (user: IUser): string => {
 
   return jwt.sign(
     {
-      id: user.id,
+      id: user.id || user._id,
       role: user.role,
       username: user.username,
       email: user.email,

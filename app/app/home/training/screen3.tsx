@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
+import { router } from "expo-router";
 const StrengthScoreScreen = () => {
   const [activeTab, setActiveTab] = useState("Upper Body");
 
@@ -25,7 +31,7 @@ const StrengthScoreScreen = () => {
           <Text style={styles.goalText}>Build Muscle and Gain Strength</Text>
           <Text style={styles.headerText}>Strength Score</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="close" size={28} color="black" />
         </TouchableOpacity>
       </View>
@@ -34,32 +40,47 @@ const StrengthScoreScreen = () => {
       <View style={styles.centerSection}>
         <Text style={styles.getScoreText}>Get your Strength Score</Text>
         <Text style={styles.instructionText}>Complete 2 Gym workouts</Text>
-        <Text style={styles.rangeText}>Preliminary Strength Score: 350–650</Text>
+        <Text style={styles.rangeText}>
+          Preliminary Strength Score: 350–650
+        </Text>
       </View>
 
       {/* Coach + Time Filters */}
       <View style={styles.coachSection}>
         <Text style={styles.coachText}>COACH JOHN</Text>
         <Text style={styles.descriptionText}>
-          Your Strength Score is a measure of your strength based on your recent workouts.
+          Your Strength Score is a measure of your strength based on your recent
+          workouts.
         </Text>
         <View style={styles.timeFilters}>
-          <TouchableOpacity style={styles.timeFilterActive}><Text style={styles.timeFilterText}>M</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.timeFilter}><Text style={styles.timeFilterText}>6M</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.timeFilter}><Text style={styles.timeFilterText}>Y</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.timeFilterActive}>
+            <Text style={styles.timeFilterText}>M</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.timeFilter}>
+            <Text style={styles.timeFilterText}>6M</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.timeFilter}>
+            <Text style={styles.timeFilterText}>Y</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
       {/* Body Section */}
       <View style={styles.tabSection}>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === "Upper Body" && styles.activeTab]}
+          style={[
+            styles.tabButton,
+            activeTab === "Upper Body" && styles.activeTab,
+          ]}
           onPress={() => setActiveTab("Upper Body")}
         >
           <Text style={styles.tabText}>UPPER BODY</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === "Lower Body" && styles.activeTab]}
+          style={[
+            styles.tabButton,
+            activeTab === "Lower Body" && styles.activeTab,
+          ]}
           onPress={() => setActiveTab("Lower Body")}
         >
           <Text style={styles.tabText}>LOWER BODY</Text>
@@ -69,13 +90,15 @@ const StrengthScoreScreen = () => {
       <ScrollView contentContainerStyle={styles.bodyScroll}>
         <Text style={styles.sectionHeader}>{activeTab}</Text>
         <Text style={styles.lastWorkout}>LAST WORKOUT TRAINED</Text>
-        {(activeTab === "Upper Body" ? upperBodyParts : lowerBodyParts).map((part, index) => (
-          <View key={index} style={styles.bodyItem}>
-            <View style={styles.bodyIconPlaceholder} />
-            <Text style={styles.bodyText}>{part}</Text>
-            <Text style={styles.bodyScore}>0</Text>
-          </View>
-        ))}
+        {(activeTab === "Upper Body" ? upperBodyParts : lowerBodyParts).map(
+          (part, index) => (
+            <View key={index} style={styles.bodyItem}>
+              <View style={styles.bodyIconPlaceholder} />
+              <Text style={styles.bodyText}>{part}</Text>
+              <Text style={styles.bodyScore}>0</Text>
+            </View>
+          )
+        )}
       </ScrollView>
     </View>
   );
@@ -215,7 +238,3 @@ const styles = StyleSheet.create({
 });
 
 export default StrengthScoreScreen;
-
-
-
-

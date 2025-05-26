@@ -532,7 +532,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         return;
       }
     }
-
+    console.log("🍎 getting daily food");
     if (!accessToken) {
       console.log("No access token, skipping daily food");
       return;
@@ -570,6 +570,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         name: filename,
         type,
       } as any);
+
       const res = await fetch(`${API_URL}/auth/food/image`, {
         method: "POST",
         headers: {
@@ -581,14 +582,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
         console.error(
           "Error getting food image:",
           res.status,
-          await res.json()
+          console.log(await res.json())
         );
         return null;
       }
       const data = await res.json();
-      console.log("🍎 food image", data);
       return data;
     } catch (e) {
+      // get more info about the error
       console.log("Error getting food image:", e);
       return null;
     } finally {
@@ -621,14 +622,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
               if (storedRefreshToken) {
                 setRefreshToken(storedRefreshToken);
                 refreshAccessToken(storedRefreshToken);
-                getDailyFood();
               }
             } else if (storedRefreshToken) {
               // Access token expired, but we have a refresh token
               console.log("Access token expired, using refresh token");
               setRefreshToken(storedRefreshToken);
               await refreshAccessToken(storedRefreshToken);
-              getDailyFood();
             }
           } catch (e) {
             console.error("Error decoding stored token:", e);
@@ -638,7 +637,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
               console.log("Error with access token, trying refresh token");
               setRefreshToken(storedRefreshToken);
               await refreshAccessToken(storedRefreshToken);
-              getDailyFood();
             }
           }
         } else if (storedRefreshToken) {
@@ -659,6 +657,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    getDailyFood();
+  }, [user]);
   useEffect(() => {
     handleResponse();
     // eslint-disable-next-line react-hooks/exhaustive-deps

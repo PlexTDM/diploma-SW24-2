@@ -20,7 +20,7 @@ export default function ProfileLogin() {
       </ThemeText>
 
       <Pressable
-        onPress={() => router.push("/(auth)/welcome")}
+        onPress={() => router.push("/(auth)/Language")}
         className="bg-blue-600 dark:bg-gray-700 px-6 py-2 rounded-full mt-6"
       >
         <Text className="text-white dark:text-gray-200 text-base font-medium">
