@@ -9,8 +9,10 @@ import {
 } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { BlurEllipse } from "@/components";
+import { useTranslation } from "@/lib/language";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useAppTheme();
 
@@ -38,16 +40,16 @@ const ForgotPassword = () => {
       {/* 📩 Гол контент хэсэг */}
       <View className="flex-1 items-center justify-start px-6 mt-16">
         <Text className="text-[3.25rem] font-bold text-black dark:text-white mb-2">
-          Forgot Password?
+          {t("forget.title")}
         </Text>
 
         <Text className="text-base text-center text-gray-600 dark:text-gray-300 mb-6 px-2">
-          Don&apos;t worry! It occurs. Please enter the email address linked
-          with your account.
+          {t("forget.text")}
+          
         </Text>
 
         <TextInput
-          placeholder="Email address"
+          placeholder={t("forget.email")}
           className="w-full p-4 border rounded-full text-black dark:text-white bg-white dark:bg-gray-800 border-gray-300 mb-10"
           placeholderTextColor={theme === "dark" ? "#ccc" : "#666"}
         />
@@ -57,7 +59,7 @@ const ForgotPassword = () => {
           onPress={() => router.push("/(auth)/otp-verification")}
         >
           <Text className="text-center text-white dark:text-black font-bold">
-            Send Code
+            {t("forget.button")}
           </Text>
         </TouchableOpacity>
       </View>

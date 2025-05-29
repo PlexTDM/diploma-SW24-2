@@ -10,8 +10,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "@/lib/language";
 
 export default function Create() {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -33,7 +35,7 @@ export default function Create() {
         <Pressable onPress={() => router.back()}>
           <Feather name="arrow-left" size={20} color="black" />
         </Pressable>
-        <Text className="text-lg font-bold text-neutral-800">Create Post</Text>
+        <Text className="text-lg font-bold text-neutral-800">{t("post.add")}</Text>
         <Pressable
           className={`py-2 px-4 rounded-full ${
             isSubmitDisabled ? "bg-neutral-200" : "bg-primary-500"
@@ -46,7 +48,7 @@ export default function Create() {
               isSubmitDisabled ? "text-neutral-500" : "text-black"
             } font-medium`}
           >
-            Post
+            {t("post.button")}
           </Text>
         </Pressable>
       </View>

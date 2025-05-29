@@ -1,4 +1,116 @@
 {
+  "start": {
+    "start": "Start",
+    "later": "Do another workout"	
+  },
+  "dasgal": {
+    "gym": "Gym",
+    "home": "Home",
+    "gichii": {
+      "cardio": "Cardio",
+      "strenght": "Strength",
+      "stretch": "Stretch",
+      "mobility": "Mobility",
+      "endurance": "Endurance"
+    },
+    "full": "Full Body",
+    "upper": "Upper Body",
+    "lower": "Lower Body",
+    "back": "Back",
+    "core": "Core",
+    "shoulder": "Shoulders",
+    "biceps": "Biceps",
+    "triceps": "Triceps",
+    "chest": "Chest",
+    "abs": "Abs",
+    "lowerback": "Lower Back",
+    "glutes": "Glutes",
+    "quadriceps": "Quadriceps",
+    "hamstrings": "Hamstrings",
+    "super": "Super Sets",
+    "text": "Exercises performed consecutively without rest targetiing different muscle groups.",
+    "blah": "Cardio Training",
+    "equipment": "Equipment",
+    "health": "Health Restrictions",
+    "button": "Create New Session"
+  },
+  "breakfast": {
+    "recent": "Recent",
+    "favorites": "Favorites",
+    "barcode": "Barcode",
+    "menu": "Menu",
+    "Fridge": "Fridge",
+    "title": "Breakfast",
+    "button": "Back",
+    "search": "Search",
+    "gar": "Ingredient",
+    "orts": "Part",
+    "more": "More",
+    "image": "Scan Image"
+  },
+
+  "stats": {
+    "title": "Calories"
+  },
+  "post": {
+    "button": "Post",
+    "add": "Create Post",
+    "notpost": "No post yet",
+    "create": "Create a new post or wait for others to share their thoughts",
+    "title": "Social",
+    "search": "Search post"
+  },
+  "login1": {
+    "title": "Login",
+    "email": "Enter your email",
+    "password": "Enter your password",
+    "dont": "Don't have an account?",
+    "signup": "Signup"
+  },
+  "signup": {
+    "title": "Welcome to Bluvi Fitness",
+    "apple": "continue with Apple",
+    "instagram": "continue with Instagram",
+    "google": "continue with Google",
+    "or": "or",
+    "continue": "Continue with Email",
+    "already": "Already have an account?",
+    "login": "Login"
+  },
+  "forget": {
+    "title": "Forget Password?",
+    "text": "Don't worry! It occurs. Please enter the email address linked with your account.",
+    "email": "Email Address",
+    "button": "Send Code"
+  },
+  "account": {
+    "title": "Register your account",
+    "forget": "Forget password?",
+    "or": "or login with",
+    "already": "Already have an account?",
+    "login": "Login"
+  },
+  "mnkv": {
+    "continue": "Continue",
+    "hello": "Hello",
+    "text": "Let’s craft your AI-powered personalized meal plan and shopping list - it takes less than a minute to get started!"
+  },
+  "streak": {
+    "title": "Streak Days",
+    "current": "Current Streak",
+    "longest": "Longest Streak",
+    "achievements": "Streak Achievements"
+  },
+  "settings": {
+    "account": "Account",
+    "title": "Settings",
+    "notifications": "Notifications",
+    "closeFriends": "Close Friends",
+    "Privacy": "Privacy",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "logout": "Logout"
+  },
   "a": "login",
   "imageScan": {
     "cameraPermissionDenied": "Allow camera permission",
@@ -33,13 +145,7 @@
   },
   "question1": {
     "tanid": "Do you have any dietary restrictions we should know about?",
-    "suun": [
-      "Lactose Free",
-      "Sugar Free",
-      "Gluten free",
-      "Nut Free",
-      "None"
-    ],
+    "suun": ["Lactose Free", "Sugar Free", "Gluten free", "Nut Free", "None"],
     "daraah": "Continue"
   },
   "question2": {
@@ -57,12 +163,7 @@
   },
   "question3": {
     "ta": "Which meals do you usually have in a day?",
-    "ogloo": [
-      "Breakfast",
-      "Lunch",
-      "Dinner",
-      "Snacks"
-    ],
+    "ogloo": ["Breakfast", "Lunch", "Dinner", "Snacks"],
     "daraah": "Continue"
   },
   "question4": {
@@ -151,21 +252,13 @@
       "meals": {
         "title": "How many meals do you have per day?",
         "desc": "Your choice will affect your workout plan",
-        "choices": [
-          "4 meals or more",
-          "2-3 meals per day",
-          "1 meal per day"
-        ]
+        "choices": ["4 meals or more", "2-3 meals per day", "1 meal per day"]
       },
       "water": {
         "milliliter": "ml",
         "title": "How much water do you drink per day?",
         "desc": "Your choice will affect your workout plan",
-        "choices": [
-          "4 liters or more",
-          "2-3 liters per day",
-          "1 liter per day"
-        ]
+        "choices": ["4 liters or more", "2-3 liters per day", "1 liter per day"]
       },
       "work": {
         "title": "What is your current work schedule?",
@@ -278,9 +371,6 @@
     "timeline": "Timeline",
     "stats": "Stats",
     "duels": "Duels"
-  },
-  "settings": {
-    "title": "Settings"
   },
   "home": {
     "task": "Today's Tasks"

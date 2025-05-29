@@ -25,7 +25,7 @@ import {
   PlusCircle,
 } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";
-import ImagePickerModal from "@/components/ImagePickerModal";
+import ImagePickerModal from "@/components/ui/ImagePickerModal";
 import { useStatsStore } from "@/stores/statsStore";
 
 export default function ImageScan() {

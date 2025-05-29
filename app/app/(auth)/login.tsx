@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -6,6 +6,8 @@ import {
   View,
   TouchableOpacity,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
@@ -14,8 +16,10 @@ import { ThemeView } from "@/components";
 import { AuthContext } from "@/context/auth";
 import RegisterPromptModal from "@/components/ui/registerPrompt";
 import { EyeClosedIcon, EyeIcon } from "lucide-react-native";
+import { useTranslation } from "@/lib/language";
 
 const Login = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useAppTheme();
   const {
@@ -31,6 +35,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
+  const passwordRef = useRef<TextInput>(null);
 
   const logIn = () => {
     login(username, password);
@@ -80,7 +85,11 @@ const Login = () => {
       </View>
 
       {/* Main login content */}
-      <View className="flex-1 z-10 justify-center items-center pt-24 p-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
+        className="flex-1 z-10 justify-center items-center pt-24 p-6"
+      >
         <View className="w-full h-full">
           <View className="absolute bg-white dark:bg-black opacity-70 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
           <View className="flex-1 absolute bg-white dark:bg-gray-900 rounded-3xl inset-0 items-center justify-start pt-10 z-20">
@@ -89,23 +98,26 @@ const Login = () => {
               style={{ width: 100, height: 100 }}
             />
             <Text className="text-4xl tracking-wider text-center mb-6 font-semibold dark:text-gray-200 my-3">
-              Login
+              {t("login1.title")}
             </Text>
             <View className="w-5/6 mb-4">
               <View className="mb-4">
                 <TextInput
-                  placeholder="Enter your email"
+                  placeholder={t("login1.email")}
                   autoCapitalize="none"
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300"
                   onChangeText={setUsername}
                   style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
                 />
               </View>
 
               <View className="mb-2 relative border flex-row border-gray-300 rounded-full overflow-hidden">
                 <TextInput
-                  placeholder="Enter your password"
+                  placeholder={t("login1.password")}
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -113,6 +125,10 @@ const Login = () => {
                   onChangeText={setPassword}
                   style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  returnKeyType="done"
+                  submitBehavior="blurAndSubmit"
+                  ref={passwordRef}
+                  onSubmitEditing={logIn}
                 />
                 <Pressable
                   className="w-[50px] h-full absolute right-0 items-center justify-center"
@@ -138,7 +154,7 @@ const Login = () => {
                   onPress={() => router.push("/(auth)/ForgotPassword")}
                 >
                   <Text className="text-blue-700 text-sm dark:text-gray-200">
-                    Forgot Password?
+                    {t("account.forget")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -149,14 +165,14 @@ const Login = () => {
                   className="bg-black dark:bg-transparent dark:border-2 border-slate-500 rounded-full w-full py-4 items-center"
                 >
                   <Text className="text-white dark:text-slate-200 font-semibold text-lg">
-                    Нэвтрэх
+                    {t("account.login")}
                   </Text>
                 </TouchableOpacity>
               </View>
 
               <View className="flex-row justify-center w-full items-center gap-2">
                 <View className="bg-gray-300 h-[1px] flex-1" />
-                <Text className="text-gray-500 my-3">or login with</Text>
+                <Text className="text-gray-500 my-3">{t("account.or")}</Text>
                 <View className="bg-gray-300 h-[1px] flex-1" />
               </View>
 
@@ -190,21 +206,21 @@ const Login = () => {
 
             <View className="flex-row justify-center mt-8">
               <Text className="dark:text-gray-200">
-                Don&apos;t have an account?{" "}
+                {t("login1.dont")}{" "}
               </Text>
               <Text
                 className="text-blue-700 dark:text-gray-200 font-semibold dark:underline"
                 disabled={loading}
                 onPress={signUp}
               >
-                Sign up
+                {t("login1.signup")}
               </Text>
             </View>
           </View>
         </View>
 
         {loading && <ActivityIndicator size="large" className="mt-4" />}
-      </View>
+      </KeyboardAvoidingView>
     </ThemeView>
   );
 };
