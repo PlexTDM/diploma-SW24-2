@@ -46,6 +46,7 @@ type DataType = {
 };
 
 type User = {
+  _id: string;
   username: string;
   email: string;
   stats?: Record<string, any>;

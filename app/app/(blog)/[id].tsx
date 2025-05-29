@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { useBlogStore } from "@/stores/blogStore";
+import { useState, useEffect } from "react";
+import { Post, useBlogStore, Comment } from "@/stores/blogStore";
 import { formatDistanceToNow } from "date-fns";
 import {
   ArrowLeft,
@@ -26,14 +26,55 @@ import { ThemeText } from "@/components";
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
-  const { getPostById, currentUser, toggleLike, addComment, toggleBookmark } =
-    useBlogStore();
-  const post = getPostById(id as string);
+  const {
+    getPostById,
+    currentUser,
+    toggleLike,
+    addComment,
+    toggleBookmark,
+    getComments,
+  } = useBlogStore();
+  const [post, setPost] = useState<Post | null>(null);
+  const [isLiked, setIsLiked] = useState(false);
+  // user comment that is being typed
   const [comment, setComment] = useState("");
+  // comments of the post
+  const [comments, setComments] = useState<Comment[]>([]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  if (!post) {
+  useEffect(() => {
+    (async () => {
+      const fetchedPost = await getPostById(id as string);
+      setPost(fetchedPost as Post);
+    })();
+    (async () => {
+      const fetchedComments = await getComments(id as string);
+      setComments(fetchedComments as Comment[]);
+    })();
+  }, [id, getPostById, getComments]);
+
+  // im fetchin comments
+  useEffect(() => {
+    if (post) {
+      getComments(post._id);
+    }
+  }, [post, getComments]);
+
+  useEffect(() => {
+    if (post) {
+      setIsLiked(post.likes?.includes(currentUser?._id ?? ""));
+    }
+  }, [post, currentUser]);
+
+  useEffect(() => {
+    if (post) {
+      setIsBookmarked(post.isBookmarked ?? false);
+    }
+  }, [post]);
+
+  if (!post || !currentUser) {
     return (
       <View className="flex-1 justify-center items-center">
         <Text>Post not found</Text>
@@ -41,27 +82,26 @@ export default function PostDetailScreen() {
     );
   }
 
-  const isLiked = post.likes.includes(currentUser.id);
-  const isBookmarked = post.isBookmarked;
-
   const handleLike = () => {
-    toggleLike(post.id);
+    toggleLike(post._id);
+    setIsLiked(!isLiked);
   };
 
   const handleBookmark = () => {
-    toggleBookmark(post.id);
+    toggleBookmark(post._id);
+    setIsBookmarked(!isBookmarked);
   };
 
   const handleComment = () => {
     if (!comment.trim()) return;
 
-    addComment(post.id, comment);
+    addComment(post._id, comment);
     setComment("");
   };
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white p-6 dark:bg-gray-800"
+      className="flex-1 bg-white p-6 dark:bg-gray-900"
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       style={{ paddingTop: insets.top }}
@@ -80,15 +120,17 @@ export default function PostDetailScreen() {
 
       <ScrollView className="flex-1">
         <View className="p-4">
-          <View className="border border-gray-300 rounded-3xl p-7">
+          <View className="border border-gray-300 rounded-3xl p-7 bg-white dark:bg-gray-800">
             <View className="flex-row items-center mb-3">
               <Image
-                source={{ uri: post.author.avatar }}
+                source={{
+                  uri: post.author.image || "https://via.placeholder.com/40",
+                }}
                 className="w-10 h-10 rounded-full mr-3"
               />
               <View>
                 <Text className="font-bold text-neutral-800 dark:text-white">
-                  {post.author.name}
+                  {post.author.username}
                 </Text>
                 <Text className="text-neutral-500 text-xs">
                   {formatDistanceToNow(new Date(post.createdAt), {
@@ -105,9 +147,9 @@ export default function PostDetailScreen() {
               {post.content}
             </Text>
 
-            {post.imageUrl && (
+            {post.image && (
               <Image
-                source={{ uri: post.imageUrl }}
+                source={{ uri: post.image }}
                 className="w-full aspect-video rounded-lg mb-4"
                 resizeMode="cover"
               />
@@ -121,14 +163,14 @@ export default function PostDetailScreen() {
                   fill={isLiked ? "#FF7256" : "transparent"}
                 />
                 <Text className="ml-1 text-neutral-600">
-                  {post.likes.length}
+                  {post.likes?.length || 0}
                 </Text>
               </Pressable>
 
               <View className="flex-row items-center">
                 <MessageCircle size={20} color="#6B7280" />
                 <Text className="ml-1 text-neutral-600">
-                  {post.comments.length}
+                  {post.comments?.length || 0}
                 </Text>
               </View>
 
@@ -147,12 +189,12 @@ export default function PostDetailScreen() {
           </View>
 
           <Text className="font-bold text-neutral-800 mt-4 mb-2 dark:text-white">
-            Comments ({post.comments.length})
+            Comments ({post.comments?.length || 0})
           </Text>
 
-          {post.comments.map((comment) => (
+          {comments.map((comment) => (
             <Animated.View
-              key={comment.id}
+              key={comment._id}
               entering={FadeIn.duration(300)}
               exiting={FadeOut.duration(300)}
             >
@@ -164,7 +206,9 @@ export default function PostDetailScreen() {
 
       <View className="p-4 bottom-7 flex-row">
         <Image
-          source={{ uri: currentUser.avatar }}
+          source={{
+            uri: currentUser.image || "https://via.placeholder.com/32",
+          }}
           className="w-8 h-8 rounded-full mr-3"
         />
         <TextInput

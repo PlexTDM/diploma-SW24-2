@@ -23,7 +23,7 @@ const SignUp = () => {
       <Image
         source={require("@/assets/bluviSignup.png")}
         style={{ width: "55%", height: "25%" }}
-        cachePolicy={"memory-disk"}
+        cachePolicy={"memory"}
         contentFit={"contain"}
         focusable={false}
       />

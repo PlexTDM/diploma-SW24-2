@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -8,32 +8,81 @@ import {
   Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ImagePickerModal from "@/components/ui/ImagePickerModal";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { ThemeView } from "@/components";
+import { useAppTheme } from "@/lib/theme";
+import { useBlogStore } from "@/stores/blogStore";
 
 export default function Create() {
+  const { theme } = useAppTheme();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [imageVisible, setImageVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { addPost } = useBlogStore();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) return;
 
-    // Та энд өгөгдлөө хадгалах logic нэмж болно.
-    router.replace("/(tabs)/blogs");
+    const res = await addPost({
+      title,
+      content,
+      image: imageUrl,
+    });
+
+    if (res) {
+      router.replace("/(tabs)/blogs");
+    }
   };
 
   const isSubmitDisabled = !title.trim() || !content.trim();
 
+  const handleCameraPress = async () => {
+    setImageVisible(false);
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUrl(result.assets[0].uri);
+    }
+  };
+
+  const handleGalleryPress = async () => {
+    setImageVisible(false);
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUrl(result.assets[0].uri);
+    }
+  };
+
   return (
-    <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
+    <ThemeView style={{ paddingTop: insets.top }}>
       <View className="flex-row items-center justify-between p-4 border-b border-neutral-100">
         <Pressable onPress={() => router.back()}>
-          <Feather name="arrow-left" size={20} color="black" />
+          <Feather
+            name="arrow-left"
+            size={24}
+            color={theme === "dark" ? "#fff" : "#000"}
+          />
         </Pressable>
-        <Text className="text-lg font-bold text-neutral-800">Create Post</Text>
+        <Text className="text-lg font-bold text-neutral-800 dark:text-white">
+          Create Post
+        </Text>
         <Pressable
           className={`py-2 px-4 rounded-full ${
             isSubmitDisabled ? "bg-neutral-200" : "bg-primary-500"
@@ -43,7 +92,9 @@ export default function Create() {
         >
           <Text
             className={`${
-              isSubmitDisabled ? "text-neutral-500" : "text-black"
+              isSubmitDisabled
+                ? "text-neutral-500 dark:text-neutral-900"
+                : "text-black dark:text-white"
             } font-medium`}
           >
             Post
@@ -53,7 +104,7 @@ export default function Create() {
 
       <ScrollView className="flex-1 p-4">
         <TextInput
-          className="text-xl font-bold text-neutral-800 mb-4"
+          className="text-xl font-bold text-neutral-800 dark:text-slate-100 mb-4"
           placeholder="Title"
           placeholderTextColor="#9CA3AF"
           value={title}
@@ -63,7 +114,7 @@ export default function Create() {
         />
 
         <TextInput
-          className="text-base text-neutral-700 min-h-40"
+          className="text-base text-neutral-700 dark:text-slate-100 min-h-40"
           placeholder="What's on your mind?"
           placeholderTextColor="#9CA3AF"
           value={content}
@@ -76,7 +127,7 @@ export default function Create() {
           <View className="mt-4 rounded-lg overflow-hidden relative">
             <Image
               source={{ uri: imageUrl }}
-              className="w-full h-48 rounded-lg"
+              className="w-full aspect-video rounded-lg"
               resizeMode="cover"
             />
             <Pressable
@@ -90,19 +141,20 @@ export default function Create() {
           <Pressable
             className="mt-4 border-2 border-dashed border-neutral-300 rounded-lg p-6 items-center"
             onPress={() => {
-              setImageUrl(
-                "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-              );
+              setImageVisible(true);
             }}
           >
             <Feather name="plus" size={32} color="#9CA3AF" />
             <Text className="mt-2 text-neutral-500">Add an image</Text>
-            <Text className="text-xs text-neutral-400 mt-1">
-              (For this demo, we&apos;ll use a sample image)
-            </Text>
           </Pressable>
         )}
       </ScrollView>
-    </View>
+      <ImagePickerModal
+        visible={imageVisible}
+        onClose={() => setImageVisible(false)}
+        onCameraPress={handleCameraPress}
+        onGalleryPress={handleGalleryPress}
+      />
+    </ThemeView>
   );
 }

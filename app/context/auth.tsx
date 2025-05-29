@@ -524,7 +524,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const getDailyFood = async (): Promise<void> => {
     const cachedDailyFoods = await tokenCache?.getToken("dailyFoods");
     if (cachedDailyFoods) {
-      console.log("🍎 cached daily foods", cachedDailyFoods);
+      console.log("🍎 cached daily foods");
       const parsedCache = JSON.parse(cachedDailyFoods);
       const cacheDate = new Date(parsedCache.timestamp);
       const today = new Date();
@@ -613,7 +613,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         // Check if the cached data is from today
         if (cacheDate.toDateString() === today.toDateString()) {
           setWorkouts(parsedCache.data);
-          console.log("🍎 workouts from cache", parsedCache.data);
+          console.log("🍎 workouts from cache");
           return;
         }
       }
@@ -711,6 +711,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       getDailyFood();
       getWorkouts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   useEffect(() => {

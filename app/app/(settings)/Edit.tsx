@@ -12,7 +12,7 @@ import { useAppTheme } from "@/lib/theme";
 import { Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
 import * as ImagePicker from "expo-image-picker";
-import ImagePickerModal from "@/components/ImagePickerModal";
+import ImagePickerModal from "@/components/ui/ImagePickerModal";
 import { Camera } from "expo-camera";
 
 export default function Edit() {
@@ -76,7 +76,7 @@ export default function Edit() {
       mediaTypes: "images",
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.8,
     });
 
     if (!result.canceled) {
@@ -90,7 +90,7 @@ export default function Edit() {
       mediaTypes: "images",
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.8,
     });
 
     if (!result.canceled) {
