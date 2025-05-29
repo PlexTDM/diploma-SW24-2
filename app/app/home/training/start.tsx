@@ -1,15 +1,12 @@
 import React from "react";
-import { View } from "react-native";
-import { Text } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ThemeView, ThemeText } from "@/components";
 import { Image } from "expo-image";
-import { StyleSheet } from "react-native";
 import { languages, useLanguage } from "@/lib/language";
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { Pressable } from "react-native";
 
-export default function start() {
+export default function Start() {
   const { language } = useLanguage();
   const router = useRouter();
   return (
@@ -39,7 +36,7 @@ export default function start() {
             className="rounded-xl"
             contentStyle={{ paddingVertical: 12, backgroundColor: "white" }}
           >
-            <Text className="text-black font-bold">I'll Do it Later</Text>
+            <Text className="text-black font-bold">I&apos;ll Do it Later</Text>
           </Button>
         </Pressable>
       </View>

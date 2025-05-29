@@ -23,7 +23,7 @@ export default function Language() {
       <View className="items-center gap-10">
         <Image
           source={require("@/assets/mascot/BluviSmile.png")}
-          style={{ width: 200, height: 200 }} // ✅ Тохиромжтой хэмжээгээр
+          style={{ width: 200, height: 200 }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}
           focusable={false}
