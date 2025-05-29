@@ -1,5 +1,5 @@
 import { ThemeText, ThemeView } from "@/components";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { Image } from "expo-image";
@@ -13,7 +13,7 @@ export default function LoginOrRegister() {
   const { theme } = useAppTheme();
   const { setField } = useRegisterStore();
   const navigation = useNavigation();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const handleRegister = () => {
     router.push("/(auth)/register");
   };
@@ -59,7 +59,7 @@ export default function LoginOrRegister() {
       </View>
       <View>
         <ThemeText className="text-3xl mb-[40%] text-center ">
-          {languages[language].mascot.desc}
+          {t("mascot.desc")}
         </ThemeText>
       </View>
       <View className="w-3/4 mx-auto flex flex-row items-center justify-center gap-4">
@@ -70,7 +70,7 @@ export default function LoginOrRegister() {
           underlayColor={"#DDDDDD"}
         >
           <Text className="text-lg text-black font-semibold text-center">
-            {languages[language].login.button1}
+            {t("login.button1")}
           </Text>
         </TouchableHighlight>
         <TouchableHighlight
@@ -80,7 +80,7 @@ export default function LoginOrRegister() {
           underlayColor={"#DDDDDD"}
         >
           <Text className="text-lg text-black font-semibold text-center">
-            {languages[language].login.button2}
+            {t("login.button2")}
           </Text>
         </TouchableHighlight>
       </View>

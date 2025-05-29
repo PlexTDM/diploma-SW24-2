@@ -2,7 +2,6 @@ import { useEffect, useState, memo, use } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
-import { Message } from "@/types";
 
 const TYPING_SPEED_MS = 1;
 

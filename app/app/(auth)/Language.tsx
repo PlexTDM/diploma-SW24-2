@@ -1,36 +1,40 @@
 import { useRouter } from "expo-router";
-import { useAppTheme } from "@/lib/theme";
-import { View, TouchableHighlight } from "react-native";
+import { View, TouchableHighlight, Text } from "react-native";
 import React, { useState } from "react";
-import { ThemeText, ThemeView } from "@/components";
-import { languages, useLanguage } from "@/lib/language";
+import { ThemeText } from "@/components";
+import { useTranslation, setLanguage as setI18nLanguage } from "@/lib/language";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Image } from "expo-image";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Language() {
   const router = useRouter();
-  const { theme } = useAppTheme();
-  const { language, setLanguage } = useLanguage();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(language);
+  const [value, setValue] = useState(i18n.language);
   const [items, setItems] = useState([
     { label: "English", value: "en" },
     { label: "Монгол", value: "mn" },
   ]);
 
+  const handleLanguageChange = (newLang: "en" | "mn") => {
+    setI18nLanguage(newLang);
+    setValue(newLang);
+  };
+
   return (
-    <ThemeView className="flex-1 items-center px-4 gap-10 pt-12">
+    <SafeAreaView className="dark:bg-gray-900 bg-white flex-1 items-center px-4 gap-10 justify-between py-8">
       <View className="items-center gap-10">
         <Image
           source={require("@/assets/mascot/BluviSmile.png")}
-          style={{ width: 200, height: 200 }} // ✅ Тохиромжтой хэмжээгээр
+          style={{ width: 200, height: 200 }}
           cachePolicy={"memory-disk"}
           contentFit={"contain"}
           focusable={false}
         />
 
         <ThemeText className="text-xl text-center">
-          {languages[language].language.asuult}
+          {t("language.asuult")}
         </ThemeText>
 
         <View className="w-[80%]">
@@ -40,9 +44,8 @@ export default function Language() {
             items={items}
             setOpen={setOpen}
             setValue={(callback) => {
-              const selectedValue = callback(value);
-              setValue(selectedValue);
-              setLanguage(selectedValue);
+              const selectedValue = callback(value as "en" | "mn");
+              handleLanguageChange(selectedValue as "en" | "mn");
             }}
             setItems={setItems}
             placeholder="Please select your language"
@@ -54,15 +57,15 @@ export default function Language() {
           onPress={() => {
             router.push("/(auth)/welcome");
           }}
-          className="bg-blue1/70 border-2 border-blue1 dark:bg-white rounded-full px-10 py-2 items-center"
+          className="bg-blue1/70 border-2 border-blue1 rounded-full px-10 py-2 items-center"
           activeOpacity={0.9}
           underlayColor={"#DDDDDD"}
         >
-          <ThemeText className="text-lg text-black font-semibold text-center">
-            {languages[language].a}
-          </ThemeText>
+          <Text className="text-lg text-black dark:text-white capitalize w-full font-semibold text-center">
+            {t("a")}
+          </Text>
         </TouchableHighlight>
       </View>
-    </ThemeView>
+    </SafeAreaView>
   );
 }

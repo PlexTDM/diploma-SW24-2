@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -6,21 +6,24 @@ import {
   useColorScheme,
   Pressable,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import moment, { Moment } from "moment";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-import { ThemeView, ThemeText } from "@/components";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import {
   ArrowRight,
-  BarChart,
   ChevronRight,
-  Dumbbell,
-  DumbbellIcon,
-  Flag,
+  // Dumbbell,
+  // DumbbellIcon,
+  // Flag,
 } from "lucide-react-native";
 import { Image } from "expo-image";
+import { AuthContext } from "@/context/auth";
+import WorkoutListItem from "@/components/WorkoutListItem";
+import WorkoutDetailModal from "@/components/WorkoutModal";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Training() {
   const [dates, setDates] = useState<Moment[]>([]);
@@ -28,9 +31,14 @@ export default function Training() {
     moment().format("YYYY-MM-DD")
   );
   const router = useRouter();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+
+  const { user, workouts } = useContext(AuthContext);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<any | null>(null);
 
   useEffect(() => {
     const today = moment();
@@ -53,18 +61,27 @@ export default function Training() {
     router.push("/home/training/screen2");
   };
 
-  const handleCustomWorkout = () => {
-    router.push("/home/training/screen3");
+  // const handleCustomWorkout = () => {
+  //   router.push("/home/training/screen3");
+  // };
+
+  const handleWorkoutPress = (workout: any) => {
+    setSelectedWorkout(workout);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedWorkout(null);
   };
 
   return (
-    <ThemeView className="flex-1 relative">
-      <View className="h-[65%] p-6">
+    <ScrollView className="flex-1 relative bg-white dark:bg-black">
+      <View className="p-6 flex-1">
         <Image
           source={require("@/assets/img/lightEffect.jpg")}
           style={[StyleSheet.absoluteFillObject, { zIndex: 0 }]}
           contentFit="fill"
-
         />
         <View
           style={[
@@ -85,8 +102,9 @@ export default function Training() {
                     key={date.format("YYYY-MM-DD")}
                     onPress={() => handleSelectDate(date)}
                     activeOpacity={0.7}
-                    className={`items-center px-3 py-2 rounded-2xl ${isSelected ? " bg-gray-200/40" : "bg-none"
-                      }`}
+                    className={`items-center px-3 py-2 rounded-2xl ${
+                      isSelected ? " bg-gray-200/40" : "bg-none"
+                    }`}
                   >
                     <Text className="text-xs text-slate-300">
                       {date.format("dd").charAt(0)}
@@ -105,12 +123,11 @@ export default function Training() {
               })}
             </View>
 
-
             <Text className="text-3xl text-start font-semibold mt-4 text-white">
-              {languages[language].training.hi}, Galbadrakh!
+              {t("training.hi")}, {user?.username || "Galbadrakh"}!
             </Text>
             <Text className="text-lg text-start mt-2 text-gray-200 ">
-              {languages[language].training.hello}
+              {t("training.hello")}
             </Text>
 
             {/* Highlight Workout Block */}
@@ -118,19 +135,19 @@ export default function Training() {
               <View className="flex-row items-start gap-4">
                 <View className="p-2 bg-blue-700 rounded-full items-center">
                   <Text className="text-white text-[11px] font-semibold p-1">
-                    {languages[language].training.special}
+                    {t("training.special")}
                   </Text>
                 </View>
                 <View className="p-2 px-4 bg-gray-300/40 rounded-full items-center">
-                  <Text className="text-white p-1 text-[11px] font-semibold">Gym</Text>
+                  <Text className="text-white p-1 text-[11px] font-semibold">
+                    Gym
+                  </Text>
                 </View>
               </View>
 
-              <Text className="text-black font-bold text-4xl mt-8">
-                75 min
-              </Text>
+              <Text className="text-black font-bold text-4xl mt-8">75 min</Text>
               <Text className=" text-base text-black">
-                 {languages[language].training.nerrr}
+                {t("training.nerrr")}
               </Text>
 
               <View className="flex-row mt-6 gap-2">
@@ -147,7 +164,6 @@ export default function Training() {
               </View>
             </View>
 
-
             {/* Custom Workouts Block */}
             <Pressable
               className="flex-row border rounded-3xl border-gray-400 w-full mt-10 p-4 items-center justify-between gap-4"
@@ -158,77 +174,42 @@ export default function Training() {
                   <Feather name="sliders" size={20} color="black" />
                 </View>
                 <Text className="font-semibold text-lg text-white">
-                  {languages[language].training.custom}
+                  {t("training.custom")}
                 </Text>
               </View>
               <ChevronRight size={20} color="white" />
             </Pressable>
           </View>
           {/* Gym Challenge */}
-          <Pressable
-            className="w-full bg-gray-200 rounded-3xl mt-16 p-8"
-            onPress={handleCustomWorkout}
-          >
-            <View className="flex-row justify-between items-center">
-              <View className="flex-row gap-2">
-                <Dumbbell size={30} color="black" />
-                <View>
-                  <ThemeText className="text-sm font-bold">
-                    {languages[language].training.get}
-                  </ThemeText>
-                  <ThemeText className="text-sm">
-                    {languages[language].training.comp}
-                  </ThemeText>
-                </View>
-              </View>
-              <ChevronRight size={20} color="black" />
+
+          {workouts && workouts.length > 0 && (
+            <View className="mt-6 mb-6">
+              <Text className="text-2xl text-white dark:text-black font-bold text-black dark:text-white mb-4">
+                Your Daily Workouts
+              </Text>
+              <FlatList
+                data={workouts as any[]}
+                renderItem={({ item }) => (
+                  <WorkoutListItem
+                    item={item}
+                    onPress={() => handleWorkoutPress(item)}
+                  />
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
             </View>
-            <View className="mt-6 flex-row items-center justify-between">
-              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-                <DumbbellIcon size={15} color="black" />
-              </View>
-              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-                <DumbbellIcon size={15} color="black" />
-              </View>
-              <View className="w-10 h-10 rounded-full bg-gray-300 justify-center items-center">
-                <Flag size={15} color="black" />
-              </View>
-            </View>
-            <ThemeText className="mt-3">
-              {languages[language].training.urid}
-            </ThemeText>
-          </Pressable>
+          )}
         </View>
       </View>
-    </ThemeView>
+
+      {/* Modal for Workout Details */}
+      {selectedWorkout && (
+        <WorkoutDetailModal
+          isVisible={modalVisible}
+          onClose={handleCloseModal}
+          workout={selectedWorkout}
+        />
+      )}
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginTop: 20,
-  },
-  dayContainer: {
-    alignItems: "center",
-  },
-  dayText: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 4,
-  },
-  dateText: {
-    fontSize: 14,
-    color: "#000",
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  selectedDate: {
-    backgroundColor: "#3b82f6",
-    color: "#fff",
-    fontWeight: "bold",
-  },
-});

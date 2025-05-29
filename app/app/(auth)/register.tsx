@@ -1,7 +1,7 @@
 import { useRegisterStore } from "@/stores/register";
 import { View, Platform, Pressable, Text } from "react-native";
 import { useMemo, useRef, useState } from "react";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import * as RegisterComponents from "@/components/register";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,7 +11,7 @@ import PagerView from "react-native-pager-view";
 export default function Register() {
   const store = useRegisterStore();
   const { setField } = store;
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [tab, setTab] = useState(0);
   const router = useRouter();
 
@@ -131,7 +131,7 @@ export default function Register() {
               <Text
                 className={`text-center text-xl border border-gray-400 rounded-3xl px-5 py-2 text-black`}
               >
-                {languages[language].back}
+                {t("back")}
               </Text>
             </Pressable>
           </View>
@@ -152,7 +152,7 @@ export default function Register() {
                   nextDisabeled() ? "text-gray-400" : "text-white"
                 }`}
               >
-                {languages[language].next}
+                {t("next")}
               </Text>
             </Pressable>
           </View>

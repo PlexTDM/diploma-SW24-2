@@ -30,7 +30,7 @@
 
 // export default SleepModal
 import { View, Text, Modal, ScrollView } from "react-native";
-import { ThemeText, ThemeView } from "@/components";
+import { ThemeView } from "@/components";
 
 function SleepModal({
   visible,

@@ -24,7 +24,7 @@ import {
   Hash,
   PlusCircle,
 } from "lucide-react-native";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import ImagePickerModal from "@/components/ImagePickerModal";
 import { useStatsStore } from "@/stores/statsStore";
 
@@ -32,7 +32,7 @@ export default function ImageScan() {
   const router = useRouter();
   const { getFoodImage } = useContext(AuthContext);
   const { addScannedFood } = useStatsStore();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function ImageScan() {
   const requestGalleryPermissions = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      alert(languages[language].imageScan.galleryPermissionDenied);
+      alert(t("imageScan.galleryPermissionDenied"));
       return false;
     }
     return true;
@@ -55,7 +55,7 @@ export default function ImageScan() {
   const requestCameraPermissions = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert(languages[language].imageScan.cameraPermissionDenied);
+      alert(t("imageScan.cameraPermissionDenied"));
       return false;
     }
     return true;
@@ -98,7 +98,7 @@ export default function ImageScan() {
 
   const handleScanImage = async () => {
     if (!imageUri) {
-      alert(languages[language].imageScan.noImageSelected);
+      alert(t("imageScan.noImageSelected"));
       return;
     }
     setIsLoading(true);
@@ -108,11 +108,11 @@ export default function ImageScan() {
       if (scannedData) {
         setFoodData(scannedData as FoodImage);
       } else {
-        alert(languages[language].imageScan.noFoodDetected);
+        alert(t("imageScan.noFoodDetected"));
       }
     } catch (error) {
       console.error("Error scanning image:", error);
-      alert(languages[language].imageScan.scanError);
+      alert(t("imageScan.scanError"));
     } finally {
       setIsLoading(false);
     }
@@ -128,10 +128,10 @@ export default function ImageScan() {
         carbs: foodData.carbs,
         fat: foodData.fat,
       });
-      alert(languages[language].imageScan.addedToStatsSuccess);
+      alert(t("imageScan.addedToStatsSuccess"));
     } catch (error) {
       console.error("Error adding food to stats:", error);
-      alert(languages[language].imageScan.addedToStatsError);
+      alert(t("imageScan.addedToStatsError"));
     } finally {
       setIsAddingFood(false);
     }
@@ -153,7 +153,7 @@ export default function ImageScan() {
       <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 24 }}>
         <View className="flex-row justify-between items-center mb-8">
           <ThemeText className="text-3xl font-bold">
-            {languages[language].imageScan.title}
+            {t("imageScan.title")}
           </ThemeText>
           <Pressable onPress={() => router.back()} className="p-2">
             <X size={28} color={isDark ? "white" : "black"} />
@@ -173,7 +173,7 @@ export default function ImageScan() {
                 color={isDark ? "rgb(107, 114, 128)" : "rgb(156, 163, 175)"}
               />
               <ThemeText className="mt-4 text-lg text-gray-500 dark:text-gray-400">
-                {languages[language].imageScan.tapToUpload}
+                {t("imageScan.tapToUpload")}
               </ThemeText>
             </Pressable>
           )}
@@ -201,7 +201,7 @@ export default function ImageScan() {
                 color={isDark ? "white" : "black"}
               />
               <ThemeText className={`ml-4 text-lg ${textColorPrimary}`}>
-                {languages[language].imageScan.loadingText}
+                {t("imageScan.loadingText")}
               </ThemeText>
             </View>
           )}
@@ -224,7 +224,7 @@ export default function ImageScan() {
                       className="mr-2"
                     />
                     <Text className={`text-base ${textColorSecondary}`}>
-                      {languages[language].meal.calories}:
+                      {t("meal.calories")}:
                     </Text>
                   </View>
                   <Text
@@ -241,7 +241,7 @@ export default function ImageScan() {
                       className="mr-2"
                     />
                     <Text className={`text-base ${textColorSecondary}`}>
-                      {languages[language].meal.protein}:
+                      {t("meal.protein")}:
                     </Text>
                   </View>
                   <Text
@@ -258,7 +258,7 @@ export default function ImageScan() {
                       className="mr-2"
                     />
                     <Text className={`text-base ${textColorSecondary}`}>
-                      {languages[language].meal.carbs}:
+                      {t("meal.carbs")}:
                     </Text>
                   </View>
                   <Text
@@ -275,7 +275,7 @@ export default function ImageScan() {
                       className="mr-2"
                     />
                     <Text className={`text-base ${textColorSecondary}`}>
-                      {languages[language].meal.fat}:
+                      {t("meal.fat")}:
                     </Text>
                   </View>
                   <Text
@@ -307,8 +307,8 @@ export default function ImageScan() {
                 )}
                 <Text className="text-white text-center text-base font-semibold">
                   {isAddingFood
-                    ? languages[language].imageScan.addingToStats
-                    : languages[language].imageScan.addToStatsButton}
+                    ? t("imageScan.addingToStats")
+                    : t("imageScan.addToStatsButton")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -324,7 +324,7 @@ export default function ImageScan() {
                   }`}
                 >
                   <Text className="text-white text-center text-lg font-semibold">
-                    {languages[language].imageScan.scanButton}
+                    {t("imageScan.scanButton")}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -336,8 +336,8 @@ export default function ImageScan() {
               >
                 <Text className="text-white text-center text-lg font-semibold">
                   {foodData || imageUri
-                    ? languages[language].imageScan.changeImageButton
-                    : languages[language].imageScan.selectImageButton}
+                    ? t("imageScan.changeImageButton")
+                    : t("imageScan.selectImageButton")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -348,8 +348,8 @@ export default function ImageScan() {
       <ImagePickerModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onCameraPress={takePhotoWithCamera}
         onGalleryPress={pickImageFromGallery}
+        onCameraPress={takePhotoWithCamera}
       />
     </SafeAreaView>
   );

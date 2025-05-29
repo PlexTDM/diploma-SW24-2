@@ -1,7 +1,7 @@
 import { ThemeText, ThemeView } from "@/components";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { useState } from "react";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { ChevronRight } from "lucide-react-native";
 import { Button } from "react-native-paper";
 
@@ -47,7 +47,7 @@ const muscleMap: Record<MuscleGroup, string[]> = {
 const intensityOptions = ["Basic", "Moderate", "High"];
 
 export default function Screen1() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<Option>("Gym");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [selectedWType, setSelectedWType] = useState<string>("");
@@ -61,15 +61,13 @@ export default function Screen1() {
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
         <ThemeView className="p-8">
           <ThemeText className="text-4xl font-bold">
-            {languages[language].training.custom}
+            {t("training.custom")}
           </ThemeText>
 
-          <ThemeText className="mt-3">
-            {languages[language].training.custom1}
-          </ThemeText>
+          <ThemeText className="mt-3">{t("training.custom1")}</ThemeText>
 
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.location}
+            {t("training.location")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2">
             {options.map((option, index) => {
@@ -95,7 +93,7 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.wtype}
+            {t("training.wtype")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {wtypeOptions.map((option, index) => {
@@ -125,7 +123,7 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.time}
+            {t("training.time")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {timeOptions[selectedOption].map((option, index) => {
@@ -151,10 +149,10 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.muscle}
+            {t("training.muscle")}
           </ThemeText>
           <ThemeText className="mt-3 text-gray-600">
-            {languages[language].training.muscle1}
+            {t("training.muscle1")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {muscleOptions.map((option, index) => {
@@ -212,7 +210,7 @@ export default function Screen1() {
             </View>
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.inten}
+            {t("training.inten")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {intensityOptions.map((option, index) => {

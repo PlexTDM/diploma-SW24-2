@@ -1,4 +1,4 @@
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { Pressable, View } from "react-native";
 import { ThemeText } from "@/components";
 import Animated, {
@@ -18,7 +18,7 @@ import WaterAnimation from "./WaterAnimation";
 export default function Water() {
   const { theme } = useAppTheme();
   const [componentHeight, setComponentHeight] = useState<number>(0);
-  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const { waterGoal } = useStatsStore();
   const [modalVisible, setModalVisible] = useState(false);
@@ -71,7 +71,7 @@ export default function Water() {
       >
         <View className="flex-row items-center justify-between  ">
           <ThemeText className="flex-1 font-bold text-lg dark:text-black px-1 ">
-            {languages[language].water.word}
+            {t("water.word")}
           </ThemeText>
           <View className="w-[20px] h-[25px] ">
             <Droplets size={25} color={theme === "dark" ? "#fff" : "#000"} />

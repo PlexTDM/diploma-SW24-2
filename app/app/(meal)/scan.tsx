@@ -76,7 +76,7 @@ export default function App() {
     }
     if (type === "sugars") {
       if (value < 5) return "бага";
-      if (value < 22.5) return "дунд";  
+      if (value < 22.5) return "дунд";
       return "өндөр";
     }
     if (type === "salt") {
@@ -123,26 +123,37 @@ export default function App() {
           <View style={styles.card}>
             <Text style={styles.label}>📊Шим тэжээлийн мэдээлэл:</Text>
             <Text style={styles.value}>
-              Илчлэг: {foodInfo.nutriments?.["energy-kcal"] || "?"} kcal
+              Илчлэг:{" "}
+              {Math.round(foodInfo.nutriments?.["energy-kcal"] * 100) / 100 ||
+                "?"}{" "}
+              kcal
             </Text>
             <Text style={styles.value}>
-              Нүүрс ус: {foodInfo.nutriments?.carbohydrates || "?"} г
+              Нүүрс ус:{" "}
+              {Math.round(foodInfo.nutriments?.carbohydrates * 100) / 100 ||
+                "?"}{" "}
+              г
             </Text>
             <Text style={styles.value}>
-              Өөх тос: {foodInfo.nutriments?.fat || "?"} г
+              Өөх тос: {Math.round(foodInfo.nutriments?.fat * 100) / 100 || "?"}{" "}
+              г
             </Text>
             <Text style={styles.value}>
               ‣ Ханасан тос:{" "}
-              {foodInfo.nutriments?.["saturated-fat"] || "?"} г
+              {Math.round(foodInfo.nutriments?.["saturated-fat"] * 100) / 100 ||
+                "?"}{" "}
+              г
             </Text>
             <Text style={styles.value}>
-              Уураг: {foodInfo.nutriments?.proteins || "?"} г
+              Уураг:{" "}
+              {Math.round(foodInfo.nutriments?.proteins * 100) / 100 || "?"} г
             </Text>
             <Text style={styles.value}>
-              Давс: {foodInfo.nutriments?.salt || "?"} г
+              Давс: {Math.round(foodInfo.nutriments?.salt * 100) / 100 || "?"} г
             </Text>
             <Text style={styles.value}>
-              Сахар: {foodInfo.nutriments?.sugars || "?"} г
+              Сахар:{" "}
+              {Math.round(foodInfo.nutriments?.sugars * 100) / 100 || "?"} г
             </Text>
           </View>
 
@@ -156,20 +167,20 @@ export default function App() {
           <View style={styles.card}>
             <Text style={styles.label}>🧂 Тэжээлийн түвшин:</Text>
             <Text style={styles.value}>
-              Өөх тос:{" "}
-              {getLevel(foodInfo.nutriments?.fat_100g || 0, "fat")}
+              Өөх тос: {getLevel(foodInfo.nutriments?.fat_100g || 0, "fat")}
             </Text>
             <Text style={styles.value}>
               Ханасан тос:{" "}
-              {getLevel(foodInfo.nutriments?.["saturated-fat_100g"] || 0, "saturated-fat")}
+              {getLevel(
+                foodInfo.nutriments?.["saturated-fat_100g"] || 0,
+                "saturated-fat"
+              )}
             </Text>
             <Text style={styles.value}>
-              Сахар:{" "}
-              {getLevel(foodInfo.nutriments?.sugars_100g || 0, "sugars")}
+              Сахар: {getLevel(foodInfo.nutriments?.sugars_100g || 0, "sugars")}
             </Text>
             <Text style={styles.value}>
-              Давс:{" "}
-              {getLevel(foodInfo.nutriments?.salt_100g || 0, "salt")}
+              Давс: {getLevel(foodInfo.nutriments?.salt_100g || 0, "salt")}
             </Text>
           </View>
 

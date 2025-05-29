@@ -10,13 +10,13 @@ import {
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { ThemeView, BlurEllipse } from "@/components";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { AuthContext } from "@/context/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [passwordHidden, setPasswordHidden] = useState<boolean>(true);
   const { loading, register, user } = use(AuthContext);
   const store = useRegisterStore();
@@ -69,7 +69,7 @@ const RegisterForm = () => {
             <View className="w-5/6 mb-4">
               <View className="mb-4">
                 <TextInput
-                  placeholder={languages[language].register.username}
+                  placeholder={t("register.username")}
                   autoCapitalize="none"
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleUsername}
@@ -82,7 +82,7 @@ const RegisterForm = () => {
 
               <View className="mb-4">
                 <TextInput
-                  placeholder={languages[language].register.email}
+                  placeholder={t("register.email")}
                   autoCapitalize="none"
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleEmail}
@@ -95,7 +95,7 @@ const RegisterForm = () => {
 
               <View className="mb-2 relative border flex-row border-gray-300 dark:border-gray-600 dark:bg-gray-800 rounded-full overflow-hidden">
                 <TextInput
-                  placeholder={languages[language].register.password}
+                  placeholder={t("register.password")}
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -148,7 +148,7 @@ const RegisterForm = () => {
                     <ActivityIndicator />
                   ) : (
                     <Text className="text-white dark:text-slate-200 font-semibold text-lg">
-                      {languages[language].register.register}
+                      {t("register.register")}
                     </Text>
                   )}
                 </TouchableOpacity>

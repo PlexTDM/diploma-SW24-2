@@ -75,7 +75,7 @@ const initialPosts: Post[] = [
     content:
       "React Native has transformed the way we build mobile applications. With a single codebase, developers can create apps for both iOS and Android platforms. This cross-platform approach not only saves time but also ensures consistency across different devices.",
     imageUrl:
-      "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "https://1upnutrition.com/cdn/shop/articles/Healthy_Habits_For_Life_9_Tips_For_Better_Fitness_600x400_crop_center.progressive.jpg?v=1633117323",
     author: users[1],
     createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
     likes: ["user1", "user3"],
@@ -97,7 +97,7 @@ const initialPosts: Post[] = [
     content:
       "Tailwind CSS has revolutionized the way developers style their applications. Its utility-first approach allows for rapid UI development without leaving your HTML (or JSX). By leveraging Tailwind, you can build custom designs without writing custom CSS.",
     imageUrl:
-      "https://images.pexels.com/photos/11035471/pexels-photo-11035471.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTax13nW-yND7tJb8SuGUoCe_Jt7Uv2U9LkQw&s",
     author: users[2],
     createdAt: new Date(Date.now() - 3600000 * 10).toISOString(),
     likes: ["user2"],
@@ -109,7 +109,7 @@ const initialPosts: Post[] = [
     title: "The Future of Mobile Development",
     content:
       "The mobile development landscape is continuously evolving. From cross-platform frameworks to native technologies, developers have a wide range of options to choose from. Understanding the strengths and weaknesses of each approach is crucial for making informed decisions.",
-    imageUrl: null,
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1LN2U7xDDhMAKA6dhlK4FQ2oK863KbwlfTQ&s",
     author: users[0],
     createdAt: new Date(Date.now() - 86400000).toISOString(),
     likes: [],

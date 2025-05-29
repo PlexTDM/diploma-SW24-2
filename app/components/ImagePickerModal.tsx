@@ -3,6 +3,7 @@ import { View, Modal, Pressable } from "react-native";
 import { Icon } from "react-native-paper";
 import { ThemeText } from "@/components";
 import { useAppTheme } from "@/lib/theme";
+import { useTranslation } from "@/lib/language";
 
 interface ImagePickerModalProps {
   visible: boolean;
@@ -18,6 +19,7 @@ const ImagePickerModal = ({
   onGalleryPress,
 }: ImagePickerModalProps) => {
   const { theme } = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal
@@ -42,7 +44,9 @@ const ImagePickerModal = ({
                   color={theme === "dark" ? "#fff" : "#000"}
                 />
               </View>
-              <ThemeText className="text-lg">Take Photo</ThemeText>
+              <ThemeText className="text-lg">
+                {t("imagePickerModal.takePhoto")}
+              </ThemeText>
             </Pressable>
 
             <Pressable
@@ -56,7 +60,9 @@ const ImagePickerModal = ({
                   color={theme === "dark" ? "#fff" : "#000"}
                 />
               </View>
-              <ThemeText className="text-lg">Choose from Gallery</ThemeText>
+              <ThemeText className="text-lg">
+                {t("imagePickerModal.chooseFromGallery")}
+              </ThemeText>
             </Pressable>
           </View>
         </View>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable } from "react-native";
 import { CheckCircle2, Circle } from "lucide-react-native";
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { ThemeText } from "@/components";
 import {
   configureReanimatedLogger,
@@ -24,84 +24,87 @@ type Task = {
   unit: string;
 };
 
-const initialTasks: Task[] = [
-  {
-    id: 1,
-    title: "Drink water",
-    target: "3 glasses",
-    current: 2,
-    max: 3,
-    completed: false,
-    icon: "💧",
-    unit: "glasses",
-  },
-  {
-    id: 2,
-    title: "Walk",
-    target: "1000 steps",
-    current: 750,
-    max: 1000,
-    completed: false,
-    icon: "👣",
-    unit: "steps",
-  },
-  {
-    id: 3,
-    title: "Log meal",
-    target: "3 meals",
-    current: 1,
-    max: 3,
-    completed: false,
-    icon: "🍽️",
-    unit: "meals",
-  },
-  {
-    id: 4,
-    title: "Workout",
-    target: "20 minutes",
-    current: 20,
-    max: 20,
-    completed: true,
-    icon: "💪",
-    unit: "min",
-  },
-  {
-    id: 5,
-    title: "Sleep",
-    target: "7 hours",
-    current: 6,
-    max: 7,
-    completed: false,
-    icon: "😴",
-    unit: "hrs",
-  },
-  {
-    id: 6,
-    title: "Stretch",
-    target: "5 minutes",
-    current: 0,
-    max: 5,
-    completed: false,
-    icon: "🧘",
-    unit: "min",
-  },
-  {
-    id: 7,
-    title: "Meditate",
-    target: "5 minutes",
-    current: 3,
-    max: 5,
-    completed: false,
-    icon: "🧠",
-    unit: "min",
-  },
-];
-
 export default function DailyTasks() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const { t, i18n } = useTranslation();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const { theme } = useAppTheme();
 
-  const { language } = useLanguage();
+  useEffect(() => {
+    const getInitialTasks = (): Task[] => [
+      {
+        id: 1,
+        title: t("dailyTasks.water.title"),
+        target: t("dailyTasks.water.target", { count: 3 }),
+        current: 2,
+        max: 3,
+        completed: false,
+        icon: "💧",
+        unit: t("dailyTasks.water.unit", { count: 3 }),
+      },
+      {
+        id: 2,
+        title: t("dailyTasks.walk.title"),
+        target: t("dailyTasks.walk.target", { count: 1000 }),
+        current: 750,
+        max: 1000,
+        completed: false,
+        icon: "👣",
+        unit: t("dailyTasks.walk.unit", { count: 1000 }),
+      },
+      {
+        id: 3,
+        title: t("dailyTasks.logMeal.title"),
+        target: t("dailyTasks.logMeal.target", { count: 3 }),
+        current: 1,
+        max: 3,
+        completed: false,
+        icon: "🍽️",
+        unit: t("dailyTasks.logMeal.unit", { count: 3 }),
+      },
+      {
+        id: 4,
+        title: t("dailyTasks.workout.title"),
+        target: t("dailyTasks.workout.target", { count: 20 }),
+        current: 20,
+        max: 20,
+        completed: true,
+        icon: "💪",
+        unit: t("dailyTasks.workout.unit", { count: 20 }),
+      },
+      {
+        id: 5,
+        title: t("dailyTasks.sleep.title"),
+        target: t("dailyTasks.sleep.target", { count: 7 }),
+        current: 6,
+        max: 7,
+        completed: false,
+        icon: "😴",
+        unit: t("dailyTasks.sleep.unit", { count: 7 }),
+      },
+      {
+        id: 6,
+        title: t("dailyTasks.stretch.title"),
+        target: t("dailyTasks.stretch.target", { count: 5 }),
+        current: 0,
+        max: 5,
+        completed: false,
+        icon: "🧘",
+        unit: t("dailyTasks.stretch.unit", { count: 5 }),
+      },
+      {
+        id: 7,
+        title: t("dailyTasks.meditate.title"),
+        target: t("dailyTasks.meditate.target", { count: 5 }),
+        current: 3,
+        max: 5,
+        completed: false,
+        icon: "🧠",
+        unit: t("dailyTasks.meditate.unit", { count: 5 }),
+      },
+    ];
+    setTasks(getInitialTasks());
+  }, [t, i18n.language]);
+
   const incrementProgress = (id: number) => {
     setTasks((prev) =>
       prev.map((task) => {
@@ -121,10 +124,13 @@ export default function DailyTasks() {
     <View className="px-1 mt-6 pb-40">
       <View className="flex-row justify-between mb-4 items-center">
         <ThemeText className="text-xl font-bold  dark:text-white ">
-          {languages[language].home.task}
+          {t("home.task")}
         </ThemeText>
         <Text className="text-sm text-gray-500 dark:text-gray-400 ">
-          {completedCount}/{tasks.length} completed
+          {t("dailyTasks.completedFraction", {
+            completedCount,
+            totalTasks: tasks.length,
+          })}
         </Text>
       </View>
 

@@ -6,7 +6,10 @@ import {
   FlatList,
   RefreshControl,
 } from "react-native";
-import { SafeAreaFrameContext, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useState } from "react";
 import { useBlogStore } from "@/stores/blogStore";
 import PostCard from "@/components/PostCard";
@@ -20,7 +23,7 @@ export default function FeedScreen() {
   const { posts } = useBlogStore();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
-  const [isFocused, setIsFocused] = useState(false)
+  const [isFocused, setIsFocused] = useState(false);
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -49,8 +52,9 @@ export default function FeedScreen() {
           Social
         </Text>
         <View
-          className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${isFocused ? "border-blue-200" : "border-gray-200"
-            }`}
+          className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${
+            isFocused ? "border-blue-200" : "border-gray-200"
+          }`}
         >
           <Search size={18} color="#B6B7BC" />
           <TextInput

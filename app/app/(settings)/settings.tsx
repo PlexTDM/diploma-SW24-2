@@ -4,7 +4,7 @@ import { useNavigation, useRouter } from "expo-router";
 import { ThemeView, ThemeText } from "@/components";
 import { Image } from "expo-image";
 import { useAppTheme } from "@/lib/theme";
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation, setLanguage as setI18nLanguage } from "@/lib/language";
 import { Icon } from "react-native-paper";
 import { AuthContext } from "@/context/auth";
 import { SettingsItem } from "@/components/SettingsItem";
@@ -14,12 +14,12 @@ export default function Settings() {
   const { theme, setTheme } = useAppTheme();
   const router = useRouter();
   const navigation = useNavigation();
-  const { language, setLanguage } = useLanguage();
+  const { t, i18n } = useTranslation();
   const [isSwitchOn, setIsSwitchOn] = useState<boolean>(false);
 
   const toggleLang = () => {
-    const newLang = language === "en" ? "mn" : "en";
-    setLanguage(newLang);
+    const newLang = i18n.language === "en" ? "mn" : "en";
+    setI18nLanguage(newLang as "en" | "mn");
   };
 
   const isDark = theme === "dark";
@@ -63,7 +63,7 @@ export default function Settings() {
           </Pressable>
         </View>
         <ThemeText className="text-2xl text-center font-semibold absolute left-1/2 -translate-x-1/2">
-          {languages[language].settings.title}
+          {t("settings.title")}
         </ThemeText>
         {/* <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
@@ -78,38 +78,44 @@ export default function Settings() {
       </View>
 
       {/* Account section */}
-      <ThemeText className="text-xl font-semibold mt-8">Account</ThemeText>
-      <Pressable
-        className="flex-row mt-4 items-center justify-between"
-        onPress={() => router.push("/(settings)/Edit")}
-      >
-        <View className="flex-row gap-4 items-center flex-1">
-          <Image
-            source={
-              user?.image
-                ? { uri: user.image }
-                : require("@/assets/img/profile.png")
-            }
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 999,
-            }}
-          />
-          <ThemeText className="text-xl font-semibold">
-            {user?.username}
-          </ThemeText>
-          {/* <ThemeText className="text-lg">Profile</ThemeText> */}
-        </View>
-        <Icon
-          source="chevron-right"
-          size={25}
-          color={theme === "dark" ? "#fff" : "#000"}
-        />
-      </Pressable>
+      {user && (
+        <>
+          <ThemeText className="text-xl font-semibold mt-8">Account</ThemeText>
+          <Pressable
+            className="flex-row mt-4 items-center justify-between"
+            onPress={() => router.push("/(settings)/Edit")}
+          >
+            <View className="flex-row gap-4 items-center flex-1">
+              <Image
+                source={
+                  user?.image
+                    ? { uri: user.image }
+                    : require("@/assets/img/profile.png")
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 999,
+                }}
+              />
+              <ThemeText className="text-xl font-semibold">
+                {user?.username}
+              </ThemeText>
+              {/* <ThemeText className="text-lg">Profile</ThemeText> */}
+            </View>
+            <Icon
+              source="chevron-right"
+              size={25}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
+          </Pressable>
+        </>
+      )}
 
       {/* Settings section */}
-      <ThemeText className="text-xl font-semibold mt-8">Settings</ThemeText>
+      {user && (
+        <ThemeText className="text-xl font-semibold mt-8">Settings</ThemeText>
+      )}
 
       {/* Notifications */}
       <SettingsItem
@@ -141,7 +147,7 @@ export default function Settings() {
           <Pressable onPress={toggleLang}>
             <View className="flex-row items-center px-4 py-2 rounded-full bg-gray-200 dark:bg-gray-700">
               <Text className="text-black dark:text-white text-lg">
-                {language === "mn" ? "Монгол" : "English"}
+                {i18n.language === "mn" ? "Монгол" : "English"}
               </Text>
             </View>
           </Pressable>

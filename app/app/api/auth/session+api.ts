@@ -82,6 +82,7 @@ export async function GET(request: Request) {
       });
     } catch (error) {
       // Token is invalid or expired
+      console.log("Invalid token:", error);
       return Response.json({ error: "Invalid token" }, { status: 401 });
     }
   } catch (error) {

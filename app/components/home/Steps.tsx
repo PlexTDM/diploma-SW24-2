@@ -1,4 +1,4 @@
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
@@ -14,7 +14,7 @@ import { Footprints } from "lucide-react-native";
 import StepsModal from "./StepsModal";
 import { usePedometer } from "@/hooks/usePedometer";
 export default function Steps() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -66,7 +66,7 @@ export default function Steps() {
       >
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg ">
-            {languages[language].walk.steps}
+            {t("walk.steps")}
           </ThemeText>
           <View className="w-[25px] h-[20px]">
             <Footprints
@@ -83,11 +83,11 @@ export default function Steps() {
             </Text>
           ) : (
             <Text className="text-xs text-gray-700 dark:text-gray-200">
-              {languages[language].walk.allowPermission}
+              {t("walk.allowPermission")}
             </Text>
           )}
           <Text className="text-sm font-normal text-slate-400">
-            {languages[language].walk.stepsCount}
+            {t("walk.stepsCount")}
           </Text>
         </View>
       </Pressable>

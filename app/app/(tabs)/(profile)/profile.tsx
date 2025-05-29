@@ -4,14 +4,14 @@ import { FlatList, LayoutChangeEvent, Pressable, View } from "react-native";
 import Tab1 from "@/components/profile/tab1";
 import Tab2 from "@/components/profile/tab2";
 import Tab3 from "@/components/profile/tab3";
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useNavigation, useRouter } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
 import { AuthContext } from "@/context/auth";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Tabs = () => {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const tabRef = useRef<FlatList>(null);
   const [width, setWidth] = useState<number>(0);
   const [selectedTab, setselectedTab] = useState<number>(0);
@@ -105,9 +105,9 @@ const Tabs = () => {
   return (
     <View className="flex-1 w-[85%] my-2" onLayout={setDimensions}>
       <View className="flex-row justify-between w-full items-center h-10 bg-blue-50 px-1 rounded-full dark:bg-gray-800">
-        <TabButton tab={0}>{languages[language].profile1.timeline}</TabButton>
-        <TabButton tab={1}>{languages[language].profile1.stats}</TabButton>
-        <TabButton tab={2}>{languages[language].profile1.duels}</TabButton>
+        <TabButton tab={0}>{t("profile1.timeline")}</TabButton>
+        <TabButton tab={1}>{t("profile1.stats")}</TabButton>
+        <TabButton tab={2}>{t("profile1.duels")}</TabButton>
       </View>
       <FlatList
         ref={tabRef}
@@ -131,7 +131,7 @@ const Tabs = () => {
 };
 
 export default function Profile() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useAppTheme();
   const navigation = useNavigation();
@@ -165,7 +165,7 @@ export default function Profile() {
           </Pressable>
         </View>
         <ThemeText className="text-2xl text-center font-semibold">
-          {languages[language].profile1.title}
+          {t("profile1.title")}
         </ThemeText>
         <Pressable
           className="border-2 border-gray-200 dark:border-gray-700 p-2 rounded-full"
@@ -197,7 +197,7 @@ export default function Profile() {
           />
           <ThemeText className="font-semibold text-xl">247</ThemeText>
           <ThemeText className="color-gray-400">
-            {languages[language].profile1.calories}
+            {t("profile1.calories")}
           </ThemeText>
         </View>
         <View className="items-center">
@@ -208,7 +208,7 @@ export default function Profile() {
           />
           <ThemeText className="font-semibold text-xl">0</ThemeText>
           <ThemeText className="color-gray-400">
-            {languages[language].profile1.followers}
+            {t("profile1.followers")}
           </ThemeText>
         </View>
       </View>

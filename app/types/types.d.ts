@@ -98,3 +98,16 @@ type FoodImage = {
   carbs: number;
   fat: number;
 };
+
+interface IExercise {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  duration_minutes: number;
+  repetitions?: number;
+  sets?: number;
+  equipment: string;
+  level: string;
+  video?: string;
+}

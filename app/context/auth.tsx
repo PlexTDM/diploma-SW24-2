@@ -46,6 +46,7 @@ export const AuthContext = createContext({
   isUpdating: false,
   getFoodImage: async (image: string): Promise<FoodImage | null> => null,
   foodImageLoading: false,
+  workouts: [] as any[],
 });
 
 const config: AuthRequestConfig = {
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [foodImageLoading, setFoodImageLoading] = useState(false);
+  const [workouts, setWorkouts] = useState<any[]>([]);
   const [needsRegistration, setNeedsRegistration] = useState<{
     visible: boolean;
     data: any;
@@ -522,9 +524,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const getDailyFood = async (): Promise<void> => {
     const cachedDailyFoods = await tokenCache?.getToken("dailyFoods");
     if (cachedDailyFoods) {
+      console.log("🍎 cached daily foods", cachedDailyFoods);
       const parsedCache = JSON.parse(cachedDailyFoods);
       const cacheDate = new Date(parsedCache.timestamp);
       const today = new Date();
+      // delete timestamp from parsedCache
+      delete parsedCache.timestamp;
 
       // Check if the cached data is from today
       if (cacheDate.toDateString() === today.toDateString()) {
@@ -597,6 +602,50 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
+  const getWorkouts = async (): Promise<void> => {
+    try {
+      const cachedWorkouts = await tokenCache?.getToken("workouts");
+      if (cachedWorkouts) {
+        const parsedCache = JSON.parse(cachedWorkouts);
+        const cacheDate = new Date(parsedCache.timestamp);
+        const today = new Date();
+
+        // Check if the cached data is from today
+        if (cacheDate.toDateString() === today.toDateString()) {
+          setWorkouts(parsedCache.data);
+          console.log("🍎 workouts from cache", parsedCache.data);
+          return;
+        }
+      }
+
+      console.log("🍎 getting workouts from API");
+      if (!accessToken) {
+        console.log("No access token, skipping workouts");
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/auth/exercise`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        console.error("Error getting workouts:", res.status, await res.json());
+        return;
+      }
+      const data = await res.json();
+      console.log("🍎 workouts", data);
+      setWorkouts(data);
+      await tokenCache?.saveToken(
+        "workouts",
+        JSON.stringify({ data, timestamp: new Date().toISOString() })
+      );
+    } catch (e) {
+      console.error("Error getting workouts:", e);
+    }
+  };
+
   // check login
   useEffect(() => {
     const checkLogin = async () => {
@@ -658,8 +707,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    getDailyFood();
+    if (user) {
+      getDailyFood();
+      getWorkouts();
+    }
   }, [user]);
+
   useEffect(() => {
     handleResponse();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -697,6 +750,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         getFoodImage,
         foodImageLoading,
         isUpdating,
+        workouts,
       }}
     >
       {children}

@@ -10,8 +10,8 @@ import {
 import WebView from "react-native-webview";
 import { useCameraPermissions } from "expo-camera";
 import * as Haptics from "expo-haptics";
-import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import { useTranslation } from "@/lib/language";
 
 const API_KEY = "29e1ca53-d185-46f8-b8a2-cf97d47ee249";
 const POSETRACKER_API = "https://app.posetracker.com/pose_tracker/tracking";
@@ -21,15 +21,14 @@ export default function CameraTracking() {
   const [poseTrackerInfos, setCurrentPoseTrackerInfos] = useState<any>(null);
   const [repsCounter, setRepsCounter] = useState(0);
   const [permission, requestPermission] = useCameraPermissions();
+  const { t } = useTranslation();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const successAnim = useRef(new Animated.Value(0)).current;
   const prevReadyRef = useRef<boolean | null>(null);
 
   const [countdown, setCountdown] = useState<number | null>(null);
-  const countdownRef = useRef<NodeJS.Timeout | null>(null);
-
-  const navigation = useNavigation();
+  const countdownRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!permission?.granted) {
@@ -64,14 +63,17 @@ export default function CameraTracking() {
 
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
-        if (prev === 1) {
-          clearInterval(countdownRef.current!);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          setCountdown(null);
-          showSuccessAndGoBack(); // show success
+        if (prev === null) {
+          if (countdownRef.current) clearInterval(countdownRef.current);
           return null;
         }
-        return prev! - 1;
+        if (prev <= 1) {
+          if (countdownRef.current) clearInterval(countdownRef.current);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          showSuccessAndGoBack();
+          return null;
+        }
+        return prev - 1;
       });
     }, 1000);
   };
@@ -176,18 +178,24 @@ export default function CameraTracking() {
         {!poseTrackerInfos ? (
           <>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={styles.statusText}>AI-г асааж байна...</Text>
+            <Text style={styles.statusText}>
+              {t("cameraTracking.activatingAI")}
+            </Text>
           </>
         ) : (
           <>
-            <Text style={styles.statusText}>AI ажиллаж байна</Text>
+            <Text style={styles.statusText}>
+              {t("cameraTracking.aiActive")}
+            </Text>
             <Text style={styles.infoText}>
-              Мэдээлэл: {poseTrackerInfos?.type || "-"}
+              {t("cameraTracking.infoLabel")} {poseTrackerInfos?.type || "-"}
             </Text>
             <Text style={styles.readyText}>
               {poseTrackerInfos?.ready
-                ? "Байрлал зөв! Squat эхлүүлнэ үү"
-                : `Байрлалаа тохируулна уу: ${poseTrackerInfos?.postureDirection}`}
+                ? t("cameraTracking.positionCorrect")
+                : `${t("cameraTracking.adjustPosition")} ${
+                    poseTrackerInfos?.postureDirection
+                  }`}
             </Text>
           </>
         )}
@@ -203,9 +211,8 @@ export default function CameraTracking() {
         </View>
       )}
 
-      {/* Амжилттай дууссан текст */}
       <Animated.View style={[styles.successOverlay, { opacity: successAnim }]}>
-        <Text style={styles.successText}>Амжилттай!</Text>
+        <Text style={styles.successText}>{t("cameraTracking.success")}</Text>
       </Animated.View>
     </View>
   );

@@ -1,9 +1,7 @@
 import { View, Text, Pressable } from "react-native";
-import { Image } from "expo-image";
 import { ThemeText } from "@/components";
 import { useAppTheme } from "@/lib/theme";
-import { useLanguage, languages } from "@/lib/language";
-import { useRouter } from "expo-router";
+import { useTranslation } from "@/lib/language";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -11,14 +9,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SleepModal from "./SleepModal";
-import {MoonStar} from "lucide-react-native";
+import { MoonStar } from "lucide-react-native";
 
 export default function Sleep() {
-  const router = useRouter();
   const { theme } = useAppTheme();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   const pressed = useSharedValue(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,9 +28,7 @@ export default function Sleep() {
   };
 
   const handlePress = () => {
-   
     // setModalVisible(true);
-   
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -59,7 +54,7 @@ export default function Sleep() {
       className="bg-white dark:bg-gray-900 rounded-[26px] flex-1 dark:border-gray-800 border-[1px] border-gray-200"
       style={animatedStyle}
     >
-      <SleepModal visible={modalVisible} setVisible={setModalVisible}/>
+      <SleepModal visible={modalVisible} setVisible={setModalVisible} />
       <Pressable
         className="flex-1 justify-between p-4 px-6"
         onPressIn={handlePressIn}
@@ -68,7 +63,7 @@ export default function Sleep() {
       >
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg">
-            {languages[language].sleep.sleep}
+            {t("sleep.sleep")}
           </ThemeText>
           <View className="w-[25px] h-[25px]">
             <MoonStar size={25} color={theme === "dark" ? "#fff" : "#000"} />
@@ -80,7 +75,7 @@ export default function Sleep() {
             12
           </Text>
           <Text className="text-sm font-normal text-slate-400">
-            {languages[language].sleep.duration}
+            {t("sleep.duration")}
           </Text>
         </View>
       </Pressable>

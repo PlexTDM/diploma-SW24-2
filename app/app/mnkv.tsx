@@ -1,16 +1,15 @@
 // mnkv.tsx
 
-import { ThemeView } from '@/components';
-import React from 'react';
-import { View, Text, TouchableOpacity, useColorScheme } from 'react-native';
-import { useRouter } from 'expo-router';
+import { ThemeView } from "@/components";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 const Mnkv = () => {
-  const colorScheme = useColorScheme();
   const router = useRouter();
 
   const handleNext = () => {
-    router.push('/asuult');
+    router.push("/asuult");
   };
 
   return (
@@ -26,7 +25,8 @@ const Mnkv = () => {
           className="text-base mt-4 text-gray-700 dark:text-gray-300"
           style={{ paddingLeft: 20 }}
         >
-          Let’s craft your AI-powered personalized meal plan and shopping list - it takes less than a minute to get started!
+          Let’s craft your AI-powered personalized meal plan and shopping list -
+          it takes less than a minute to get started!
         </Text>
       </View>
 

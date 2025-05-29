@@ -5,13 +5,15 @@ import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { languages, useLanguage } from "@/lib/language";
+// import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language"; // Changed import
 import { useAppTheme } from "@/lib/theme";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react-native";
 
 export default function Step1() {
   const { setField } = useRegisterStore();
-  const { language } = useLanguage();
+  // const { language } = useLanguage();
+  const { t, i18n } = useTranslation(); // New hook
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [dob, setDob] = useState<Date | null>(null);
@@ -22,23 +24,28 @@ export default function Step1() {
   const [heightUnit, setHeightUnit] = useState("cm");
   const { theme } = useAppTheme();
 
-  const genderChoices =
-    languages[language].register.steps.step1.question1.choices;
+  // const genderChoices = languages[language].register.steps.step1.question1.choices;
+  const genderChoices = t("register.steps.step1.question1.choices", {
+    returnObjects: true,
+  }) as { [key: string]: string };
 
   const [items, setItems] = useState<DropdownItem[]>([
-    { label: genderChoices[1], value: "1" },
-    { label: genderChoices[2], value: "2" },
-    { label: genderChoices[3], value: "3" },
+    { label: genderChoices["1"], value: "1" },
+    { label: genderChoices["2"], value: "2" },
+    { label: genderChoices["3"], value: "3" },
   ]);
 
   // Update items when language changes
   useEffect(() => {
+    const currentGenderChoices = t("register.steps.step1.question1.choices", {
+      returnObjects: true,
+    }) as { [key: string]: string };
     setItems([
-      { label: genderChoices[1], value: "1" },
-      { label: genderChoices[2], value: "2" },
-      { label: genderChoices[3], value: "3" },
+      { label: currentGenderChoices["1"], value: "1" },
+      { label: currentGenderChoices["2"], value: "2" },
+      { label: currentGenderChoices["3"], value: "3" },
     ]);
-  }, [language, genderChoices]);
+  }, [i18n.language, t]); // Listen to i18n.language and t
 
   const handleGender = (value: string | null) => {
     if (value) {
@@ -93,10 +100,12 @@ export default function Step1() {
   return (
     <View className="flex-1 gap-4 items-center px-6 mt-24">
       <Text className="text-2xl font-bold text-center text-black dark:text-white">
-        {languages[language].register.steps.step1.title}
+        {/* {languages[language].register.steps.step1.title} */}
+        {t("register.steps.step1.title")}
       </Text>
       <Text className="text-gray-300 text-xl w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
-        {languages[language].register.steps.step1.desc}
+        {/* {languages[language].register.steps.step1.desc} */}
+        {t("register.steps.step1.desc")}
       </Text>
 
       {/* Gender Dropdown */}
@@ -109,7 +118,8 @@ export default function Step1() {
           setValue={setValue}
           setItems={setItems}
           onChangeValue={handleGender}
-          placeholder={languages[language].register.steps.step1.question1.title}
+          // placeholder={languages[language].register.steps.step1.question1.title}
+          placeholder={t("register.steps.step1.question1.title")}
           style={{
             borderRadius: 12,
             borderColor: theme === "dark" ? "#4b5563" : "#ccc",
@@ -149,7 +159,8 @@ export default function Step1() {
         className="w-full border border-gray-300 dark:border-gray-600 rounded-xl py-5 px-4 bg-white dark:bg-[#ffffff15]"
       >
         <Text className="text-gray-500 dark:text-white font-normal text-base">
-          {dob ? dob.toDateString() : "Төрсөн өдрөө сонгоно уу"}
+          {/* {dob ? dob.toDateString() : "Төрсөн өдрөө сонгоно уу"} */}
+          {dob ? dob.toDateString() : t("register.steps.step1.date")}
         </Text>
       </Pressable>
 
@@ -167,7 +178,8 @@ export default function Step1() {
       <View className="w-full flex-row items-center justify-between gap-4">
         <View className="flex-1 flex-row items-center border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-500 dark:text-white bg-white dark:bg-[#ffffff15] px-4 py-3 ">
           <TextInput
-            placeholder={languages[language].register.steps.step1.weight}
+            // placeholder={languages[language].register.steps.step1.weight}
+            placeholder={t("register.steps.step1.weight")}
             placeholderTextColor="#A9A9A9"
             value={weight}
             onChangeText={handleWeight}
@@ -192,7 +204,8 @@ export default function Step1() {
       <View className="w-full flex-row items-center justify-between gap-4 ">
         <View className="flex-1 flex-row items-center border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-[#ffffff15] px-4 py-3">
           <TextInput
-            placeholder={languages[language].register.steps.step1.height}
+            // placeholder={languages[language].register.steps.step1.height}
+            placeholder={t("register.steps.step1.height")}
             placeholderTextColor="#A9A9A9"
             value={height}
             onChangeText={handleHeight}
