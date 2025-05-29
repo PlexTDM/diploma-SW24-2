@@ -1,4 +1,4 @@
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
@@ -8,12 +8,14 @@ import ChoiceButton from "./ChoiceButton";
 
 export default function Step5() {
   const { setField } = useRegisterStore();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
-  const choices = languages[language].register.steps.water.choices;
-  const waterTitle = languages[language].register.steps.water.title;
-  const waterDesc = languages[language].register.steps.water.desc;
+  const choices = t("register.steps.water.choices", {
+    returnObjects: true,
+  }) as string[];
+  const waterTitle = t("register.steps.water.title");
+  const waterDesc = t("register.steps.water.desc");
 
   const { theme } = useAppTheme();
   const iconColor = theme === "dark" ? "black" : "white";

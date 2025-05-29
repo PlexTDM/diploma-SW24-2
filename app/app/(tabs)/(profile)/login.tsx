@@ -2,10 +2,10 @@ import { Text, Pressable } from "react-native";
 import { ThemeView, ThemeText } from "@/components";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 
 export default function ProfileLogin() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
@@ -16,7 +16,7 @@ export default function ProfileLogin() {
       />
 
       <ThemeText className="text-xl text-center text-black dark:text-white font-semibold">
-        {languages[language].Login}
+        {t("Login")}
       </ThemeText>
 
       <Pressable
@@ -24,7 +24,7 @@ export default function ProfileLogin() {
         className="bg-blue-600 dark:bg-gray-700 px-6 py-2 rounded-full mt-6"
       >
         <Text className="text-white dark:text-gray-200 text-base font-medium">
-          {languages[language].login.button1}
+          {t("login.button1")}
         </Text>
       </Pressable>
     </ThemeView>

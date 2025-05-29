@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Cookie } from "lucide-react-native";
 import { useAppTheme } from "@/lib/theme";
@@ -10,9 +10,11 @@ import Animated, {
   Easing,
   withSequence,
 } from "react-native-reanimated";
+import { useTranslation } from "@/lib/language";
 
 export default function FortuneCookie() {
   const { theme } = useAppTheme();
+  const { t, i18n } = useTranslation();
   const iconColor = theme === "dark" ? "#fcd34d" : "#92400e";
 
   const [cracked, setCracked] = useState(false);
@@ -25,28 +27,14 @@ export default function FortuneCookie() {
   const fortuneTranslate = useSharedValue(20);
   const containerHeight = useSharedValue(50);
 
-  const quotes = [
-    "Your potential is limitless. 🚀",
-    "Small steps every day. 🐾",
-    "Fitness is a journey, not a destination. 🛤️",
-    "You're stronger than you think! 💪",
-    "Progress, not perfection. 🌱",
-    "Keep going—every rep counts! 🔁",
-    "Believe in the power of consistency. ⏳",
-    "One day or day one. You decide. 🎯",
-    "Success starts with showing up. 🏁",
-    "The only bad workout is the one you didn't do. 🏋️",
-    "Push past your limits—growth lives there. 🌄",
-    "Discipline beats motivation. 💥",
-    "Fuel your body, free your mind. 🍎🧘",
-    "You're not alone—your future self is cheering. 🎉",
-    "Show up for yourself today. You deserve it. 💖",
-  ];
+  const getRandomQuote = useCallback(() => {
+    const currentQuotes = t("fortuneCookie.quotes", {
+      returnObjects: true,
+    }) as string[];
+    const index = Math.floor(Math.random() * currentQuotes.length);
+    return currentQuotes[index];
+  }, [t]);
 
-  const getRandomQuote = () => {
-    const index = Math.floor(Math.random() * quotes.length);
-    return quotes[index];
-  };
   const leftStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: leftAnim.value * -100 },
@@ -126,6 +114,12 @@ export default function FortuneCookie() {
     };
   }, [cracked, shakeAnim]);
 
+  useEffect(() => {
+    if (cracked) {
+      setQuote(getRandomQuote());
+    }
+  }, [i18n.language, cracked, getRandomQuote]);
+
   return (
     <Pressable
       onPress={!cracked ? animateCrack : undefined}
@@ -143,10 +137,10 @@ export default function FortuneCookie() {
 
             <View>
               <Text className="font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                Tap to crack your fortune!
+                {t("fortuneCookie.tapToCrack")}
               </Text>
               <Text className="text-amber-600 dark:text-amber-100">
-                Reveal today’s wisdom 🍪
+                {t("fortuneCookie.revealWisdom")}
               </Text>
             </View>
           </View>

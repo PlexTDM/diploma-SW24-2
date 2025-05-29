@@ -7,16 +7,15 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import LottieView from "lottie-react-native";
 import { useAppTheme } from "@/lib/theme";
 
 const Asuult = () => {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
   const { theme } = useAppTheme();
 
-  const question1 = languages[language].question1;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const isDarkMode = theme === "dark";
@@ -89,7 +88,7 @@ const Asuult = () => {
               flexShrink: 1,
             }}
           >
-            {question1.tanid}
+            {t("question1.tanid")}
           </Text>
         </View>
       </View>
@@ -97,7 +96,7 @@ const Asuult = () => {
       {/* Сонголтууд */}
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={question1.suun}
+        data={t("question1.suun", { returnObjects: true }) as string[]}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
         renderItem={({ item, index }) => {
@@ -180,7 +179,7 @@ const Asuult = () => {
           }}
         >
           <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-            {question1.daraah}
+            {t("question1.daraah")}
           </Text>
         </TouchableOpacity>
       </View>

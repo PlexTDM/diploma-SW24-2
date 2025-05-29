@@ -1,4 +1,4 @@
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
@@ -8,12 +8,14 @@ import ChoiceButton from "./ChoiceButton";
 
 export default function Step4() {
   const { setField } = useRegisterStore();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
-  const choices = languages[language].register.steps.meals.choices;
-  const mealsTitle = languages[language].register.steps.meals.title;
-  const mealsDesc = languages[language].register.steps.meals.desc;
+  const choices = t("register.steps.meals.choices", {
+    returnObjects: true,
+  }) as string[];
+  const mealsTitle = t("register.steps.meals.title");
+  const mealsDesc = t("register.steps.meals.desc");
 
   const { theme } = useAppTheme();
   const iconColor = theme === "dark" ? "black" : "white";

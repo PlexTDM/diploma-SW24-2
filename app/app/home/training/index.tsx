@@ -11,13 +11,13 @@ import {
 import moment, { Moment } from "moment";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import {
   ArrowRight,
   ChevronRight,
-  Dumbbell,
-  DumbbellIcon,
-  Flag,
+  // Dumbbell,
+  // DumbbellIcon,
+  // Flag,
 } from "lucide-react-native";
 import { Image } from "expo-image";
 import { AuthContext } from "@/context/auth";
@@ -31,7 +31,7 @@ export default function Training() {
     moment().format("YYYY-MM-DD")
   );
   const router = useRouter();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -61,9 +61,9 @@ export default function Training() {
     router.push("/home/training/screen2");
   };
 
-  const handleCustomWorkout = () => {
-    router.push("/home/training/screen3");
-  };
+  // const handleCustomWorkout = () => {
+  //   router.push("/home/training/screen3");
+  // };
 
   const handleWorkoutPress = (workout: any) => {
     setSelectedWorkout(workout);
@@ -124,11 +124,10 @@ export default function Training() {
             </View>
 
             <Text className="text-3xl text-start font-semibold mt-4 text-white">
-              {languages[language].training.hi},{" "}
-              {user?.username || "Galbadrakh"}!
+              {t("training.hi")}, {user?.username || "Galbadrakh"}!
             </Text>
             <Text className="text-lg text-start mt-2 text-gray-200 ">
-              {languages[language].training.hello}
+              {t("training.hello")}
             </Text>
 
             {/* Highlight Workout Block */}
@@ -136,7 +135,7 @@ export default function Training() {
               <View className="flex-row items-start gap-4">
                 <View className="p-2 bg-blue-700 rounded-full items-center">
                   <Text className="text-white text-[11px] font-semibold p-1">
-                    {languages[language].training.special}
+                    {t("training.special")}
                   </Text>
                 </View>
                 <View className="p-2 px-4 bg-gray-300/40 rounded-full items-center">
@@ -148,7 +147,7 @@ export default function Training() {
 
               <Text className="text-black font-bold text-4xl mt-8">75 min</Text>
               <Text className=" text-base text-black">
-                {languages[language].training.nerrr}
+                {t("training.nerrr")}
               </Text>
 
               <View className="flex-row mt-6 gap-2">
@@ -175,7 +174,7 @@ export default function Training() {
                   <Feather name="sliders" size={20} color="black" />
                 </View>
                 <Text className="font-semibold text-lg text-white">
-                  {languages[language].training.custom}
+                  {t("training.custom")}
                 </Text>
               </View>
               <ChevronRight size={20} color="white" />

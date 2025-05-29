@@ -1,4 +1,4 @@
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
@@ -8,12 +8,14 @@ import ChoiceButton from "./ChoiceButton";
 
 export default function Step6() {
   const { setField } = useRegisterStore();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
-  const choices = languages[language].register.steps.work.choices;
-  const workTitle = languages[language].register.steps.work.title;
-  const workDesc = languages[language].register.steps.work.desc;
+  const choices = t("register.steps.work.choices", {
+    returnObjects: true,
+  }) as string[];
+  const workTitle = t("register.steps.work.title");
+  const workDesc = t("register.steps.work.desc");
 
   const { theme } = useAppTheme();
   const iconColor = theme === "dark" ? "black" : "white";

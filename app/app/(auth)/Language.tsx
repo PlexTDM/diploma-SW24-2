@@ -1,22 +1,25 @@
 import { useRouter } from "expo-router";
-import { useAppTheme } from "@/lib/theme";
 import { View, TouchableHighlight } from "react-native";
 import React, { useState } from "react";
 import { ThemeText, ThemeView } from "@/components";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation, setLanguage as setI18nLanguage } from "@/lib/language";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Image } from "expo-image";
 
 export default function Language() {
   const router = useRouter();
-  const { theme } = useAppTheme();
-  const { language, setLanguage } = useLanguage();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(language);
+  const [value, setValue] = useState(i18n.language);
   const [items, setItems] = useState([
     { label: "English", value: "en" },
     { label: "Монгол", value: "mn" },
   ]);
+
+  const handleLanguageChange = (newLang: "en" | "mn") => {
+    setI18nLanguage(newLang);
+    setValue(newLang);
+  };
 
   return (
     <ThemeView className="flex-1 items-center px-4 gap-10 pt-12">
@@ -30,7 +33,7 @@ export default function Language() {
         />
 
         <ThemeText className="text-xl text-center">
-          {languages[language].language.asuult}
+          {t("language.asuult")}
         </ThemeText>
 
         <View className="w-[80%]">
@@ -40,9 +43,8 @@ export default function Language() {
             items={items}
             setOpen={setOpen}
             setValue={(callback) => {
-              const selectedValue = callback(value);
-              setValue(selectedValue);
-              setLanguage(selectedValue);
+              const selectedValue = callback(value as "en" | "mn");
+              handleLanguageChange(selectedValue as "en" | "mn");
             }}
             setItems={setItems}
             placeholder="Please select your language"
@@ -59,7 +61,7 @@ export default function Language() {
           underlayColor={"#DDDDDD"}
         >
           <ThemeText className="text-lg text-black font-semibold text-center">
-            {languages[language].a}
+            {t("a")}
           </ThemeText>
         </TouchableHighlight>
       </View>

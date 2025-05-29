@@ -1,4 +1,3 @@
-import { LanguageProvider } from "@/lib/language";
 import { useAppTheme } from "@/lib/theme";
 import React from "react";
 import { View } from "react-native";
@@ -10,9 +9,7 @@ const ThemeUser = ({ children }: { children: React.ReactNode }) => {
   return (
     <View className={`${theme} flex-1`}>
       <PaperProvider theme={theme === "dark" ? MD3DarkTheme : MD3LightTheme}>
-        <AuthProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </PaperProvider>
     </View>
   );

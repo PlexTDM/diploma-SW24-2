@@ -4,12 +4,12 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useColorScheme } from "nativewind";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 
 export default function Meal() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const isDark = colorScheme === "dark";
 
   const [selectedTab, setSelectedTab] = useState<"recent" | "favorites">(
@@ -121,17 +121,13 @@ export default function Meal() {
         className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
         onPress={() => router.push("/(meal)/imageScan")}
       >
-        <Text className="text-base text-white">
-          {languages[language].meal.image}
-        </Text>
+        <Text className="text-base text-white">{t("meal.image")}</Text>
       </Pressable>
       <Pressable
         className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
         onPress={() => router.push("./scan")}
       >
-        <Text className="text-base text-white">
-          {languages[language].meal.barcode}
-        </Text>
+        <Text className="text-base text-white">{t("meal.barcode")}</Text>
       </Pressable>
 
       {/* More Scanners */}

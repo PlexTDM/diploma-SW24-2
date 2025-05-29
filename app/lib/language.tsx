@@ -8,26 +8,21 @@ import mnTranslations from "../i18n/mn.json";
 
 type Language = "en" | "mn";
 
-// Initialize i18next
-i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
-  .init({
-    // compatibilityJSON: 'v3', // Removed as it's v4 by default and v3 is no longer valid
-    resources: {
-      en: {
-        translation: enTranslations,
-      },
-      mn: {
-        translation: mnTranslations,
-      },
+i18n.use(initReactI18next).init({
+  resources: {
+    en: {
+      translation: enTranslations,
     },
-    fallbackLng: "en", // use en if detected lng is not available
-    interpolation: {
-      escapeValue: false, // react already safes from xss
+    mn: {
+      translation: mnTranslations,
     },
-  });
+  },
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false,
+  },
+});
 
-// Function to load and set the language
 const loadLanguage = async () => {
   try {
     const storedLanguage = (await AsyncStorage.getItem(
@@ -61,8 +56,3 @@ export const setLanguage = async (lang: Language) => {
 };
 
 export { useTranslation, i18n };
-
-// Removed old context, provider and hook
-// Removed old i18n instance (const i18n = new I18n(...))
-// Removed old handleSetLanguage and t functions
-// Removed import of I18n from i18n-js as it is no longer used.

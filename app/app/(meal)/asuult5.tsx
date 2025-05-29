@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, Text, useColorScheme, Animated } from "react-native";
 import LottieView from "lottie-react-native";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRouter } from "expo-router";
 
 const Asuult5 = () => {
-  const { language } = useLanguage();
-  const question5 = languages[language].question5;
+  const { t } = useTranslation();
 
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -45,10 +44,12 @@ const Asuult5 = () => {
       clearInterval(interval);
       clearTimeout(timer);
     };
-  }, []);
+  }, [router, progress]);
 
   return (
-    <View className={`flex-1 justify-end items-center px-5 pb-40 ${backgroundColor}`}>
+    <View
+      className={`flex-1 justify-end items-center px-5 pb-40 ${backgroundColor}`}
+    >
       {/* Overlayed DotLottie Animation */}
       <View className="absolute top-10 left-0 right-0 items-center mt-10">
         <LottieView
@@ -58,13 +59,12 @@ const Asuult5 = () => {
           autoPlay
           style={{ width: 400, height: 420 }} // Equivalent to w-48 h-48
         />
-
       </View>
 
       {/* Text Section */}
       <View className="items-center mb-8">
         <Text className={`text-lg font-bold text-center ${textColor}`}>
-          {question5.zori}
+          {t("question5.zori")}
         </Text>
       </View>
 
@@ -83,9 +83,7 @@ const Asuult5 = () => {
         </View>
 
         {/* Progress Percentage Text under the bar */}
-        <Text className={`text-base mt-2 ${textColor}`}>
-          {progressText}
-        </Text>
+        <Text className={`text-base mt-2 ${textColor}`}>{progressText}</Text>
       </View>
     </View>
   );

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { X } from "lucide-react-native";
+import { useTranslation } from "@/lib/language";
 
 interface WorkoutDetailModalProps {
   isVisible: boolean;
@@ -16,13 +17,17 @@ interface WorkoutDetailModalProps {
   workout: IExercise | null;
 }
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+const {
+  width: screenWidth,
+  //  height: screenHeight
+} = Dimensions.get("window");
 
 const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
   isVisible,
   onClose,
   workout,
 }) => {
+  const { t } = useTranslation();
   if (!workout) return null;
 
   const videoHeight = screenWidth * (9 / 16);
@@ -68,7 +73,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
 
             <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
               <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                Category
+                {t("workoutModal.category")}
               </Text>
               <Text className="text-base text-neutral-800 dark:text-white mt-1">
                 {workout.category}
@@ -77,7 +82,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
 
             <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
               <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                Level
+                {t("workoutModal.level")}
               </Text>
               <Text className="text-base text-neutral-800 dark:text-white mt-1">
                 {workout.level}
@@ -86,7 +91,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
 
             <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
               <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                Duration
+                {t("workoutModal.duration")}
               </Text>
               <Text className="text-base text-neutral-800 dark:text-white mt-1">
                 {workout.duration_minutes} minutes
@@ -96,7 +101,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
             {workout.repetitions && (
               <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
                 <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                  Repetitions
+                  {t("workoutModal.repetitions")}
                 </Text>
                 <Text className="text-base text-neutral-800 dark:text-white mt-1">
                   {workout.repetitions}
@@ -107,7 +112,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
             {workout.sets && (
               <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
                 <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                  Sets
+                  {t("workoutModal.sets")}
                 </Text>
                 <Text className="text-base text-neutral-800 dark:text-white mt-1">
                   {workout.sets}
@@ -117,15 +122,15 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
 
             <View className="mb-3 py-2 border-b border-neutral-200 dark:border-neutral-700">
               <Text className="text-base text-neutral-500 dark:text-neutral-400 font-semibold">
-                Equipment
+                {t("workoutModal.equipment")}
               </Text>
               <Text className="text-base text-neutral-800 dark:text-white mt-1">
-                {workout.equipment || "None"}
+                {workout.equipment || t("workoutModal.none")}
               </Text>
             </View>
 
             <Text className="text-lg font-bold text-neutral-900 dark:text-white mt-4 mb-2">
-              Description
+              {t("workoutModal.description")}
             </Text>
             <Text className="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
               {workout.description}

@@ -8,16 +8,15 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import moment, { Moment } from "moment";
 import LottieView from "lottie-react-native";
 const screenWidth = Dimensions.get("window").width;
 
 const Asuult4 = () => {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const question4 = languages[language].question4;
 
   const isDarkMode = colorScheme === "dark";
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
@@ -97,7 +96,7 @@ const Asuult4 = () => {
               flexShrink: 1,
             }}
           >
-            {question4.chi}
+            {t("question4.chi")}
           </Text>
         </View>
       </View>
@@ -105,7 +104,7 @@ const Asuult4 = () => {
       {/* Calendar Section */}
       <View style={styles.calendarSection}>
         <Text style={[styles.weekLabel, { color: textColor }]}>
-          {question4.ene}
+          {t("question4.ene")}
         </Text>
         <View style={styles.weekRow}>
           {dates.slice(0, 7).map((date) => {
@@ -137,7 +136,7 @@ const Asuult4 = () => {
         </View>
 
         <Text style={[styles.weekLabel, { color: textColor }]}>
-          {question4.dar}
+          {t("question4.dar")}
         </Text>
         <View style={styles.weekRow}>
           {dates.slice(7, 14).map((date) => {
@@ -171,7 +170,7 @@ const Asuult4 = () => {
         {/* Positioned "нэмэх" text */}
         <TouchableOpacity style={styles.addButton}>
           <Text style={{ color: "#136CF1", marginTop: -20, fontWeight: "500" }}>
-            + {question4.nemeh}
+            + {t("question4.nemeh")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -222,7 +221,7 @@ const Asuult4 = () => {
           }}
         >
           <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-            {question4.daraah}
+            {t("question4.daraah")}
           </Text>
         </TouchableOpacity>
       </View>

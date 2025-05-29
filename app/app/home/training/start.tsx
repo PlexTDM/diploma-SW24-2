@@ -2,12 +2,12 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ThemeView, ThemeText } from "@/components";
 import { Image } from "expo-image";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
 
 export default function Start() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
   return (
     <ThemeView className="p-8">
@@ -24,11 +24,9 @@ export default function Start() {
         />
       </View>
       <ThemeText className="font-bold text-4xl mt-5 w-[80%]">
-        {languages[language].training.measure}
+        {t("training.measure")}
       </ThemeText>
-      <ThemeText className="mt-5 text-xl">
-        {languages[language].training.test}
-      </ThemeText>
+      <ThemeText className="mt-5 text-xl">{t("training.test")}</ThemeText>
       <View className="absolute bottom-5 left-5 right-5">
         <Pressable onPress={() => router.push("/home/training/screen2")}>
           <Button

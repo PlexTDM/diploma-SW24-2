@@ -2,6 +2,7 @@
 import React from "react";
 import { View } from "react-native";
 import { Modal, Portal, Text, Button, useTheme } from "react-native-paper";
+import { useTranslation } from "@/lib/language";
 
 interface RegisterPromptModalProps {
   visible: boolean;
@@ -17,6 +18,7 @@ const RegisterPromptModal = ({
   onCancel,
 }: RegisterPromptModalProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Portal>
@@ -31,13 +33,9 @@ const RegisterPromptModal = ({
         }}
       >
         <Text variant="titleMedium" style={{ marginBottom: 10 }}>
-          Register New Account?
+          {t("registerPrompt.title")}
         </Text>
-        <Text>
-          No account was found for the email:{" "}
-          <Text style={{ fontWeight: "bold" }}>{data.email}</Text>. Would you
-          like to register a new account?
-        </Text>
+        <Text>{t("registerPrompt.noAccountFound", { email: data.email })}</Text>
 
         <View
           style={{
@@ -47,10 +45,10 @@ const RegisterPromptModal = ({
           }}
         >
           <Button onPress={onCancel} style={{ marginRight: 10 }}>
-            Cancel
+            {t("registerPrompt.cancel")}
           </Button>
           <Button mode="contained" onPress={onConfirm}>
-            Register
+            {t("registerPrompt.register")}
           </Button>
         </View>
       </Modal>

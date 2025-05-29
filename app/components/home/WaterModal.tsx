@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ function WaterModal({
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const { water, waterGoal, setField } = useStatsStore();
   const [componentHeight, setComponentHeight] = useState(0);
 
@@ -113,7 +113,10 @@ function WaterModal({
                   </Text>
                 </View>
                 <Text className="text-center text-sm mb-2 ml-10 z-10 dark:text-slate-300">
-                  {water} ml of {waterGoal} ml
+                  {t("waterModal.progressFraction", {
+                    current: water,
+                    goal: waterGoal,
+                  })}
                 </Text>
                 <WaterAnimation containerHeight={componentHeight} />
               </View>
@@ -121,7 +124,7 @@ function WaterModal({
               {/* Add Water Section */}
               <View className="w-full flex-row flex-wrap justify-between mt-6">
                 <ThemeText className="font-bold text-lg dark:text-black w-full font-quicksand">
-                  {languages[language].water.add}
+                  {t("water.add")}
                 </ThemeText>
                 <View className="w-full flex-row flex-wrap justify-between gap-3 mt-6">
                   {waterOptions.map((amount) => (
@@ -133,7 +136,7 @@ function WaterModal({
                     >
                       <Ionicons name="water" size={20} color="#2563EB" />
                       <Text className="text-blue-800 dark:text-blue-200 font-semibold ml-2">
-                        {amount} ml
+                        {t("waterModal.milliliters", { amount })}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -143,7 +146,7 @@ function WaterModal({
               {/* Alarm Section */}
               <View className="mt-6 w-full px-1 flex-1">
                 <ThemeText className="font-bold text-lg dark:text-black w-full mb-3 font-quicksand">
-                  {languages[language].water.alarm}
+                  {t("water.alarm")}
                 </ThemeText>
 
                 <FlatList

@@ -24,7 +24,12 @@
     "addedToStatsError": "Could not add food to stats. Please try again."
   },
   "language": {
-    "asuult": "Please select your language!"
+    "title": "Language",
+    "select": "Select your language",
+    "english": "English",
+    "mongolian": "Mongolian",
+    "save": "Save",
+    "asuult": "Please select your language"
   },
   "question1": {
     "tanid": "Do you have any dietary restrictions we should know about?",
@@ -193,7 +198,7 @@
       "step1": {
         "title": "Let's complete your profile",
         "desc": "Your choice will affect your workout plan.",
-        "date": "Date of birth",
+        "date": "Select your date of birth",
         "weight": "Weight",
         "height": "Height",
         "question1": {
@@ -233,9 +238,7 @@
   "next": "Next",
   "training": {
     "workout": "Training",
-    "duration": [
-      "minutes"
-    ],
+    "duration": "minutes",
     "hi": "Hi there",
     "hello": "Good day so far?",
     "special": "Special for you",
@@ -285,5 +288,112 @@
   "quiz": {
     "title": "Take Quiz",
     "desc": "Not sure what to eat? Let AI decide for you!"
+  },
+  "cameraTracking": {
+    "activatingAI": "Activating AI...",
+    "aiActive": "AI Active",
+    "infoLabel": "Info:",
+    "positionCorrect": "Position correct! Start your squats.",
+    "adjustPosition": "Adjust position:",
+    "success": "Success!"
+  },
+  "workoutModal": {
+    "category": "Category",
+    "level": "Level",
+    "duration": "Duration",
+    "repetitions": "Repetitions",
+    "sets": "Sets",
+    "equipment": "Equipment",
+    "none": "None",
+    "description": "Description"
+  },
+  "imagePickerModal": {
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery"
+  },
+  "registerPrompt": {
+    "title": "Register New Account?",
+    "noAccountFound": "No account was found for the email: {{email}}. Would you like to register a new account?",
+    "cancel": "Cancel",
+    "register": "Register"
+  },
+  "dailyTasks": {
+    "water": {
+      "title": "Drink water",
+      "target": "{{count}} glasses",
+      "unit_one": "{{count}} glass",
+      "unit_other": "{{count}} glasses"
+    },
+    "walk": {
+      "title": "Walk",
+      "target": "{{count}} steps",
+      "unit": "{{count}} steps"
+    },
+    "logMeal": {
+      "title": "Log meal",
+      "target": "{{count}} meals",
+      "unit_one": "{{count}} meal",
+      "unit_other": "{{count}} meals"
+    },
+    "workout": {
+      "title": "Workout",
+      "target": "{{count}} minutes",
+      "unit": "{{count}} min"
+    },
+    "sleep": {
+      "title": "Sleep",
+      "target": "{{count}} hours",
+      "unit_one": "{{count}} hr",
+      "unit_other": "{{count}} hrs"
+    },
+    "stretch": {
+      "title": "Stretch",
+      "target": "{{count}} minutes",
+      "unit": "{{count}} min"
+    },
+    "meditate": {
+      "title": "Meditate",
+      "target": "{{count}} minutes",
+      "unit": "{{count}} min"
+    },
+    "completedFraction": "{{completedCount}}/{{totalTasks}} completed"
+  },
+  "waterModal": {
+    "progressFraction": "{{current}} ml of {{goal}} ml",
+    "milliliters": "{{amount}} ml"
+  },
+  "fortuneCookie": {
+    "tapToCrack": "Tap to crack your fortune!",
+    "revealWisdom": "Reveal today's wisdom 🍪",
+    "quotes": [
+      "Your potential is limitless. 🚀",
+      "Small steps every day. 🐾",
+      "Fitness is a journey, not a destination. 🛤️",
+      "You're stronger than you think! 💪",
+      "Progress, not perfection. 🌱",
+      "Keep going—every rep counts! 🔁",
+      "Believe in the power of consistency. ⏳",
+      "One day or day one. You decide. 🎯",
+      "Success starts with showing up. 🏁",
+      "The only bad workout is the one you didn't do. 🏋️",
+      "Push past your limits—growth lives there. 🌄",
+      "Discipline beats motivation. 💥",
+      "Fuel your body, free your mind. 🍎🧘",
+      "You're not alone—your future self is cheering. 🎉",
+      "Show up for yourself today. You deserve it. 💖"
+    ]
+  },
+  "recommendation": "To keep you active we recommend a minimum of {{count}} steps",
+  "stepsModal": {
+    "title": "Steps",
+    "today": "Today",
+    "dailyGoal": "Daily step goal",
+    "recommendation": "To keep you active we recommend a minimum of {{count}} steps"
+  },
+  "friendsActivity": {
+    "title": "Friends Activity"
+  },
+  "custom": {
+    "hello": "Hello"
   }
 }

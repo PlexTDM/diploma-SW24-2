@@ -8,19 +8,14 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import LottieView from "lottie-react-native";
 const Asuult2 = () => {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const router = useRouter();
   const colorScheme = useColorScheme();
 
-  const question2 = languages[language].question2;
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  if (!question2) {
-    return <Text>Ачааллаж байна...</Text>;
-  }
 
   const isDarkMode = colorScheme === "dark";
   const backgroundColor = isDarkMode ? "#1e1e1e" : "#ffffff";
@@ -92,7 +87,7 @@ const Asuult2 = () => {
               flexShrink: 1,
             }}
           >
-            {question2.songo}
+            {t("question2.songo")}
           </Text>
         </View>
       </View>
@@ -100,7 +95,7 @@ const Asuult2 = () => {
       {/* Сонголтууд */}
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={question2.bi}
+        data={t("question2.bi", { returnObjects: true }) as string[]}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{ paddingBottom: 50, paddingTop: 60 }}
         renderItem={({ item, index }) => {
@@ -178,7 +173,7 @@ const Asuult2 = () => {
           }}
         >
           <Text style={{ color: "#FFFFFF", fontWeight: "bold", fontSize: 16 }}>
-            {question2.daraah}
+            {t("question2.daraah")}
           </Text>
         </TouchableOpacity>
       </View>
