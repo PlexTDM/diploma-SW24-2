@@ -11,17 +11,35 @@ import Animated, {
 } from "react-native-reanimated";
 import Text from "@/components/ui/FonttoiText";
 import ThemeView from "./ui/ThemeView";
-
+import { AuthContext } from "@/context/auth";
+import { use, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 interface PostCardProps {
   post: Post;
 }
 
 export default function PostCard({ post }: PostCardProps) {
+  const { user } = use(AuthContext);
   const router = useRouter();
-  const { currentUser, toggleLike, toggleBookmark } = useBlogStore();
+  const { toggleLike, toggleBookmark } = useBlogStore();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const isLiked = post.likes.includes(currentUser.id);
-  const isBookmarked = post.isBookmarked;
+  useEffect(() => {
+    if (post) {
+      setIsLiked(post.likes?.includes(user?._id ?? ""));
+    }
+  }, [post, user]);
+
+  useEffect(() => {
+    const getBookMarks = async () => {
+      const bookMarks = await AsyncStorage.getItem("bookMarks");
+      return bookMarks?.includes(post._id);
+    };
+    getBookMarks().then((isBookmarked) =>
+      setIsBookmarked(Boolean(isBookmarked))
+    );
+  }, [post._id]);
 
   const scale = useSharedValue(1);
 
@@ -34,11 +52,17 @@ export default function PostCard({ post }: PostCardProps) {
       withTiming(1.2, { duration: 150 }),
       withTiming(1, { duration: 150 })
     );
-    toggleLike(post.id);
+    toggleLike(post._id);
+    setIsLiked(!isLiked);
   };
 
-  const handleBookmark = () => toggleBookmark(post.id);
-  const navigateToDetail = () => router.push(`/post/${post.id}`);
+  const handleBookmark = () => {
+    toggleBookmark(post._id);
+    setIsBookmarked(!isBookmarked);
+  };
+
+  const navigateToDetail = () =>
+    router.push({ pathname: "/(blog)/[id]", params: { id: post._id } });
 
   const timeAgo = formatDistanceToNow(new Date(post.createdAt), {
     addSuffix: true,
@@ -54,12 +78,12 @@ export default function PostCard({ post }: PostCardProps) {
         {/* Author */}
         <View className="flex-row items-center mb-3">
           <Image
-            source={{ uri: post.author?.avatar }}
+            source={{ uri: post.author?.image ?? "" }}
             className="w-10 h-10 rounded-full mr-3"
           />
           <View>
             <Text className="font-bold text-neutral-800 dark:text-gray-100">
-              {post.author?.name}
+              {post.author?.username}
             </Text>
             <Text className="text-xs text-neutral-500 dark:text-gray-400">
               {timeAgo}
@@ -79,9 +103,9 @@ export default function PostCard({ post }: PostCardProps) {
         </Text>
 
         {/* Post Image */}
-        {post.imageUrl && (
+        {post.image && (
           <Image
-            source={{ uri: post.imageUrl }}
+            source={{ uri: post.image }}
             className="w-full aspect-video rounded-lg mb-3"
             resizeMode="cover"
           />

@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
   Text,
   TextInput,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   ActivityIndicator,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -21,6 +23,8 @@ const RegisterForm = () => {
   const { loading, register, user } = use(AuthContext);
   const store = useRegisterStore();
   const { setField } = store;
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
 
   const handleRegister = () => {
     const { progress, setField, ...rest } = store;
@@ -51,7 +55,11 @@ const RegisterForm = () => {
 
   return (
     <ThemeView className="relative">
-      <View className="flex-1 bg-white dark:bg-gray-900 relative justify-center items-center pt-24 p-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
+        className="flex-1 bg-white dark:bg-gray-900 relative justify-center items-center pt-24 p-6"
+      >
         <BlurEllipse left={-175} top={-400} size={250} />
         <View className="w-full h-full">
           <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
@@ -74,9 +82,12 @@ const RegisterForm = () => {
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleUsername}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
+                  autoFocus={false}
                   autoCorrect={false}
                   autoComplete="off"
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => emailRef.current?.focus()}
                 />
               </View>
 
@@ -87,9 +98,13 @@ const RegisterForm = () => {
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleEmail}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
+                  autoFocus={false}
                   autoCorrect={false}
+                  ref={emailRef}
                   autoComplete="off"
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
                 />
               </View>
 
@@ -99,11 +114,15 @@ const RegisterForm = () => {
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  autoFocus={false}
                   className="bg-white dark:bg-gray-800 text-black flex-1 dark:text-white px-6 py-5 text-lg"
                   onChangeText={handlePassword}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
                   autoComplete="off"
+                  returnKeyType="done"
+                  submitBehavior="blurAndSubmit"
+                  ref={passwordRef}
+                  onSubmitEditing={handleRegister}
                 />
                 <Pressable
                   className="w-[50px] h-full"
@@ -196,7 +215,7 @@ const RegisterForm = () => {
             </View>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemeView>
   );
 };

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -6,6 +6,8 @@ import {
   View,
   TouchableOpacity,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { useRouter } from "expo-router";
@@ -33,6 +35,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordHidden, setPasswordHidden] = useState(true);
+  const passwordRef = useRef<TextInput>(null);
 
   const logIn = () => {
     login(username, password);
@@ -82,7 +85,11 @@ const Login = () => {
       </View>
 
       {/* Main login content */}
-      <View className="flex-1 z-10 justify-center items-center pt-24 p-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
+        className="flex-1 z-10 justify-center items-center pt-24 p-6"
+      >
         <View className="w-full h-full">
           <View className="absolute bg-white dark:bg-black opacity-70 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
           <View className="flex-1 absolute bg-white dark:bg-gray-900 rounded-3xl inset-0 items-center justify-start pt-10 z-20">
@@ -102,6 +109,9 @@ const Login = () => {
                   onChangeText={setUsername}
                   style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
                 />
               </View>
 
@@ -115,6 +125,10 @@ const Login = () => {
                   onChangeText={setPassword}
                   style={{ fontSize: 16 }}
                   placeholderTextColor={theme === "dark" ? "#ccc" : "#89888E"}
+                  returnKeyType="done"
+                  submitBehavior="blurAndSubmit"
+                  ref={passwordRef}
+                  onSubmitEditing={logIn}
                 />
                 <Pressable
                   className="w-[50px] h-full absolute right-0 items-center justify-center"
@@ -206,7 +220,7 @@ const Login = () => {
         </View>
 
         {loading && <ActivityIndicator size="large" className="mt-4" />}
-      </View>
+      </KeyboardAvoidingView>
     </ThemeView>
   );
 };
