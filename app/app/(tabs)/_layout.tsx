@@ -1,8 +1,10 @@
 import { TabBar, ThemeView } from "@/components";
 import { useAppTheme } from "@/lib/theme";
 import { Tabs } from "expo-router";
+import { useTranslation } from "@/lib/language";
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
 
   return (

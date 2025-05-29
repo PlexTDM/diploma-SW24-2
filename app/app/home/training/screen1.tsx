@@ -226,20 +226,20 @@ function Screen1() {
           <Button
             mode="contained"
             className="rounded-xl"
-            contentStyle={{ paddingVertical: 12, backgroundColor: "gray" }}
+            contentStyle={{ paddingVertical: 12, backgroundColor: "#D8D8D8" }}
           >
-            Adapt Workout
+            {t("start.later")}
           </Button>
         </Pressable>
       </View>
       <View className="absolute bottom-28 left-5 right-5">
-        <Pressable onPress={() => router.push("/home/training/start")}>
+        <Pressable  onPress={() => router.push("/home/training/start")}>
           <Button
             mode="contained"
-            className="rounded-xl"
-            contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
+            className="rounded-xl bg-red-600"
+            contentStyle={{ paddingVertical: 12, backgroundColor: "#136CF1" }}
           >
-            Start Workout
+            {t("start.start")}
           </Button>
         </Pressable>
       </View>

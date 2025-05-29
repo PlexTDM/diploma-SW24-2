@@ -17,8 +17,10 @@ import { Search } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { ThemeView } from "@/components";
+import { useTranslation } from "@/lib/language";
 
 export default function FeedScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { posts } = useBlogStore();
   const router = useRouter();
@@ -37,10 +39,10 @@ export default function FeedScreen() {
         style={{ paddingTop: insets.top }}
       >
         <Text className="text-neutral-500 font-medium text-lg">
-          No posts yet
+          {t("post.notpost")}
         </Text>
         <Text className="text-neutral-400 text-center mt-2 px-10">
-          Create a new post or wait for others to share their thoughts
+          {t("post.create")}
         </Text>
       </View>
     );
@@ -49,7 +51,7 @@ export default function FeedScreen() {
     <SafeAreaView className="flex-1">
       <ThemeView className="flex-1 bg-white p-6 pt-0">
         <Text className="text-2xl font-bold mb-6 text-gray-900 dark:text-white  ">
-          Social
+          {t("post.title")}
         </Text>
         <View
           className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${
@@ -58,7 +60,7 @@ export default function FeedScreen() {
         >
           <Search size={18} color="#B6B7BC" />
           <TextInput
-            placeholder="Search posts"
+            placeholder={t("post.search")}
             placeholderTextColor="#B6B7BC"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}

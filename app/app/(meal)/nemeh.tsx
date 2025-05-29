@@ -56,9 +56,9 @@ export default function Meal() {
   );
 
   const scannerImages = [
-    { label: "Barcode", source: require("@/assets/barcode.png") },
-    { label: "Menu", source: require("@/assets/Menu.png") },
-    { label: "Fridge", source: require("@/assets/fridge.png") },
+    { label: t("breakfast.barcode"), source: require("@/assets/barcode.png") },
+    { label: t("breakfast.menu"), source: require("@/assets/Menu.png") },
+    { label: t("breakfast.Fridge"), source: require("@/assets/fridge.png") },
   ];
 
   return (
@@ -67,7 +67,7 @@ export default function Meal() {
       <View className="flex-row justify-between items-center">
         <Feather name="plus" size={20} color={isDark ? "white" : "black"} />
         <Text className="font-bold text-xl text-black dark:text-white">
-          Breakfast
+          {t("breakfast.title")}
         </Text>
         <View className="overflow-hidden">
           <Pressable
@@ -76,7 +76,9 @@ export default function Meal() {
             android_disableSound
             className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden"
           >
-            <Text className="font-bold text-lg text-[#758FF6]">Done</Text>
+            <Text className="font-bold text-lg text-[#758FF6]">
+              {t("breakfast.button")}
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -88,7 +90,7 @@ export default function Meal() {
             <Feather name="search" size={18} color="#666" />
           </View>
           <TextInput
-            placeholder="Search for food"
+            placeholder={t("breakfast.search")}
             placeholderTextColor={isDark ? "#aaa" : "#888"}
             clearButtonMode="always"
             autoCapitalize="none"
@@ -106,12 +108,12 @@ export default function Meal() {
       <View className="flex-row justify-between items-center mt-5">
         <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
           <Text className="text-base font-bold text-black dark:text-white">
-            Гараар оруулах
+            {t("breakfast.gar")}
           </Text>
         </Pressable>
         <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
           <Text className="text-base font-bold text-black dark:text-white">
-            Орц оруулах
+            {t("breakfast.orts")}
           </Text>
         </Pressable>
       </View>
@@ -132,7 +134,7 @@ export default function Meal() {
 
       {/* More Scanners */}
       <Text className="text-lg font-bold mt-6 text-black dark:text-white">
-        More Scanners
+        {t("breakfast.more")}
       </Text>
       <View className="flex-row items-center mt-5 gap-4">
         {scannerImages.map((item, i) => (
@@ -152,7 +154,7 @@ export default function Meal() {
 
       {/* Tabs */}
       <View className="flex-row justify-center mt-8 mb-2 space-x-8">
-        {["Сүүлд нэмэгдсэн", "Таалагдсан"].map((tab, index) => {
+        {[t("breakfast.recent"), t("breakfast.favorites")].map((tab, index) => {
           const active =
             (selectedTab === "recent" && index === 0) ||
             (selectedTab === "favorites" && index === 1);
