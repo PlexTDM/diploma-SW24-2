@@ -47,12 +47,12 @@ const Blog = () => {
     // rdcGoal,
   } = useStatsStore();
 
-  const mealTypeMapping: { [key: number]: string } = {
-    0: "breakfast", // Assuming 0 is breakfast, 1 is lunch etc.
-    1: "lunch",
-    2: "dinner",
-    3: "snack",
-  };
+  // const mealTypeMapping: { [key: number]: string } = {
+  //   0: "breakfast", // Assuming 0 is breakfast, 1 is lunch etc.
+  //   1: "lunch",
+  //   2: "dinner",
+  //   3: "snack",
+  // };
 
   useEffect(() => {
     const today = moment();
@@ -238,53 +238,59 @@ const Blog = () => {
             {t("meal.meal")}
           </ThemeText>
 
-          {meals.map((meal, index) => (
-            <View
-              key={index}
-              className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4"
-            >
-              {/* Food image */}
-              <View className="w-20 h-20 rounded-full overflow-hidden">
-                <Image
-                  source={meal.image}
-                  style={{ width: "100%", height: "100%" }}
-                  resizeMode="cover"
-                />
-              </View>
-
-              {/* Text info */}
-              <View className="flex-1 ml-4">
-                <Text
-                  className={`font-bold text-lg ${
-                    isDark ? "text-white" : "text-black"
-                  }`}
-                >
-                  {t(`meal.types.${meal.typeIndex}`)}
-                </Text>
-                <Text
-                  className={`text-sm ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  {meal.cal}
-                </Text>
-              </View>
-
-              {/* Tick or Plus icon - Temporarily default to Plus due to data structure mismatch */}
-              <Pressable
-                onPress={() => router.push("/(meal)/nemeh")}
-                className={`w-12 h-12 rounded-full items-center justify-center ${
-                  isDark ? "bg-gray-700" : "bg-gray-200"
-                }`}
+          {meals.map((meal, index) => {
+            const mealTypes = t("meal.type", { returnObjects: true }) as {
+              name: string;
+              desc: string;
+            }[];
+            return (
+              <View
+                key={index}
+                className="w-full h-28 border relative border-gray-300 rounded-3xl mt-6 flex-row items-center px-4"
               >
-                {/* {dailyFoods[selectedDate]?.[mealTypeMapping[meal.typeIndex]] ? (
-                  <Check size={24} color={isDark ? "#4ade80" : "#22c55e"} />
-                ) : ( */}
-                <Plus size={24} color={isDark ? "white" : "black"} />
-                {/* )} */}
-              </Pressable>
-            </View>
-          ))}
+                {/* Food image */}
+                <View className="w-20 h-20 rounded-full overflow-hidden">
+                  <Image
+                    source={meal.image}
+                    style={{ width: "100%", height: "100%" }}
+                    resizeMode="cover"
+                  />
+                </View>
+
+                {/* Text info */}
+                <View className="flex-1 ml-4">
+                  <Text
+                    className={`font-bold text-lg ${
+                      isDark ? "text-white" : "text-black"
+                    }`}
+                  >
+                    {mealTypes[meal.typeIndex]?.name}
+                  </Text>
+                  <Text
+                    className={`text-sm ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    {meal.cal}
+                  </Text>
+                </View>
+
+                {/* Tick or Plus icon - Temporarily default to Plus due to data structure mismatch */}
+                <Pressable
+                  onPress={() => router.push("/(meal)/nemeh")}
+                  className={`w-12 h-12 rounded-full items-center justify-center ${
+                    isDark ? "bg-gray-700" : "bg-gray-200"
+                  }`}
+                >
+                  {/* {dailyFoods[selectedDate]?.[mealTypeMapping[meal.typeIndex]] ? (
+                    <Check size={24} color={isDark ? "#4ade80" : "#22c55e"} />
+                  ) : ( */}
+                  <Plus size={24} color={isDark ? "white" : "black"} />
+                  {/* )} */}
+                </Pressable>
+              </View>
+            );
+          })}
 
           {/* Conditional rendering of DailyRecommendation based on dailyFoods content */}
           {dailyFoods && Object.keys(dailyFoods).length > 0 && (
@@ -297,7 +303,7 @@ const Blog = () => {
 };
 
 const DailyRecommendation = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     dailyFoods,
     breakfastEaten,
@@ -325,7 +331,7 @@ const DailyRecommendation = () => {
           isDark ? "text-white" : "text-black"
         }`}
       >
-        {t("dailyRec.title")}
+        {t("meal.recommendation")}
       </Text>
       {validFoodDates.map((dateKey) => {
         // Iterate over valid dates
@@ -379,16 +385,16 @@ const DailyRecommendation = () => {
                 {foodItem.food_name}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("dailyRec.calories")}: {foodItem.calories}
+                {t("meal.calories")}: {foodItem.calories}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("dailyRec.protein")}: {foodItem.protein}
+                {t("meal.protein")}: {foodItem.protein}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("dailyRec.carbs")}: {foodItem.carbs}
+                {t("meal.carbs")}: {foodItem.carbs}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 text-sm">
-                {t("dailyRec.fat")}: {foodItem.fat}
+                {t("meal.fat")}: {foodItem.fat}
               </Text>
             </View>
             {eatenKey && (

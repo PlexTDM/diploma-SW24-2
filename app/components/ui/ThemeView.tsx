@@ -2,7 +2,6 @@ import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
 
 type ThemeViewProps = ViewProps & {
   children: React.ReactNode;
-  className?: string;
   style?: StyleProp<ViewStyle>;
 };
 

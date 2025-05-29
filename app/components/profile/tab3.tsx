@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { ProgressBar, Icon } from "react-native-paper";
-import { ThemeView, ThemeText } from "@/components";
+import { ThemeText } from "@/components";
 import { useAppTheme } from "@/lib/theme";
 import moment from "moment";
 
@@ -59,13 +59,9 @@ export default function Tab3() {
 
         {/* Steps */}
         <View className="flex-row justify-center space-x-1">
-          <Text className="font-bold text-xl text-[#E9509F]">
-            {yourSteps}
-          </Text>
+          <Text className="font-bold text-xl text-[#E9509F]">{yourSteps}</Text>
           <ThemeText className="text-lg text-gray-500 mx-2">vs</ThemeText>
-          <Text className="font-bold text-xl text-blue-500">
-            {alexSteps}
-          </Text>
+          <Text className="font-bold text-xl text-blue-500">{alexSteps}</Text>
         </View>
 
         {/* Progress Bars */}
