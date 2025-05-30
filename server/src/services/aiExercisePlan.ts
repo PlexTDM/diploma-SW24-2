@@ -1,8 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { IUser } from "@/models/user";
 import { config } from "dotenv";
-import exercises from "./exercises.json";
+import fs from "fs";
 config();
+
+const exercises: IExercise[] = JSON.parse(
+  fs.readFileSync("./src/services/exercises.json", "utf8")
+);
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 

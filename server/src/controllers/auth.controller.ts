@@ -16,8 +16,7 @@ import axios from "axios";
 import * as jose from "jose";
 import { BASE_URL } from "@/routes/constants";
 import { APP_SCHEME } from "@/routes/constants";
-import { bucket } from "@/config/firebase";
-import { v4 as uuidv4 } from "uuid";
+import { uploadProfileImage } from "@/helpers/uploadImage";
 import { redisService } from "@/services/redis";
 import DailyGoal from "@/models/dailyGoal";
 import { generateDailyGoals } from "@/services/aiGoals";
@@ -255,37 +254,7 @@ class AuthController {
       const updateData: any = { ...otherBodyFields };
 
       if (image) {
-        if (user.image) {
-          try {
-            const oldImageUrl = new URL(user.image);
-            // Extract the path after the bucket name
-            const pathSegments = oldImageUrl.pathname.split("/");
-            const oldImagePath = pathSegments.slice(2).join("/");
-            if (oldImagePath) {
-              const oldFile = bucket.file(oldImagePath);
-              await oldFile.delete();
-            }
-          } catch (error: any) {
-            console.error("Error deleting old image:", error.message);
-          }
-        }
-
-        // Generate a unique filename
-        const filename = `users/${user._id}/pfp-${uuidv4()}`;
-
-        // Upload to Firebase Storage
-        const file = bucket.file(filename);
-        await file.save(image.buffer, {
-          metadata: {
-            contentType: image.mimetype,
-          },
-        });
-
-        await file.makePublic();
-
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
-
-        updateData.image = publicUrl;
+        updateData.image = await uploadProfileImage(image, user);
       }
 
       if (willUpdatePassword) {

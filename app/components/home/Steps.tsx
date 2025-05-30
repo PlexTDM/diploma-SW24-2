@@ -1,7 +1,7 @@
 import { useTranslation } from "@/lib/language";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
-import { ThemeText } from "@/components";
+import { ThemeText, ThemeView } from "@/components";
 import Animated, {
   interpolate,
   interpolateColor,

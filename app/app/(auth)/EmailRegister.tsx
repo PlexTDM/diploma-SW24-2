@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
   Text,
   TextInput,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   ActivityIndicator,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -21,6 +23,8 @@ const RegisterForm = () => {
   const { loading, register, user } = use(AuthContext);
   const store = useRegisterStore();
   const { setField } = store;
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
 
   const handleRegister = () => {
     const { progress, setField, ...rest } = store;
@@ -51,7 +55,11 @@ const RegisterForm = () => {
 
   return (
     <ThemeView className="relative">
-      <View className="flex-1 bg-white dark:bg-gray-900 relative justify-center items-center pt-24 p-6">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 35 : 0}
+        className="flex-1 bg-white dark:bg-gray-900 relative justify-center items-center pt-24 p-6"
+      >
         <BlurEllipse left={-175} top={-400} size={250} />
         <View className="w-full h-full">
           <View className="absolute bg-white dark:bg-black opacity-50 -top-9 left-6 right-6 h-10 rounded-t-3xl items-center justify-center z-10" />
@@ -64,7 +72,7 @@ const RegisterForm = () => {
               focusable={false}
             />
             <Text className="text-3xl text-center mb-6 font-semibold dark:text-gray-100">
-              Register your account
+              {t("account.title")}
             </Text>
             <View className="w-5/6 mb-4">
               <View className="mb-4">
@@ -74,9 +82,12 @@ const RegisterForm = () => {
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleUsername}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
+                  autoFocus={false}
                   autoCorrect={false}
                   autoComplete="off"
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => emailRef.current?.focus()}
                 />
               </View>
 
@@ -87,9 +98,13 @@ const RegisterForm = () => {
                   className="bg-white dark:bg-gray-800 text-black dark:text-white rounded-full px-6 py-5 border border-gray-300 dark:border-gray-600 text-lg"
                   onChangeText={handleEmail}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
+                  autoFocus={false}
                   autoCorrect={false}
+                  ref={emailRef}
                   autoComplete="off"
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => passwordRef.current?.focus()}
                 />
               </View>
 
@@ -99,11 +114,15 @@ const RegisterForm = () => {
                   secureTextEntry={passwordHidden}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  autoFocus={false}
                   className="bg-white dark:bg-gray-800 text-black flex-1 dark:text-white px-6 py-5 text-lg"
                   onChangeText={handlePassword}
                   placeholderTextColor={"#89888E"}
-                  autoFocus={true}
                   autoComplete="off"
+                  returnKeyType="done"
+                  submitBehavior="blurAndSubmit"
+                  ref={passwordRef}
+                  onSubmitEditing={handleRegister}
                 />
                 <Pressable
                   className="w-[50px] h-full"
@@ -133,7 +152,7 @@ const RegisterForm = () => {
                   onPress={() => router.push("/(auth)/ForgotPassword")}
                 >
                   <Text className="text-blue-700 my-3 dark:text-gray-300 underline text-sm">
-                    Forgot Password?
+                    {t("account.forget")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -155,7 +174,7 @@ const RegisterForm = () => {
               </View>
               <View className="flex-row justify-center w-full items-center gap-2">
                 <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
-                <Text className="text-gray-500 my-3">or login with</Text>
+                <Text className="text-gray-500 my-3">{t("account.or")}</Text>
                 <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
               </View>
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
@@ -184,19 +203,19 @@ const RegisterForm = () => {
             </View>
             <View className="flex-row justify-center mt-8">
               <Text className="dark:text-gray-200">
-                Already have an account?{" "}
+                {t("account.already")}{" "}
               </Text>
               <Text
                 className="text-blue-700 dark:text-gray-200 font-semibold dark:underline"
                 disabled={loading}
                 onPress={gotoLogin}
               >
-                Login
+                {t("account.login")}
               </Text>
             </View>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemeView>
   );
 };

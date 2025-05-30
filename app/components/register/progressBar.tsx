@@ -1,7 +1,7 @@
 import { useRegisterStore } from "@/stores/register";
 import { useNavigation, useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { View, Pressable } from "react-native";
+import { View } from "react-native";
 import { Button, Icon } from "react-native-paper";
 import Animated, {
   Easing,

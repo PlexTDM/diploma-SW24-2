@@ -8,12 +8,14 @@ interface ChatState {
   isLoadingHistory: boolean;
   error: string | null;
   isLoading: boolean;
+  hasShownAuthError: boolean;
   sendMessage: (
     message: string,
     onChunk: (chunk: string) => void
   ) => Promise<string | undefined>;
   clearChat: () => Promise<void>;
   getConversationHistory: () => Promise<void>;
+  clearError: () => void;
 }
 
 const api = process.env.EXPO_PUBLIC_API_URL as string;
@@ -24,10 +26,21 @@ export const useChatStore = create<ChatState>((set, get) => ({
   isSending: false,
   error: null,
   isLoading: false,
+  hasShownAuthError: false,
+  clearError: () => set({ error: null, hasShownAuthError: false }),
   sendMessage: async (message: string, onChunk: (chunk: string) => void) => {
-    set({ isSending: true });
+    set({ isSending: true, error: null });
     try {
       const accessToken = await tokenCache?.getToken("accessToken");
+      if (!accessToken) {
+        if (!get().hasShownAuthError) {
+          set({
+            error: "Authentication token not found. Please log in.",
+            hasShownAuthError: true,
+          });
+        }
+        return;
+      }
       return new Promise((resolve, reject) => {
         const es = new EventSource(`${api}/chatbot/message`, {
           method: "POST",
@@ -109,23 +122,26 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       const accessToken = await tokenCache?.getToken("accessToken");
       if (!accessToken) {
-        set({
-          error: "Authentication token not found. Please log in.",
-          isLoadingHistory: false,
-        });
-        // Add a default initial message if no history and no token
-        if (get().messages.length === 0) {
+        if (!get().hasShownAuthError) {
           set({
-            messages: [
-              {
-                id: "init-no-auth",
-                content:
-                  "Hello! I'm your AI assistant. Sign in to see your history.",
-                role: "model",
-                timestamp: new Date(),
-              },
-            ],
+            error: "Authentication token not found. Please log in.",
+            isLoadingHistory: false,
+            hasShownAuthError: true,
           });
+          // Add a default initial message if no history and no token
+          if (get().messages.length === 0) {
+            set({
+              messages: [
+                {
+                  id: "init-no-auth",
+                  content:
+                    "Hello! I'm your AI assistant. Sign in to see your history.",
+                  role: "model",
+                  timestamp: new Date(),
+                },
+              ],
+            });
+          }
         }
         return;
       }

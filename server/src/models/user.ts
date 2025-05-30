@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model, ObjectId } from "mongoose";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -11,7 +11,7 @@ export enum Gender {
 }
 
 export interface IUser extends Document {
-  _id: string;
+  _id: ObjectId;
   username: string;
   email: string;
   stats?: Record<string, any>;
@@ -29,7 +29,7 @@ export interface IUser extends Document {
   role: Role;
   bio?: string;
   image?: string | null;
-  posts?: string[];
+  posts?: ObjectId[];
   isEmailVerified: boolean;
   hasOnboarded: boolean;
   emailVerificationToken?: string;
@@ -133,7 +133,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     posts: {
       type: [Schema.Types.ObjectId],
-      ref: "Post",
+      ref: "Blog",
       required: false,
       default: [],
     },

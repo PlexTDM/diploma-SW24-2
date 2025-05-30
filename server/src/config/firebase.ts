@@ -1,5 +1,9 @@
 import admin from "firebase-admin";
-import serviceAccount from "./firebase_config.json";
+import fs from "fs";
+
+const serviceAccount = JSON.parse(
+  fs.readFileSync("./src/config/firebase_config.json", "utf8")
+);
 
 if (!process.env.FIREBASE_STORAGE_BUCKET) {
   throw new Error("FIREBASE_STORAGE_BUCKET environment variable is not set");

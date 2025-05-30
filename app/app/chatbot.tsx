@@ -8,7 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useAppTheme } from "@/lib/theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -20,6 +20,7 @@ import MessageBubble from "@/components/chat/messageBubble";
 import Header from "@/components/chat/Header";
 import { StatusBar } from "expo-status-bar";
 import ListFooterElement from "@/components/chat/ListFooterElement";
+import { AuthContext } from "@/context/auth";
 // import CameraTracking from "@/components/cameraTracking";
 
 const LoadingIndicator = () => {
@@ -38,6 +39,7 @@ const LoadingIndicator = () => {
 };
 
 export default function ChatScreen() {
+  const { user } = use(AuthContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
@@ -52,7 +54,15 @@ export default function ChatScreen() {
     isLoadingHistory,
     error,
     messages: storeMessages,
+    clearError,
   } = useChatStore();
+
+  // Clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   useEffect(() => {
     useChatStore.getState().getConversationHistory();
@@ -149,7 +159,11 @@ export default function ChatScreen() {
             msg.id === streamingMessageId ? { ...msg, content: error } : msg
           )
         );
-      } else if (error && !streamingMessageId) {
+      } else if (
+        error &&
+        !streamingMessageId &&
+        !messages.some((m) => m.id === "error-1")
+      ) {
         setMessages((prev) => [
           {
             id: "error-1",
@@ -157,8 +171,8 @@ export default function ChatScreen() {
             role: "model",
             timestamp: new Date(),
           },
+          ...prev,
         ]);
-        console.warn("Chat store general error:", error);
       }
     }
   }, [error, messages, streamingMessageId]);
@@ -167,6 +181,9 @@ export default function ChatScreen() {
   const handleClearChat = () => {
     clearChat();
   };
+
+  const inputDisabled =
+    !inputText.trim() || isSending || isLoadingHistory || !user;
 
   return (
     <SafeAreaView className="dark:bg-[#1A202C] bg-white flex-1" edges={["top"]}>
@@ -243,16 +260,14 @@ export default function ChatScreen() {
             submitBehavior="blurAndSubmit"
             returnKeyType="send"
             onSubmitEditing={handleSend}
-            editable={!isSending && !isLoadingHistory}
+            editable={!inputDisabled}
             style={{ textAlignVertical: "top" }}
           />
           <Pressable
             onPress={handleSend}
-            disabled={!inputText.trim() || isSending || isLoadingHistory}
+            disabled={inputDisabled}
             className={`w-10 h-10 rounded-full items-center justify-center ${
-              inputText.trim() && !isSending && !isLoadingHistory
-                ? "bg-blue-500"
-                : "bg-gray-300 dark:bg-gray-700"
+              inputDisabled ? "bg-gray-300 dark:bg-gray-700" : "bg-blue-500"
             }`}
           >
             {isSending ? (
@@ -262,7 +277,7 @@ export default function ChatScreen() {
                 name="send"
                 size={20}
                 color={
-                  inputText.trim() && !isSending && !isLoadingHistory
+                  inputDisabled
                     ? "white"
                     : theme === "dark"
                     ? "#4B5563"

@@ -34,7 +34,7 @@ export default function Start() {
             className="rounded-xl"
             contentStyle={{ paddingVertical: 12, backgroundColor: "white" }}
           >
-            <Text className="text-black font-bold">I&apos;ll Do it Later</Text>
+            <Text className="text-black font-bold">{t("start.later")}</Text>
           </Button>
         </Pressable>
       </View>
@@ -45,7 +45,7 @@ export default function Start() {
             className="rounded-xl"
             contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
           >
-            Start
+            {t("start.start")}
           </Button>
         </Pressable>
       </View>
