@@ -186,6 +186,8 @@ export default function Step1() {
             keyboardType="numeric"
             placeholderClassName="text-gray-500 dark:text-white"
             className="flex-1 text-base text-gray-800 dark:text-white font-medium"
+            submitBehavior="blurAndSubmit"
+            returnKeyType="done"
           />
         </View>
         <Pressable
@@ -211,6 +213,8 @@ export default function Step1() {
             onChangeText={handleHeight}
             keyboardType="numeric"
             className="flex-1 text-base text-gray-800 dark:text-white font-medium"
+            submitBehavior="blurAndSubmit"
+            returnKeyType="done"
           />
         </View>
         <Pressable
