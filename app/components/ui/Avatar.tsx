@@ -9,11 +9,16 @@ interface AvatarProps {
 
 export default function Avatar({ size = 100, image }: AvatarProps) {
   const { user } = use(AuthContext);
+
   return (
     <Image
       source={
-        image || user?.image
-          ? { uri: image || user?.image }
+        image !== undefined
+          ? image
+            ? { uri: image }
+            : require("@/assets/img/profile.png")
+          : user?.image
+          ? { uri: user.image }
           : require("@/assets/img/profile.png")
       }
       style={{

@@ -200,15 +200,10 @@ export default function PostDetailScreen() {
         </View>
       </ScrollView>
 
-      <View className="p-4 bottom-7 flex-row">
-        <Image
-          source={{
-            uri: currentUser.image || "https://via.placeholder.com/32",
-          }}
-          className="w-8 h-8 rounded-full mr-3"
-        />
+      <View className="p-4 bottom-7 flex-row bg-white dark:bg-gray-900">
+        <Avatar image={currentUser.image} size={32} />
         <TextInput
-          className="flex-1 bg-neutral-100 rounded-full px-4 py-2 mr-2 text-neutral-700"
+          className="flex-1 bg-neutral-100 rounded-full px-4 py-2 mr-2 ml-3 text-neutral-700"
           placeholder="Add a comment..."
           placeholderTextColor="#9CA3AF"
           value={comment}
