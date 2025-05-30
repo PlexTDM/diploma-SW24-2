@@ -7,6 +7,10 @@
     "icon": "./assets/img/logo.png",
     "scheme": "coolfitness",
     "userInterfaceStyle": "automatic",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.unnamed0631.coolfitness",
