@@ -24,6 +24,7 @@ export default function PostCard({ post }: PostCardProps) {
   const { toggleLike, toggleBookmark } = useBlogStore();
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likes.length);
 
   useEffect(() => {
     if (post) {
@@ -54,6 +55,7 @@ export default function PostCard({ post }: PostCardProps) {
     );
     toggleLike(post._id);
     setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
   };
 
   const handleBookmark = () => {
@@ -126,7 +128,7 @@ export default function PostCard({ post }: PostCardProps) {
               />
             </Animated.View>
             <Text className="ml-1 text-neutral-600 dark:text-gray-300">
-              {post.likes.length}
+              {likeCount}
             </Text>
           </Pressable>
 

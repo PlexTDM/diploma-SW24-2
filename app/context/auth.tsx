@@ -174,7 +174,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const data = await refreshResponse.json();
         const newAccessToken = data.accessToken;
         const newRefreshToken = data.refreshToken;
-        console.log("newAccessToken", data.user);
+        console.log("---------------newAccessToken", data);
         setUser(data.user as User);
         if (data.user.dailyGoals)
           await loadGoals(data.user.dailyGoals as DailyGoals);
@@ -571,6 +571,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     return success;
   }, [user, updateUser]);
 
+  // login
   useEffect(() => {
     const checkLogin = async () => {
       setIsLoading(true);
@@ -682,7 +683,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
     return () => clearInterval(intervalId);
   }, [loggedIn, refreshToken, refreshAccessToken]);
-  console.log("user", user);
 
   return (
     <AuthContext.Provider

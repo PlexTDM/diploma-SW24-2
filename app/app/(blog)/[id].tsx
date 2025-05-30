@@ -22,7 +22,7 @@ import {
 } from "lucide-react-native";
 import CommentItem from "@/components/CommentItem";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { ThemeText } from "@/components";
+import { Avatar, ThemeText } from "@/components";
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -36,6 +36,7 @@ export default function PostDetailScreen() {
   } = useBlogStore();
   const [post, setPost] = useState<Post | null>(null);
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   // user comment that is being typed
   const [comment, setComment] = useState("");
   // comments of the post
@@ -48,6 +49,7 @@ export default function PostDetailScreen() {
     (async () => {
       const fetchedPost = await getPostById(id as string);
       setPost(fetchedPost as Post);
+      setLikeCount(fetchedPost?.likes.length || 0);
     })();
     (async () => {
       const fetchedComments = await getComments(id as string);
@@ -85,6 +87,7 @@ export default function PostDetailScreen() {
   const handleLike = () => {
     toggleLike(post._id);
     setIsLiked(!isLiked);
+    setLikeCount(Math.max(0, likeCount + (isLiked ? -1 : 1)));
   };
 
   const handleBookmark = () => {
@@ -121,13 +124,8 @@ export default function PostDetailScreen() {
       <ScrollView className="flex-1">
         <View className="p-4">
           <View className="border border-gray-300 rounded-3xl p-7 bg-white dark:bg-gray-800">
-            <View className="flex-row items-center mb-3">
-              <Image
-                source={{
-                  uri: post.author.image || "https://via.placeholder.com/40",
-                }}
-                className="w-10 h-10 rounded-full mr-3"
-              />
+            <View className="flex-row items-center mb-3 gap-3">
+              <Avatar image={post.author.image} size={40} />
               <View>
                 <Text className="font-bold text-neutral-800 dark:text-white">
                   {post.author.username}
@@ -162,9 +160,7 @@ export default function PostDetailScreen() {
                   color={isLiked ? "#FF7256" : "#6B7280"}
                   fill={isLiked ? "#FF7256" : "transparent"}
                 />
-                <Text className="ml-1 text-neutral-600">
-                  {post.likes?.length || 0}
-                </Text>
+                <Text className="ml-1 text-neutral-600">{likeCount}</Text>
               </Pressable>
 
               <View className="flex-row items-center">

@@ -1,7 +1,7 @@
 import { ThemeView } from "@/components";
 import { useState, useRef, useEffect, useMemo, useContext } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
-import { addMonths, subMonths, format } from "date-fns";
+import { addMonths, subMonths } from "date-fns";
 import MiniCalendar from "@/components/MiniCalendar";
 import ConfettiCannon from "react-native-confetti-cannon";
 import useDailyTaskStore from "@/stores/dailyTaskStore";

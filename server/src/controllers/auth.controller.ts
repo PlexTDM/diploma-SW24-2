@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
@@ -39,9 +39,9 @@ async function updateUserGoals(user: IUser) {
       const newGoals = await generateDailyGoals({
         age: user.birthday
           ? Math.floor(
-            (Date.now() - new Date(user.birthday).getTime()) /
-            (365.25 * 24 * 60 * 60 * 1000)
-          )
+              (Date.now() - new Date(user.birthday).getTime()) /
+                (365.25 * 24 * 60 * 60 * 1000)
+            )
           : undefined,
         weight: user.weight,
         height: user.height,
@@ -267,7 +267,10 @@ class AuthController {
         .select("-password -emailVerificationToken")
         .exec();
 
-      req.redis.set(`user:${user._id}`, JSON.stringify({ ...newUser!.toJSON() }));
+      req.redis.set(
+        `user:${user._id}`,
+        JSON.stringify({ ...newUser!.toJSON() })
+      );
 
       const accessToken = generateAccessToken(newUser!);
       const refreshToken = await generateRefreshToken(newUser!);

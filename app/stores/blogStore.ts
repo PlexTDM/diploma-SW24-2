@@ -1,6 +1,7 @@
 import { API_URL } from "@/utils/constants";
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tokenCache } from "@/utils/cache";
 
 interface Author {
   _id: string;
@@ -73,7 +74,7 @@ export const useBlogStore = create<BlogState>((set, get) => {
 
   const sendLikeToServer = async (postId: string) => {
     try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       if (!accessToken) return;
 
       const response = await fetch(`${API_URL}/post/${postId}/like`, {
@@ -128,7 +129,7 @@ export const useBlogStore = create<BlogState>((set, get) => {
 
   const sendCommentLikeToServer = async (postId: string, commentId: string) => {
     try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       if (!accessToken) return;
 
       const response = await fetch(

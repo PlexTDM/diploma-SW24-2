@@ -1,8 +1,9 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { formatDistanceToNow } from "date-fns";
 import { Heart } from "lucide-react-native";
 import { useBlogStore, Comment } from "@/stores/blogStore";
 import { useState } from "react";
+import { Avatar } from "@/components";
 interface CommentItemProps {
   comment: Comment;
 }
@@ -30,11 +31,8 @@ export default function CommentItem({ comment }: CommentItemProps) {
     <View className="mb-4 p-2 border-b border-gray-200">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">
-          <Image
-            source={{ uri: comment.author.image }}
-            className="w-16 h-16 rounded-full mr-3"
-          />
-          <View className="">
+          <Avatar image={comment.author.image} size={40} />
+          <View className="ml-2">
             <View className="flex-row items-center mb-1">
               <Text className="font-bold text-neutral-800 mr-2 dark:text-white">
                 {comment.author.username}
