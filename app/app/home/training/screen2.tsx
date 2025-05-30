@@ -235,20 +235,19 @@ export default function Screen1() {
               );
             })}
           </View>
-          <ThemeText className="text-xl font-bold mt-8">Super Sets</ThemeText>
+          <ThemeText className="text-xl font-bold mt-8">{t("dasgal.super")}</ThemeText>
           <ThemeText className="text-gray-600 mt-3">
-            Exercises performed consecutively without rest targetiing different
-            muscle groups.
+            {t("dasgal.text")}
           </ThemeText>
           <View className="border-y border-gray-200 py-4 mt-5 flex-row items-center justify-between">
-            <ThemeText className="text-xl font-bold">Cardio Training</ThemeText>
+            <ThemeText className="text-xl font-bold">{t("dasgal.blah")}</ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0 of 6</ThemeText>
               <ChevronRight size={20} color="black" />
             </View>
           </View>
           <View className="border-y border-gray-200 py-4 flex-row items-center justify-between">
-            <ThemeText className="text-xl font-bold">Equipment</ThemeText>
+            <ThemeText className="text-xl font-bold">{t("dasgal.equipment")}</ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0 of 42</ThemeText>
               <ChevronRight size={20} color="black" />
@@ -256,7 +255,7 @@ export default function Screen1() {
           </View>
           <View className="border-y border-gray-200 py-4 flex-row items-center justify-between">
             <ThemeText className="text-xl font-bold">
-              Health Restrictions
+              {t("dasgal.health")}
             </ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0</ThemeText>
@@ -271,7 +270,7 @@ export default function Screen1() {
           className="rounded-xl"
           contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
         >
-          Create New Session
+          {t("dasgal.button")}
         </Button>
       </View>
     </ThemeView>

@@ -168,8 +168,6 @@ export default function Step1() {
         <DateTimePicker
           value={dob || new Date()}
           mode="date"
-          display={"calendar"}
-          design={"default"}
           minimumDate={new Date(1900, 0, 1)}
           maximumDate={new Date()}
           onChange={handleDob}

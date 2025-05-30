@@ -72,7 +72,7 @@ const RegisterForm = () => {
               focusable={false}
             />
             <Text className="text-3xl text-center mb-6 font-semibold dark:text-gray-100">
-              Register your account
+              {t("account.title")}
             </Text>
             <View className="w-5/6 mb-4">
               <View className="mb-4">
@@ -152,7 +152,7 @@ const RegisterForm = () => {
                   onPress={() => router.push("/(auth)/ForgotPassword")}
                 >
                   <Text className="text-blue-700 my-3 dark:text-gray-300 underline text-sm">
-                    Forgot Password?
+                    {t("account.forget")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -174,7 +174,7 @@ const RegisterForm = () => {
               </View>
               <View className="flex-row justify-center w-full items-center gap-2">
                 <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
-                <Text className="text-gray-500 my-3">or login with</Text>
+                <Text className="text-gray-500 my-3">{t("account.or")}</Text>
                 <View className="bg-gray-300 dark:bg-gray-600 h-[1px] flex-1" />
               </View>
               <View className="flex-row justify-center space-x-4 mt-4 gap-8">
@@ -203,14 +203,14 @@ const RegisterForm = () => {
             </View>
             <View className="flex-row justify-center mt-8">
               <Text className="dark:text-gray-200">
-                Already have an account?{" "}
+                {t("account.already")}{" "}
               </Text>
               <Text
                 className="text-blue-700 dark:text-gray-200 font-semibold dark:underline"
                 disabled={loading}
                 onPress={gotoLogin}
               >
-                Login
+                {t("account.login")}
               </Text>
             </View>
           </View>

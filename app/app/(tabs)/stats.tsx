@@ -90,7 +90,7 @@ const Blog = () => {
         <View className="items-center px-10 pb-20">
           {/* Header */}
           <View className="flex-row justify-between items-center w-full mb-4">
-            <ThemeText className="font-bold text-2xl">Calories</ThemeText>
+            <ThemeText className="font-bold text-2xl">{t("stats.title")}</ThemeText>
             <Feather name="bell" size={20} color={isDark ? "#ccc" : "black"} />
           </View>
 

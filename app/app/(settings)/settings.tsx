@@ -80,7 +80,9 @@ export default function Settings() {
       {/* Account section */}
       {user && (
         <>
-          <ThemeText className="text-xl font-semibold mt-8">Account</ThemeText>
+          <ThemeText className="text-xl font-semibold mt-8">
+            {t("settings.account")}
+          </ThemeText>
           <Pressable
             className="flex-row mt-4 items-center justify-between"
             onPress={() => router.push("/(settings)/Edit")}
@@ -114,34 +116,36 @@ export default function Settings() {
 
       {/* Settings section */}
       {user && (
-        <ThemeText className="text-xl font-semibold mt-8">Settings</ThemeText>
+        <ThemeText className="text-xl font-semibold mt-8">
+          {t("settings.title")}
+        </ThemeText>
       )}
 
       {/* Notifications */}
       <SettingsItem
         icon="bell-outline"
-        title="Notifications"
+        title={t("settings.notifications")}
         onPress={() => router.push("/(settings)/Notifications")}
       />
 
       {/* Close Friends */}
       <SettingsItem
         icon="account-group-outline"
-        title="Close Friends"
+        title={t("settings.closeFriends")}
         onPress={() => router.push("/(settings)/CloseFriends")}
       />
 
       {/* Privacy */}
       <SettingsItem
         icon="lock-outline"
-        title="Privacy"
+        title={t("settings.Privacy")}
         onPress={() => router.push("/(settings)/Privacy")}
       />
 
       {/* Language */}
       <SettingsItem
         icon="translate"
-        title="Language"
+        title={t("settings.language")}
         showChevron={false}
         rightElement={
           <Pressable onPress={toggleLang}>
@@ -157,7 +161,7 @@ export default function Settings() {
       {/* Dark Mode Switch */}
       <SettingsItem
         icon="moon-waning-crescent"
-        title="Dark Mode"
+        title={t("settings.darkMode")}
         showChevron={false}
         rightElement={
           <Switch
@@ -173,7 +177,7 @@ export default function Settings() {
       {user && (
         <SettingsItem
           icon="logout"
-          title="Logout"
+          title={t("settings.logout")}
           showChevron={false}
           onPress={() => {
             logout();

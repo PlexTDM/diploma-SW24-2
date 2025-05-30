@@ -17,9 +17,11 @@ import { Search } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { ThemeView } from "@/components";
+import { useTranslation } from "@/lib/language";
 import { AuthContext } from "@/context/auth";
 
 export default function FeedScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { user } = use(AuthContext);
   const { posts, setUser, loadPosts, loadingPosts } = useBlogStore();
@@ -42,9 +44,17 @@ export default function FeedScreen() {
 
   if (!user) {
     return (
-      <ThemeView className="justify-center items-center">
-        <Text>Please login to continue</Text>
-      </ThemeView>
+      <View
+        className="flex-1 bg-white justify-center items-center"
+        style={{ paddingTop: insets.top }}
+      >
+        <Text className="text-neutral-500 font-medium text-lg">
+          {t("post.notpost")}
+        </Text>
+        <Text className="text-neutral-400 text-center mt-2 px-10">
+          {t("post.create")}
+        </Text>
+      </View>
     );
   }
 
@@ -52,7 +62,7 @@ export default function FeedScreen() {
     <SafeAreaView className="flex-1">
       <ThemeView className="flex-1 bg-white p-6 pt-0">
         <Text className="text-2xl font-bold mb-6 text-gray-900 dark:text-white  ">
-          Social
+          {t("post.title")}
         </Text>
         <View
           className={`flex-row w-full justify-start items-center dark:border-gray-700 rounded-full p-2 mb-4 h-14 pl-3 gap-2 border-2 ${
@@ -61,7 +71,7 @@ export default function FeedScreen() {
         >
           <Search size={18} color="#B6B7BC" />
           <TextInput
-            placeholder="Search posts"
+            placeholder={t("post.search")}
             placeholderTextColor="#B6B7BC"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}

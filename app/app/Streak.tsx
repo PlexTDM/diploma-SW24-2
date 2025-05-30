@@ -7,8 +7,10 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import useDailyTaskStore from "@/stores/dailyTaskStore";
 import { AuthContext } from "@/context/auth";
 import { useAppTheme } from "@/lib/theme";
+import { useTranslation } from "@/lib/language";
 
 export default function Streak() {
+  const { t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const confettiRef = useRef<ConfettiCannon>(null);
 
@@ -103,7 +105,7 @@ export default function Streak() {
       <ThemeView className="flex-1 bg-white dark:bg-gray-900">
         <View className="w-full px-2 mb-2">
           <Text className="text-lg font-bold text-black dark:text-white mt-10 text-center">
-            Streak Days for {format(currentDate, "MMMM yyyy")}
+            {t("streak.title")}
           </Text>
         </View>
 
@@ -111,7 +113,7 @@ export default function Streak() {
           <View className="flex-row justify-between mb-4">
             <View className="flex-1 bg-blue-100 p-3 rounded-xl mr-2">
               <Text className="text-md font-semibold text-blue-800">
-                Current Streak
+                {t("streak.current")}
               </Text>
               <Text className="text-2xl font-bold text-blue-900">
                 {globalCurrentStreak} Days
@@ -119,7 +121,7 @@ export default function Streak() {
             </View>
             <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
               <Text className="text-md font-semibold text-yellow-800">
-                Longest Streak
+                {t("streak.longest")}
               </Text>
               <Text className="text-2xl font-bold text-yellow-900">
                 {globalLongestStreak} Days
@@ -128,7 +130,10 @@ export default function Streak() {
           </View>
 
           {isLoadingMonthlyDays ? (
-            <View className="h-64 flex justify-center items-center">
+            <View
+              className="h-64 flex justify-center items-center"
+              style={{ height: 362 }}
+            >
               <ActivityIndicator
                 size="large"
                 color={theme === "dark" ? "#FFFFFF" : "#0000FF"}
@@ -148,7 +153,7 @@ export default function Streak() {
           {/* Achievements */}
           <View className="mt-6">
             <Text className="text-lg font-semibold text-black dark:text-white mb-4 text-center">
-              Streak Achievements
+              {t("streak.achievements")}
             </Text>
             <View className="flex-row flex-wrap justify-between gap-4">
               {achievements.map((achievement, index) => {
