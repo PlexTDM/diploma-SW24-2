@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-native";
 import moment, { Moment } from "moment";
-import { useTranslation } from "@/lib/language";
+import { i18n, useTranslation } from "@/lib/language";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemeText } from "@/components";
@@ -30,7 +30,7 @@ const Blog = () => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { dailyFoods } = useStatsStore();
 
   const NUTRIENT_BAR_HEIGHT = 170;
@@ -46,13 +46,6 @@ const Blog = () => {
     fatGoal,
     // rdcGoal,
   } = useStatsStore();
-
-  // const mealTypeMapping: { [key: number]: string } = {
-  //   0: "breakfast", // Assuming 0 is breakfast, 1 is lunch etc.
-  //   1: "lunch",
-  //   2: "dinner",
-  //   3: "snack",
-  // };
 
   useEffect(() => {
     const today = moment();
@@ -260,39 +253,26 @@ const Blog = () => {
                 {/* Text info */}
                 <View className="flex-1 ml-4">
                   <Text
-                    className={`font-bold text-lg ${
+                    className={`font-bold text-xl ${
                       isDark ? "text-white" : "text-black"
                     }`}
                   >
                     {mealTypes[meal.typeIndex]?.name}
                   </Text>
-                  <Text
-                    className={`text-sm ${
-                      isDark ? "text-gray-400" : "text-gray-600"
-                    }`}
-                  >
-                    {meal.cal}
-                  </Text>
+                  <Text className="text-gray-500">{meal.cal}</Text>
                 </View>
 
-                {/* Tick or Plus icon - Temporarily default to Plus due to data structure mismatch */}
+                {/* Add button */}
                 <Pressable
                   onPress={() => router.push("/(meal)/nemeh")}
-                  className={`w-12 h-12 rounded-full items-center justify-center ${
-                    isDark ? "bg-gray-700" : "bg-gray-200"
-                  }`}
+                  className="w-12 h-12 rounded-full bg-[#CBE4FC]/40 dark:bg-[#CBE4FC]/20 justify-center items-center"
                 >
-                  {/* {dailyFoods[selectedDate]?.[mealTypeMapping[meal.typeIndex]] ? (
-                    <Check size={24} color={isDark ? "#4ade80" : "#22c55e"} />
-                  ) : ( */}
-                  <Plus size={24} color={isDark ? "white" : "black"} />
-                  {/* )} */}
+                  <Feather name="plus" size={24} color="#136CF1" />
                 </Pressable>
               </View>
             );
           })}
 
-          {/* Conditional rendering of DailyRecommendation based on dailyFoods content */}
           {dailyFoods && Object.keys(dailyFoods).length > 0 && (
             <DailyRecommendation />
           )}
@@ -315,15 +295,6 @@ const DailyRecommendation = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  // Filter out dates that don't have any food entries or are null/undefined
-  const validFoodDates = Object.keys(dailyFoods).filter(
-    (date) => dailyFoods[date]
-  );
-
-  if (validFoodDates.length === 0) {
-    return null; // Don't render if no valid food data
-  }
-
   return (
     <View className="mt-6 w-full">
       <Text
@@ -333,89 +304,66 @@ const DailyRecommendation = () => {
       >
         {t("meal.recommendation")}
       </Text>
-      {validFoodDates.map((dateKey) => {
-        // Iterate over valid dates
-        const foodItem = dailyFoods[dateKey]; // This is a single food item for the date
-        if (!foodItem) return null; // Skip if somehow still null
+      {Object.keys(dailyFoods).map((food) => {
+        const { food_name, image, calories, protein, carbs, fat } =
+          dailyFoods[food];
 
-        // Determine if this specific foodItem corresponds to an "eaten" meal category
-        // This part is tricky as dailyFoods[dateKey] is a single item, not categorized by meal type.
-        // We'll assume for now that the presence of any food on a date means something was eaten.
-        // A more robust solution would require changing dailyFoods structure or how meal types are tracked.
-        let isEaten = false; // Default, needs better logic based on store structure
-        let mealCategory = ""; // Cannot reliably determine this from current structure for setField
+        const isEaten =
+          (food === "breakfast" && breakfastEaten) ||
+          (food === "lunch" && lunchEaten) ||
+          (food === "dinner" && dinnerEaten) ||
+          (food === "snack" && snackEaten);
 
-        // Attempt to infer meal category if food_name gives a hint (very fragile)
-        if (foodItem.food_name.toLowerCase().includes("breakfast"))
-          mealCategory = "breakfast";
-        else if (foodItem.food_name.toLowerCase().includes("lunch"))
-          mealCategory = "lunch";
-        else if (foodItem.food_name.toLowerCase().includes("dinner"))
-          mealCategory = "dinner";
-        else if (foodItem.food_name.toLowerCase().includes("snack"))
-          mealCategory = "snack";
-
-        if (mealCategory) {
-          isEaten =
-            (mealCategory === "breakfast" && breakfastEaten) ||
-            (mealCategory === "lunch" && lunchEaten) ||
-            (mealCategory === "dinner" && dinnerEaten) ||
-            (mealCategory === "snack" && snackEaten);
-        }
-
-        const eatenKey = mealCategory
-          ? ((mealCategory + "Eaten") as keyof StatsData)
-          : null;
-
+        const eaten = food + "Eaten";
         return (
           <View
-            key={dateKey}
+            key={food}
             className={`flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-3 mb-3 items-center`}
           >
             <Image
-              source={{ uri: foodItem.image }} // Assuming image is a URI
+              source={{ uri: image }}
               className="w-32 h-32 rounded-lg mr-3"
             />
             <View className="flex-1">
               <Text
-                className={`font-semibold text-lg mb-1 ${
+                className={`text-base font-semibold mb-1 ${
                   isDark ? "text-white" : "text-black"
                 }`}
               >
-                {foodItem.food_name}
+                {food_name}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("meal.calories")}: {foodItem.calories}
+                {t("meal.calories")}: {calories}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("meal.protein")}: {foodItem.protein}
+                {t("meal.protein")}: {protein}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 mb-0.5 text-sm">
-                {t("meal.carbs")}: {foodItem.carbs}
+                {t("meal.carbs")}: {carbs}
               </Text>
               <Text className="text-gray-500 dark:text-gray-400 text-sm">
-                {t("meal.fat")}: {foodItem.fat}
+                {t("meal.fat")}: {fat}
               </Text>
             </View>
-            {eatenKey && (
-              <View className="absolute right-2 bottom-2">
-                <Pressable
-                  onPress={() => {
-                    if (!isEaten && eatenKey) {
-                      setField(eatenKey, true);
-                    }
-                  }}
-                  android_ripple={{ color: "gray", radius: 10 }}
-                  className="bg-gray-200 dark:bg-gray-700 rounded-full p-2"
-                >
-                  {isEaten ? (
-                    <Check size={20} color={isDark ? "white" : "black"} />
-                  ) : (
-                    <Plus size={20} color={isDark ? "white" : "black"} />
-                  )}
-                </Pressable>
-              </View>
-            )}
+            <View className="absolute right-2 bottom-2">
+              <Pressable
+                onPress={() => {
+                  if (!isEaten) {
+                    setField(eaten as keyof StatsData, true);
+                  } else {
+                    setField(eaten as keyof StatsData, false);
+                  }
+                }}
+                android_ripple={{ color: "gray", radius: 10 }}
+                className="bg-gray-200 dark:bg-gray-700 rounded-full p-2"
+              >
+                {isEaten ? (
+                  <Check size={20} color={isDark ? "white" : "black"} />
+                ) : (
+                  <Plus size={20} color={isDark ? "white" : "black"} />
+                )}
+              </Pressable>
+            </View>
           </View>
         );
       })}

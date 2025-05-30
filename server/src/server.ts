@@ -1,15 +1,16 @@
 import express, { Request, Response, NextFunction } from "express";
-import { Express } from "express-serve-static-core";
-import cookieParser from "cookie-parser";
-import bp from "body-parser";
 import { redisMiddleware } from "@/middleware/redisMiddleware";
+import { scheduleStreakResetJob } from "@/jobs/streakResetJob";
+import { Express } from "express-serve-static-core";
+import connectToMongoDB from "@/services/mongodb";
 import limiter from "@/middleware/rateLimit";
 import corsConfig from "@/middleware/cors";
+import cookieParser from "cookie-parser";
 import router from "@/routes/route";
-import os from "os";
+import bp from "body-parser";
 import dotenv from "dotenv";
-import connectToMongoDB from "./services/mongodb";
 import path from "path";
+import os from "os";
 
 dotenv.config();
 const __dirname = path.resolve();
@@ -60,4 +61,5 @@ connectToMongoDB().then(() => {
       console.log(`- Network: http://${addr}:${PORT}`);
     });
   });
+  scheduleStreakResetJob();
 });

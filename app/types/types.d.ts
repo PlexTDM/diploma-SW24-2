@@ -46,9 +46,12 @@ type DataType = {
 };
 
 type User = {
+  // id is from accessToken
+  id: string;
   _id: string;
   username: string;
   email: string;
+  streak: number;
   stats?: Record<string, any>;
   gender: Gender;
   birthday: Date;
@@ -71,6 +74,7 @@ type User = {
   createdAt?: Date;
   updatedAt?: Date;
   dailyGoals?: DailyGoals;
+  highestStreak?: number;
 };
 
 type DailyGoals = {

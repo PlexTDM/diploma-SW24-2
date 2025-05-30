@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createContext,
   PropsWithChildren,
@@ -29,6 +28,7 @@ export const AuthContext = createContext({
   user: null as User | null,
   loggedIn: false,
   loading: true,
+  accessToken: null as string | null,
   login: async (username: string, password: string) => {},
   loginWithGoogle: async () => {},
   logout: async () => {},
@@ -47,6 +47,7 @@ export const AuthContext = createContext({
   getFoodImage: async (image: string): Promise<FoodImage | null> => null,
   foodImageLoading: false,
   workouts: [] as any[],
+  incrementStreak: async (): Promise<boolean> => false,
 });
 
 const config: AuthRequestConfig = {
@@ -80,12 +81,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
-  const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [foodImageLoading, setFoodImageLoading] = useState(false);
   const [workouts, setWorkouts] = useState<any[]>([]);
-  const [needsRegistration, setNeedsRegistration] = useState<{
+  const [needsRegistration, _setNeedsRegistration] = useState<{
     visible: boolean;
     data: any;
   }>({ visible: false, data: null });
@@ -98,101 +98,30 @@ export function AuthProvider({ children }: PropsWithChildren) {
   );
   const { setField } = useStatsStore();
 
-  const loadGoals = async (goals: DailyGoals) => {
-    setField("stepsGoal", goals.stepsGoal);
-    setField("waterGoal", goals.waterGoal);
-    setField("caloriesGoal", goals.caloriesGoal);
-    setField("proteinGoal", goals.proteinGoal);
-    setField("carbsGoal", goals.carbsGoal);
-    setField("fatGoal", goals.fatGoal);
-    setField("sleepGoal", goals.sleepGoal);
-    setField("rdcGoal", goals.rdcGoal);
-  };
-
-  const refreshAccessToken = useCallback(
-    async (tokenToUse?: string) => {
-      // Prevent multiple simultaneous refresh attempts
-      if (refreshInProgressRef.current) {
-        console.log("Token refresh already in progress, skipping");
-        return null;
-      }
-
-      refreshInProgressRef.current = true;
-
-      try {
-        console.log("Refreshing access token...");
-        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
-
-        const currentRefreshToken =
-          tokenToUse || refreshToken || storedRefreshToken;
-
-        if (!currentRefreshToken) {
-          console.error("No refresh token available");
-          signOut();
-          return null;
-        }
-
-        console.log("Using refresh token to get new tokens");
-        const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${currentRefreshToken}`,
-          },
-        });
-
-        if (!refreshResponse.ok) {
-          const errorData = await refreshResponse.json();
-          console.error("Token refresh failed:", errorData);
-
-          // If refresh fails due to expired token, sign out
-          if (refreshResponse.status === 401) {
-            signOut();
-          }
-          return null;
-        }
-
-        // For native: Update both tokens
-        const data = await refreshResponse.json();
-        console.log("data+++++++++++++++++++++++++++", data);
-        const newAccessToken = data.accessToken;
-        const newRefreshToken = data.refreshToken;
-        setUser(data.user as User);
-        loadGoals(data.user.dailyGoals as DailyGoals);
-
-        console.log(
-          "Received new access token:",
-          newAccessToken ? "exists" : "missing"
-        );
-        console.log(
-          "Received new refresh token:",
-          newRefreshToken ? "exists" : "missing"
-        );
-
-        if (newAccessToken) setAccessToken(newAccessToken);
-        if (newRefreshToken) setRefreshToken(newRefreshToken);
-
-        await tokenCache?.saveToken("accessToken", newAccessToken);
-        await tokenCache?.saveToken("refreshToken", newRefreshToken);
-
-        return newAccessToken;
-      } catch (error) {
-        console.error("Error refreshing token:", error);
-        // If there's an error refreshing, we should sign out
-        signOut();
-        return null;
-      } finally {
-        refreshInProgressRef.current = false;
-      }
+  const setNeedsRegistration = useCallback(
+    (val: { visible: boolean; data: any }) => {
+      _setNeedsRegistration(val);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [refreshToken]
+    []
   );
 
-  const signOut = async () => {
-    setNeedsRegistration({ visible: false, data: null });
+  const loadGoals = useCallback(
+    async (goals: DailyGoals) => {
+      setField("stepsGoal", goals.stepsGoal);
+      setField("waterGoal", goals.waterGoal);
+      setField("caloriesGoal", goals.caloriesGoal);
+      setField("proteinGoal", goals.proteinGoal);
+      setField("carbsGoal", goals.carbsGoal);
+      setField("fatGoal", goals.fatGoal);
+      setField("sleepGoal", goals.sleepGoal);
+      setField("rdcGoal", goals.rdcGoal);
+    },
+    [setField]
+  );
+
+  const signOut = useCallback(async () => {
+    _setNeedsRegistration({ visible: false, data: null });
     if (isWeb) {
-      // For web: Call logout endpoint to clear the cookie
       try {
         await fetch(`${API_URL}/auth/logout`, {
           method: "POST",
@@ -202,58 +131,122 @@ export function AuthProvider({ children }: PropsWithChildren) {
         console.error("Error during web logout:", error);
       }
     } else {
-      // For native: Clear both tokens from cache
       await tokenCache?.deleteToken("accessToken");
       await tokenCache?.deleteToken("refreshToken");
     }
-
-    // Clear state
     setUser(null);
     setAccessToken(null);
     setRefreshToken(null);
-  };
+    setLoggedIn(false);
+  }, []);
 
-  const handleResponse = useCallback(async () => {
-    console.log("handleResponse", response);
-    if (response?.type === "success") {
-      console.log("handleResponse success", response);
+  const refreshAccessToken = useCallback(
+    async (tokenToUse?: string) => {
+      if (refreshInProgressRef.current) {
+        console.log("Token refresh already in progress, skipping");
+        return null;
+      }
+      refreshInProgressRef.current = true;
       try {
-        setIsLoading(true);
-        const { code } = response.params;
-
-        const serverResponse = await fetch(`${API_URL}/auth/google`, {
+        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
+        const currentRefreshToken =
+          tokenToUse || refreshToken || storedRefreshToken;
+        if (!currentRefreshToken) {
+          console.error("No refresh token available for refresh");
+          await signOut();
+          return null;
+        }
+        const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${currentRefreshToken}`,
           },
-          body: JSON.stringify({
-            code,
-          }),
         });
+        if (!refreshResponse.ok) {
+          const errorData = await refreshResponse.json();
+          console.error("Token refresh failed:", errorData);
+          if (refreshResponse.status === 401) {
+            await signOut();
+          }
+          return null;
+        }
+        const data = await refreshResponse.json();
+        const newAccessToken = data.accessToken;
+        const newRefreshToken = data.refreshToken;
+        console.log("newAccessToken", data.user);
+        setUser(data.user as User);
+        if (data.user.dailyGoals)
+          await loadGoals(data.user.dailyGoals as DailyGoals);
+        if (newAccessToken) setAccessToken(newAccessToken);
+        if (newRefreshToken) setRefreshToken(newRefreshToken);
+        await tokenCache?.saveToken("accessToken", newAccessToken);
+        await tokenCache?.saveToken("refreshToken", newRefreshToken);
+        setLoggedIn(true);
+        return newAccessToken;
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+        await signOut();
+        return null;
+      } finally {
+        refreshInProgressRef.current = false;
+      }
+    },
+    [refreshToken, signOut, loadGoals]
+  );
 
+  const handleNativeTokens = useCallback(
+    async (tokens: { accessToken: string; refreshToken: string }) => {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        tokens;
+      if (newAccessToken) setAccessToken(newAccessToken);
+      if (newRefreshToken) setRefreshToken(newRefreshToken);
+      if (newAccessToken)
+        await tokenCache?.saveToken("accessToken", newAccessToken);
+      if (newRefreshToken)
+        await tokenCache?.saveToken("refreshToken", newRefreshToken);
+      if (newAccessToken) {
+        const decoded = jose.decodeJwt(newAccessToken);
+        setUser(decoded as User);
+        setLoggedIn(true);
+      }
+    },
+    []
+  );
+
+  const handleResponse = useCallback(async () => {
+    if (response?.type === "success") {
+      setIsLoading(true);
+      try {
+        const { code } = response.params;
+        const serverResponse = await fetch(`${API_URL}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        });
         if (serverResponse.status === 202) {
           const data = await serverResponse.json();
-          setNeedsRegistration({
-            visible: true,
-            data: data.data,
-          });
+          _setNeedsRegistration({ visible: true, data: data.data });
           return;
         }
-
         if (!serverResponse.ok) {
-          const data = await serverResponse.json();
-          console.error("Error handling auth response1:", data);
+          console.error(
+            "Error handling auth response (google):",
+            await serverResponse.json()
+          );
           return;
         }
-
         const data = await serverResponse.json();
-
-        console.log("handleResponse data", data);
         setUser(data.user);
-        await tokenCache?.saveToken("accessToken", data.accessToken);
-        await tokenCache?.saveToken("refreshToken", data.refreshToken);
+        setLoggedIn(true);
+        if (data.user.dailyGoals)
+          await loadGoals(data.user.dailyGoals as DailyGoals);
+        await handleNativeTokens({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
       } catch (e) {
-        console.error("Error handling auth response2:", e);
+        console.error("Error handling auth response (google catch):", e);
       } finally {
         setIsLoading(false);
       }
@@ -262,134 +255,100 @@ export function AuthProvider({ children }: PropsWithChildren) {
     } else if (response?.type === "error") {
       setError(response?.error as AuthError);
     }
-  }, [response]);
+  }, [response, handleNativeTokens, loadGoals]);
 
-  const handleAppleResponse = async () => {
-    // if (appleResponse?.type === "success") {
-    //   try {
-    //     const { code } = appleResponse.params;
-    //     const response = await exchangeCodeAsync(
-    //       {
-    //         clientId: "apple",
-    //         code,
-    //         redirectUri: makeRedirectUri(),
-    //         extraParams: {
-    //           platform: Platform.OS,
-    //         },
-    //       },
-    //       appleDiscovery
-    //     );
-    //     console.log("response", response);
-    //     if (isWeb) {
-    //       // For web: The server sets the tokens in HTTP-only cookies
-    //       // We just need to get the user data from the response
-    //       const sessionResponse = await fetch(`${BASE_URL}/api/auth/session`, {
-    //         method: "GET",
-    //         credentials: "include",
-    //       });
-    //       if (sessionResponse.ok) {
-    //         const sessionData = await sessionResponse.json();
-    //         setUser(sessionData as User);
-    //       }
-    //     } else {
-    //       // For native: The server returns both tokens in the response
-    //       // We need to store these tokens securely and decode the user data
-    //       await handleNativeTokens({
-    //         accessToken: response.accessToken,
-    //         refreshToken: response.refreshToken!,
-    //       });
-    //     }
-    //   } catch (e) {
-    //     console.log("Error exchanging code:", e);
-    //   }
-    // } else if (appleResponse?.type === "cancel") {
-    //   console.log("appleResponse cancelled");
-    // } else if (appleResponse?.type === "error") {
-    //   console.log("appleResponse error");
-    // }
-  };
+  const handleAppleResponse = useCallback(async () => {
+    // Current implementation is largely commented out, if restored, ensure useCallback dependencies.
+    // For now, assuming it doesn't change AuthProvider state directly in a way that needs memoization beyond this.
+  }, []);
 
-  const loginWithGoogle = async () => {
-    setNeedsRegistration({ visible: false, data: null });
+  const loginWithGoogle = useCallback(async () => {
+    _setNeedsRegistration({ visible: false, data: null });
     try {
       if (!request) {
-        console.log("No request");
         return;
       }
-
       await promptAsync();
     } catch (e) {
-      console.log(e);
+      console.log("Google login error:", e);
     }
-  };
+  }, [request, promptAsync]);
 
-  const register = async (formData: registerFormType): Promise<void> => {
-    setLoading(true);
-    setNeedsRegistration({ visible: false, data: null });
-    console.log(formData);
-    try {
-      const res = await fetch(`${API_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) {
-        return res.text().then((text: any) => {
-          console.log("Error response:", text);
-          throw new Error("Registration failed");
+  const registerUser = useCallback(
+    async (formData: registerFormType): Promise<void> => {
+      setIsLoading(true);
+      _setNeedsRegistration({ visible: false, data: null });
+      try {
+        const res = await fetch(`${API_URL}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("Registration failed:", text);
+          throw new Error("Registration failed: " + text);
+        }
+        const data = await res.json();
+        setUser(data.user);
+        setLoggedIn(true);
+        if (data.user.dailyGoals)
+          await loadGoals(data.user.dailyGoals as DailyGoals);
+        await handleNativeTokens({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
+      } catch (error) {
+        console.error("Error during registration:", error);
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-      const data = await res.json();
-      setUser(data.user);
-      setLoggedIn(true);
-      await AsyncStorage.setItem("accessToken", data.accessToken);
-      await AsyncStorage.setItem("refreshToken", data.refreshToken);
-    } catch (error) {
-      console.error("Error:", error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [handleNativeTokens, loadGoals]
+  );
 
-  const loginUser = async (
-    email?: string,
-    password?: string
-  ): Promise<void> => {
-    setLoading(true);
-    const res = await login(email, password);
-    if (!res?.user) {
-      setLoggedIn(false);
-      setLoading(false);
-      return;
-    }
+  const loginUser = useCallback(
+    async (email?: string, password?: string): Promise<void> => {
+      setIsLoading(true);
+      try {
+        const res = await login(email, password);
+        if (!res?.user) {
+          setLoggedIn(false);
+          throw new Error("Login failed: User data not returned");
+        }
+        setUser(res.user);
+        setLoggedIn(true);
+        if (res.user.dailyGoals)
+          await loadGoals(res.user.dailyGoals as DailyGoals);
+        await handleNativeTokens({
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken,
+        });
+      } catch (e) {
+        console.error("Login error:", e);
+        setError(e as AuthError);
+        setLoggedIn(false);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [handleNativeTokens, loadGoals]
+  );
 
-    setUser(res.user);
-    setLoggedIn(true);
-    setLoading(false);
-    tokenCache?.saveToken("accessToken", res.accessToken);
-    tokenCache?.saveToken("refreshToken", res.refreshToken);
-    setAccessToken(res.accessToken);
-    setRefreshToken(res.refreshToken);
-  };
-
-  const signInWithAppleWebBrowser = async (): Promise<void> => {
+  const signInWithAppleWebBrowser = useCallback(async (): Promise<void> => {
     try {
       if (!appleRequest) {
-        console.log("No appleRequest");
         return;
       }
       await promptAppleAsync();
     } catch (e) {
-      console.log(e);
+      console.log("Apple web sign in error:", e);
     }
-  };
+  }, [appleRequest, promptAppleAsync]);
 
-  // Native Apple Sign In
-  const signInWithApple = async (): Promise<void> => {
+  const signInWithApple = useCallback(async (): Promise<void> => {
+    setIsLoading(true);
     try {
       const rawNonce = randomUUID();
       const credential = await AppleAuthentication.signInAsync({
@@ -399,243 +358,185 @@ export function AuthProvider({ children }: PropsWithChildren) {
         ],
         nonce: rawNonce,
       });
-
-      // console.log("🍎 credential", JSON.stringify(credential, null, 2));
-
-      if (credential.fullName?.givenName && credential.email) {
-        // This is the first sign in
-        // This is our only chance to get the user's name and email
-        // We need to store this info in our database
-        // You can handle this on the server side as well, just keep in mind that
-        // Apple only provides name and email on the first sign in
-        // On subsequent sign ins, these fields will be null
-        console.log("🍎 first sign in");
-      }
-
-      // Send both the identity token and authorization code to server
-      const appleResponse = await fetch(
+      const appleAuthResponse = await fetch(
         `${BASE_URL}/api/auth/apple/apple-native`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             identityToken: credential.identityToken,
-            rawNonce, // Use the rawNonce we generated and passed to Apple
-
-            // IMPORTANT:
-            // Apple only provides name and email on the first sign in
-            // On subsequent sign ins, these fields will be null
-            // We need to store the user info from the first sign in in our database
-            // And retrieve it on subsequent sign ins using the stable user ID
+            rawNonce,
             givenName: credential.fullName?.givenName,
             familyName: credential.fullName?.familyName,
             email: credential.email,
           }),
         }
       );
-
-      const tokens = await appleResponse.json();
+      if (!appleAuthResponse.ok) {
+        console.error(
+          "Apple native auth failed:",
+          await appleAuthResponse.json()
+        );
+        throw new Error("Apple native authentication failed");
+      }
+      const tokens = await appleAuthResponse.json();
+      if (tokens.user && tokens.user.dailyGoals)
+        await loadGoals(tokens.user.dailyGoals as DailyGoals);
       await handleNativeTokens(tokens);
     } catch (e) {
-      console.log(e);
+      console.error("Apple sign in error:", e);
       handleAppleAuthError(e);
+      setError(e as AuthError);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [handleNativeTokens, loadGoals]);
 
-  const handleNativeTokens = async (tokens: {
-    accessToken: string;
-    refreshToken: string;
-  }) => {
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokens;
-
-    console.log(
-      "Received initial access token:",
-      newAccessToken ? "exists" : "missing"
-    );
-    console.log(
-      "Received initial refresh token:",
-      newRefreshToken ? "exists" : "missing"
-    );
-
-    // Store tokens in state
-    if (newAccessToken) setAccessToken(newAccessToken);
-    if (newRefreshToken) setRefreshToken(newRefreshToken);
-
-    // Save tokens to secure storage for persistence
-    if (newAccessToken)
-      await tokenCache?.saveToken("accessToken", newAccessToken);
-    if (newRefreshToken)
-      await tokenCache?.saveToken("refreshToken", newRefreshToken);
-
-    // Decode the JWT access token to get user information
-    if (newAccessToken) {
-      const decoded = jose.decodeJwt(newAccessToken);
-      setUser(decoded as User);
-    }
-  };
-
-  const update = async (user: Partial<User>): Promise<boolean> => {
-    setIsUpdating(true);
-    try {
-      const formData = new FormData();
-      // Add all user info to formData
-      Object.entries(user).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (key === "image") {
-            const filename = value.split("/").pop();
-            const match = /\.(\w+)$/.exec(filename ?? "");
-            const type = match ? `image/${match[1]}` : `image`;
-            formData.append("image", {
-              uri: value,
-              name: filename,
-              type,
-            } as any);
-          } else {
-            formData.append(key, value as any);
-          }
-        }
-      });
-      console.log(formData.get("image"));
-      const res = await fetch(`${API_URL}/auth/update`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formData,
-      });
-      if (!res.ok) {
-        console.error("Error updating user:", res.status, await res.json());
+  const updateUser = useCallback(
+    async (userDataToUpdate: Partial<User>): Promise<boolean> => {
+      if (!accessToken) {
+        console.warn("Cannot update user: no access token");
         return false;
       }
-      const data = await res.json();
-      setUser(data.user);
-      return true;
-    } catch (e) {
-      console.error("Error updating user:", e);
-      return false;
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+      setIsUpdating(true);
+      try {
+        const formData = new FormData();
+        Object.entries(userDataToUpdate).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            if (
+              key === "image" &&
+              typeof value === "string" &&
+              !value.startsWith("http")
+            ) {
+              const filename = value.split("/").pop();
+              const match = /\.(\w+)$/.exec(filename ?? "");
+              const type = match ? `image/${match[1]}` : `image`;
+              formData.append("image", {
+                uri: value,
+                name: filename,
+                type,
+              } as any);
+            } else {
+              formData.append(key, value as any);
+            }
+          }
+        });
+        const res = await fetch(`${API_URL}/auth/update`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: formData,
+        });
+        if (!res.ok) {
+          console.error("Error updating user:", res.status, await res.json());
+          return false;
+        }
+        const data = await res.json();
+        setUser(data.user);
+        if (data.user.dailyGoals)
+          await loadGoals(data.user.dailyGoals as DailyGoals);
+        return true;
+      } catch (e) {
+        console.error("Error updating user (catch):", e);
+        return false;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [accessToken, loadGoals]
+  );
 
-  const getDailyFood = async (): Promise<void> => {
+  const getDailyFood = useCallback(async (): Promise<void> => {
     const cachedDailyFoods = await tokenCache?.getToken("dailyFoods");
     if (cachedDailyFoods) {
-      console.log("🍎 cached daily foods");
       const parsedCache = JSON.parse(cachedDailyFoods);
       const cacheDate = new Date(parsedCache.timestamp);
       const today = new Date();
-      // delete timestamp from parsedCache
       delete parsedCache.timestamp;
-
-      // Check if the cached data is from today
       if (cacheDate.toDateString() === today.toDateString()) {
         setField("dailyFoods", parsedCache);
         return;
       }
     }
-    console.log("🍎 getting daily food");
     if (!accessToken) {
-      console.log("No access token, skipping daily food");
       return;
     }
-
     const res = await fetch(`${API_URL}/auth/food`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (!res.ok) {
       console.error("Error getting daily food:", res.status, await res.json());
       return;
     }
-
     const data = await res.json();
     await tokenCache?.saveToken(
       "dailyFoods",
       JSON.stringify({ ...data, timestamp: new Date().toISOString() })
     );
     setField("dailyFoods", data);
-    console.log("🍎 daily food", data);
-  };
+  }, [accessToken, setField]);
 
-  const getFoodImage = async (image: string): Promise<FoodImage | null> => {
-    setFoodImageLoading(true);
-    try {
-      const formData = new FormData();
-      const filename = image.split("/").pop();
-      const match = /\.(\w+)$/.exec(filename ?? "");
-      const type = match ? `image/${match[1]}` : `image`;
-      formData.append("image", {
-        uri: image,
-        name: filename,
-        type,
-      } as any);
-
-      const res = await fetch(`${API_URL}/auth/food/image`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formData,
-      });
-      if (!res.ok) {
-        console.error(
-          "Error getting food image:",
-          res.status,
-          console.log(await res.json())
-        );
+  const getFoodImage = useCallback(
+    async (image: string): Promise<FoodImage | null> => {
+      if (!accessToken) {
+        console.warn("getFoodImage: No access token");
         return null;
       }
-      const data = await res.json();
-      return data;
-    } catch (e) {
-      // get more info about the error
-      console.log("Error getting food image:", e);
-      return null;
-    } finally {
-      setFoodImageLoading(false);
-    }
-  };
+      setFoodImageLoading(true);
+      try {
+        const formData = new FormData();
+        const filename = image.split("/").pop();
+        const match = /\.(\w+)$/.exec(filename ?? "");
+        const type = match ? `image/${match[1]}` : `image`;
+        formData.append("image", { uri: image, name: filename, type } as any);
+        const res = await fetch(`${API_URL}/auth/food/image`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: formData,
+        });
+        if (!res.ok) {
+          console.error(
+            "Error getting food image:",
+            res.status,
+            await res.json()
+          );
+          return null;
+        }
+        return await res.json();
+      } catch (e) {
+        console.log("Error getting food image (catch):", e);
+        return null;
+      } finally {
+        setFoodImageLoading(false);
+      }
+    },
+    [accessToken]
+  );
 
-  const getWorkouts = async (): Promise<void> => {
+  const getWorkouts = useCallback(async (): Promise<void> => {
     try {
       const cachedWorkouts = await tokenCache?.getToken("workouts");
       if (cachedWorkouts) {
         const parsedCache = JSON.parse(cachedWorkouts);
         const cacheDate = new Date(parsedCache.timestamp);
         const today = new Date();
-
-        // Check if the cached data is from today
         if (cacheDate.toDateString() === today.toDateString()) {
           setWorkouts(parsedCache.data);
-          console.log("🍎 workouts from cache");
           return;
         }
       }
-
-      console.log("🍎 getting workouts from API");
       if (!accessToken) {
-        console.log("No access token, skipping workouts");
         return;
       }
-
       const res = await fetch(`${API_URL}/auth/exercise`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) {
         console.error("Error getting workouts:", res.status, await res.json());
         return;
       }
       const data = await res.json();
-      console.log("🍎 workouts", data);
       setWorkouts(data);
       await tokenCache?.saveToken(
         "workouts",
@@ -644,62 +545,105 @@ export function AuthProvider({ children }: PropsWithChildren) {
     } catch (e) {
       console.error("Error getting workouts:", e);
     }
-  };
+  }, [accessToken]);
 
-  // check login
+  const incrementStreak = useCallback(async (): Promise<boolean> => {
+    if (!user) {
+      console.warn("AuthProvider: User not available to increment streak.");
+      return false;
+    }
+    const newStreak = (user.streak || 0) + 1;
+    const currentHighestStreak = user.highestStreak || 0;
+    const updatePayload: Partial<User> = { streak: newStreak };
+    if (newStreak > currentHighestStreak) {
+      updatePayload.highestStreak = newStreak;
+    }
+    const success = await updateUser(updatePayload);
+    if (success) {
+      console.log(
+        `AuthProvider: Streak updated. New streak: ${newStreak}, New Highest: ${
+          updatePayload.highestStreak || currentHighestStreak
+        }`
+      );
+    } else {
+      console.warn(`AuthProvider: Failed to update streak.`);
+    }
+    return success;
+  }, [user, updateUser]);
+
   useEffect(() => {
     const checkLogin = async () => {
-      setLoading(true);
-      // For native: Try to use the stored access token first
+      setIsLoading(true);
       try {
         const storedAccessToken = await tokenCache?.getToken("accessToken");
-        const storedRefreshToken = await tokenCache?.getToken("refreshToken");
+        let decodedAccessToken = null;
+        let isAccessTokenValid = false;
 
         if (storedAccessToken) {
           try {
-            // Check if the access token is still valid
-            const decoded = jose.decodeJwt(storedAccessToken);
-            const exp = (decoded as any).exp;
-            const now = Math.floor(Date.now() / 1000);
-
-            if (exp && exp > now) {
-              // Access token is still valid
-              console.log("Access token is still valid, using it");
-              setAccessToken(storedAccessToken);
-              setUser(decoded as User);
-
-              if (storedRefreshToken) {
-                setRefreshToken(storedRefreshToken);
-                refreshAccessToken(storedRefreshToken);
-              }
-            } else if (storedRefreshToken) {
-              // Access token expired, but we have a refresh token
-              console.log("Access token expired, using refresh token");
-              setRefreshToken(storedRefreshToken);
-              await refreshAccessToken(storedRefreshToken);
+            decodedAccessToken = jose.decodeJwt(storedAccessToken);
+            const exp = (decodedAccessToken as any).exp;
+            if (exp && exp * 1000 > Date.now()) {
+              isAccessTokenValid = true;
             }
-          } catch (e) {
-            console.error("Error decoding stored token:", e);
-
-            // Try to refresh using the refresh token
-            if (storedRefreshToken) {
-              console.log("Error with access token, trying refresh token");
-              setRefreshToken(storedRefreshToken);
-              await refreshAccessToken(storedRefreshToken);
-            }
+          } catch (jwtError) {
+            console.error(
+              "AuthContext: Error decoding stored access token:",
+              jwtError
+            );
+            isAccessTokenValid = false;
+            // Potentially delete invalid token from cache here
+            // await tokenCache?.deleteToken("accessToken");
           }
-        } else if (storedRefreshToken) {
-          // No access token, but we have a refresh token
-          console.log("No access token, using refresh token");
-          setRefreshToken(storedRefreshToken);
-          await refreshAccessToken(storedRefreshToken);
+        }
+
+        if (isAccessTokenValid && decodedAccessToken && storedAccessToken) {
+          console.log(
+            "AuthContext: Valid access token found in cache. Using it."
+          );
+          setAccessToken(storedAccessToken);
+          setUser(decodedAccessToken as User);
+          setLoggedIn(true);
+          if ((decodedAccessToken as User).dailyGoals) {
+            await loadGoals(
+              (decodedAccessToken as User).dailyGoals as DailyGoals
+            );
+          }
+          const rt = await tokenCache?.getToken("refreshToken");
+          if (rt) {
+            setRefreshToken(rt); // Set for periodic refresh
+          }
         } else {
-          console.log("User is not authenticated");
+          console.log(
+            "AuthContext: No valid access token. Attempting refresh if refresh token exists."
+          );
+          const rt = await tokenCache?.getToken("refreshToken");
+          if (rt) {
+            console.log(
+              "AuthContext: Found refresh token. Attempting refresh."
+            );
+            setRefreshToken(rt); // Set state before calling, as refreshAccessToken might be memoized based on it
+            await refreshAccessToken(rt); // This will set user/accessToken if successful or sign out
+          } else {
+            console.log(
+              "AuthContext: No refresh token found. User needs to log in."
+            );
+            setUser(null);
+            setAccessToken(null);
+            setRefreshToken(null);
+            setLoggedIn(false);
+          }
         }
       } catch (error) {
-        console.error("Error checking login:", error);
+        console.error("Error during checkLogin:", error);
+        // Ensure a clean state on unexpected errors during checkLogin
+        setUser(null);
+        setAccessToken(null);
+        setRefreshToken(null);
+        setLoggedIn(false);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
+        refreshAccessToken();
       }
     };
     checkLogin();
@@ -707,51 +651,62 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (user && loggedIn) {
       getDailyFood();
       getWorkouts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, loggedIn, getDailyFood, getWorkouts]);
 
   useEffect(() => {
-    handleResponse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [response]);
+    if (response) {
+      handleResponse();
+    }
+  }, [response, handleResponse]);
 
   useEffect(() => {
-    handleAppleResponse();
-  }, [appleResponse]);
+    if (appleResponse) {
+      handleAppleResponse();
+    }
+  }, [appleResponse, handleAppleResponse]);
 
+  // interval to refresh user 10min
   useEffect(() => {
-    const interval = setInterval(() => {
-      refreshAccessToken(refreshToken as string);
-    }, 1000 * 60 * 5);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshToken]);
+    let intervalId: number;
+    if (loggedIn && refreshToken) {
+      intervalId = setInterval(() => {
+        console.log("Attempting periodic token refresh...");
+        refreshAccessToken(refreshToken).catch((e) =>
+          console.error("Periodic refresh failed", e)
+        );
+      }, 1000 * 60 * 10);
+    }
+    return () => clearInterval(intervalId);
+  }, [loggedIn, refreshToken, refreshAccessToken]);
+  console.log("user", user);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         loggedIn,
-        loading,
+        loading: isLoading,
+        accessToken,
         login: loginUser,
         loginWithGoogle,
         logout: signOut,
-        register,
+        register: registerUser,
         signInWithApple,
         signInWithAppleWebBrowser,
         isLoading,
         error,
         needsRegistration,
         setNeedsRegistration,
-        update,
+        update: updateUser,
         getFoodImage,
         foodImageLoading,
         isUpdating,
         workouts,
+        incrementStreak,
       }}
     >
       {children}

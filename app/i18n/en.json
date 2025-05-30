@@ -318,43 +318,59 @@
     "register": "Register"
   },
   "dailyTasks": {
-    "water": {
-      "title": "Drink water",
-      "target": "{{count}} glasses",
-      "unit_one": "{{count}} glass",
-      "unit_other": "{{count}} glasses"
+    "hydration": {
+      "waterGlasses": {
+        "title": "Drink Water (Glasses)",
+        "target": "Drink {{count}} glasses of water",
+        "unit_one": "{{count}} glass",
+        "unit_other": "{{count}} glasses"
+      },
+      "waterLiters": {
+        "title": "Drink Water (Liters)",
+        "target": "Drink {{count}} liters of water",
+        "unit_one": "{{count}} liter",
+        "unit_other": "{{count}} liters"
+      }
     },
-    "walk": {
-      "title": "Walk",
-      "target": "{{count}} steps",
-      "unit": "{{count}} steps"
+    "activity": {
+      "walkSteps": {
+        "title": "Walk Steps",
+        "target": "Walk {{count}} steps",
+        "unit": "{{count}} steps"
+      },
+      "workoutMinutes": {
+        "title": "Workout",
+        "target": "Workout for {{count}} minutes",
+        "unit": "{{count}} min"
+      }
     },
-    "logMeal": {
-      "title": "Log meal",
-      "target": "{{count}} meals",
-      "unit_one": "{{count}} meal",
-      "unit_other": "{{count}} meals"
+    "mindfulness": {
+      "meditateMinutes": {
+        "title": "Meditate",
+        "target": "Meditate for {{count}} minutes",
+        "unit": "{{count}} min"
+      },
+      "stretchMinutes": {
+        "title": "Stretch",
+        "target": "Stretch for {{count}} minutes",
+        "unit": "{{count}} min"
+      }
     },
-    "workout": {
-      "title": "Workout",
-      "target": "{{count}} minutes",
-      "unit": "{{count}} min"
+    "nutrition": {
+      "logMeals": {
+        "title": "Log Meals",
+        "target": "Log {{count}} meals",
+        "unit_one": "{{count}} meal",
+        "unit_other": "{{count}} meals"
+      }
     },
     "sleep": {
-      "title": "Sleep",
-      "target": "{{count}} hours",
-      "unit_one": "{{count}} hr",
-      "unit_other": "{{count}} hrs"
-    },
-    "stretch": {
-      "title": "Stretch",
-      "target": "{{count}} minutes",
-      "unit": "{{count}} min"
-    },
-    "meditate": {
-      "title": "Meditate",
-      "target": "{{count}} minutes",
-      "unit": "{{count}} min"
+      "sleepHours": {
+        "title": "Sleep",
+        "target": "Sleep for {{count}} hours",
+        "unit_one": "{{count}} hr",
+        "unit_other": "{{count}} hrs"
+      }
     },
     "completedFraction": "{{completedCount}}/{{totalTasks}} completed"
   },

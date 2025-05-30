@@ -39,6 +39,7 @@ export interface IUser extends Document {
   streak?: number;
   highestStreak?: number;
   totalCalories?: number;
+  lastStreakUpdate?: Date;
 }
 
 // Define the schema
@@ -110,6 +111,11 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: Number,
       required: false,
       default: 0,
+    },
+    lastStreakUpdate: {
+      type: Date,
+      required: false,
+      default: null,
     },
     password: {
       type: String,

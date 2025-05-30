@@ -322,43 +322,59 @@
     "register": "Бүртгүүлэх"
   },
   "dailyTasks": {
-    "water": {
-      "title": "Ус уух",
-      "target": "{{count}} аяга",
-      "unit_one": "{{count}} аяга",
-      "unit_other": "{{count}} аяга"
+    "hydration": {
+      "waterGlasses": {
+        "title": "Ус уух (Аяга)",
+        "target": "{{count}} аяга ус уух",
+        "unit_one": "{{count}} аяга",
+        "unit_other": "{{count}} аяга"
+      },
+      "waterLiters": {
+        "title": "Ус уух (Литр)",
+        "target": "{{count}} литр ус уух",
+        "unit_one": "{{count}} литр",
+        "unit_other": "{{count}} литр"
+      }
     },
-    "walk": {
-      "title": "Алхах",
-      "target": "{{count}} алхам",
-      "unit": "{{count}} алхам"
+    "activity": {
+      "walkSteps": {
+        "title": "Алхах",
+        "target": "{{count}} алхам алхах",
+        "unit": "{{count}} алхам"
+      },
+      "workoutMinutes": {
+        "title": "Дасгал хийх",
+        "target": "{{count}} минут дасгал хийх",
+        "unit": "{{count}} мин"
+      }
     },
-    "logMeal": {
-      "title": "Хоол бүртгэх",
-      "target": "{{count}} удаа",
-      "unit_one": "{{count}} удаа",
-      "unit_other": "{{count}} удаа"
+    "mindfulness": {
+      "meditateMinutes": {
+        "title": "Бясалгал хийх",
+        "target": "{{count}} минут бясалгал хийх",
+        "unit": "{{count}} мин"
+      },
+      "stretchMinutes": {
+        "title": "Сунгалтын дасгал хийх",
+        "target": "{{count}} минут сунгалтын дасгал хийх",
+        "unit": "{{count}} мин"
+      }
     },
-    "workout": {
-      "title": "Дасгал хийх",
-      "target": "{{count}} минут",
-      "unit": "{{count}} мин"
+    "nutrition": {
+      "logMeals": {
+        "title": "Хоол бүртгэх",
+        "target": "{{count}} удаа хоол бүртгэх",
+        "unit_one": "{{count}} удаа",
+        "unit_other": "{{count}} удаа"
+      }
     },
     "sleep": {
-      "title": "Унтах",
-      "target": "{{count}} цаг",
-      "unit_one": "{{count}} цаг",
-      "unit_other": "{{count}} цаг"
-    },
-    "stretch": {
-      "title": "Сунгах",
-      "target": "{{count}} минут",
-      "unit": "{{count}} мин"
-    },
-    "meditate": {
-      "title": "Бясалгах",
-      "target": "{{count}} минут",
-      "unit": "{{count}} мин"
+      "sleepHours": {
+        "title": "Унтах",
+        "target": "{{count}} цаг унтах",
+        "unit_one": "{{count}} цаг",
+        "unit_other": "{{count}} цаг"
+      }
     },
     "completedFraction": "{{completedCount}}/{{totalTasks}} биелсэн"
   },

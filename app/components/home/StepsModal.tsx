@@ -47,7 +47,6 @@ export default function StepsModal({ visible, setVisible }: StepsModalProps) {
           <View className="bg-white dark:bg-gray-900 rounded-2xl  border border-gray-200 dark:border-gray-700 flex-row p-6 justify-between items-center mb-6">
             {/* Left side: Today */}
             <View className="absolute top-5 left-8">
-              {" "}
               <Footprints size={25} color="#3b82f6" className="mb-1" />
             </View>
             <View className="flex-1 items-center">

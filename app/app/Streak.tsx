@@ -1,64 +1,81 @@
 import { ThemeView } from "@/components";
-import { useState, useRef, useEffect, useMemo } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { addMonths, subMonths } from "date-fns";
+import { useState, useRef, useEffect, useMemo, useContext } from "react";
+import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { addMonths, subMonths, format } from "date-fns";
 import MiniCalendar from "@/components/MiniCalendar";
 import ConfettiCannon from "react-native-confetti-cannon";
+import useDailyTaskStore from "@/stores/dailyTaskStore";
+import { AuthContext } from "@/context/auth";
+import { useAppTheme } from "@/lib/theme";
 
 export default function Streak() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [completedDays, setCompletedDays] = useState<number[]>([]);
   const confettiRef = useRef<ConfettiCannon>(null);
+
+  const { user, accessToken } = useContext(AuthContext);
+  const { theme } = useAppTheme();
+  const {
+    completedMonthlyDays,
+    isLoadingMonthlyDays,
+    fetchCompletedDaysForMonth,
+    // markDayAsCompleted,
+  } = useDailyTaskStore();
 
   const today = new Date();
 
-  const onToggleComplete = (day: number) => {
-    setCompletedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
+  useEffect(() => {
+    if ((user?.id || user?._id) && accessToken) {
+      console.log("fetching completed days for month", user?.id, user?._id);
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      fetchCompletedDaysForMonth(year, month);
+    }
+  }, [currentDate, fetchCompletedDaysForMonth, user, accessToken]);
+
+  const onToggleComplete = async (day: number) => {
+    // const dateToToggle = new Date(
+    //   currentDate.getFullYear(),
+    //   currentDate.getMonth(),
+    //   day
+    // );
+    // const isCompleted = completedMonthlyDays.includes(day);
+    // if (!isCompleted) {
+    //   await markDayAsCompleted(dateToToggle);
+    //   // After marking, refresh the month's data
+    //   const year = currentDate.getFullYear();
+    //   const month = currentDate.getMonth() + 1;
+    //   fetchCompletedDaysForMonth(year, month);
+    // } else {
+    //   console.log(
+    //     "Day already completed or un-marking is not implemented yet."
+    //   );
+    //   // If un-marking were implemented, you would call a different store action here
+    //   // and then refresh: e.g., await unmarkDayAsCompleted(dateToToggle);
+    //   // followed by fetchCompletedDaysForMonth(year, month);
+    // }
   };
 
   const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
   const handleNextMonth = () => {
-    const nextMonth = addMonths(currentDate, 1);
+    const nextMonthDate = addMonths(currentDate, 1);
     if (
-      nextMonth.getMonth() <= today.getMonth() &&
-      nextMonth.getFullYear() <= today.getFullYear()
+      nextMonthDate.getFullYear() < today.getFullYear() ||
+      (nextMonthDate.getFullYear() === today.getFullYear() &&
+        nextMonthDate.getMonth() <= today.getMonth())
     ) {
-      setCurrentDate(nextMonth);
+      setCurrentDate(nextMonthDate);
     }
   };
 
   const isNextDisabled =
-    currentDate.getMonth() === today.getMonth() &&
-    currentDate.getFullYear() === today.getFullYear();
+    currentDate.getFullYear() === today.getFullYear() &&
+    currentDate.getMonth() === today.getMonth();
 
-  const calculateStreaks = (completed: number[]) => {
-    const sorted = [...completed].sort((a, b) => a - b);
-    let currentStreak = 0;
-    let longestStreak = 10;
-    let tempStreak = 1;
+  // Use global streak data from AuthContext user object
+  const globalCurrentStreak = user?.streak || 0;
+  const globalLongestStreak = user?.highestStreak || 0;
 
-    for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i] === sorted[i - 1] + 1) {
-        tempStreak++;
-      } else {
-        tempStreak = 1;
-      }
-
-      if (tempStreak > longestStreak) longestStreak = tempStreak;
-    }
-
-    const todayDate = today.getDate();
-    const lastCompleted = sorted[sorted.length - 1];
-    if (lastCompleted === todayDate || lastCompleted === todayDate - 1) {
-      currentStreak = tempStreak;
-    }
-    return { currentStreak, longestStreak };
-  };
-
-  const { currentStreak, longestStreak } = calculateStreaks(completedDays);
   const achievements = useMemo(
     () => [
       { days: 7, label: "7-Day Streak" },
@@ -70,22 +87,23 @@ export default function Streak() {
   );
 
   useEffect(() => {
-    const isNewRecord = currentStreak > 0 && currentStreak === longestStreak;
     const isAchievementMilestone = achievements.some(
-      (ach) => ach.days === currentStreak
+      (ach) => ach.days === globalCurrentStreak && globalCurrentStreak > 0
     );
-
-    if (isNewRecord && isAchievementMilestone) {
+    if (isAchievementMilestone && confettiRef.current) {
+      // Check if this milestone was already hit for this specific streak count to avoid re-triggering too often
+      // This might need more sophisticated state if you only want confetti once per milestone achievement.
+      // For simplicity, if current streak IS a milestone, show confetti.
       confettiRef.current?.start();
     }
-  }, [currentStreak, longestStreak, achievements]);
+  }, [globalCurrentStreak, achievements]);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <ThemeView className="flex-1 bg-white dark:bg-gray-900">
         <View className="w-full px-2 mb-2">
           <Text className="text-lg font-bold text-black dark:text-white mt-10 text-center">
-            Streak Days
+            Streak Days for {format(currentDate, "MMMM yyyy")}
           </Text>
         </View>
 
@@ -96,7 +114,7 @@ export default function Streak() {
                 Current Streak
               </Text>
               <Text className="text-2xl font-bold text-blue-900">
-                {currentStreak}
+                {globalCurrentStreak} Days
               </Text>
             </View>
             <View className="flex-1 bg-yellow-100 p-3 rounded-xl ml-2">
@@ -104,19 +122,28 @@ export default function Streak() {
                 Longest Streak
               </Text>
               <Text className="text-2xl font-bold text-yellow-900">
-                {longestStreak}
+                {globalLongestStreak} Days
               </Text>
             </View>
           </View>
 
-          <MiniCalendar
-            currentDate={currentDate}
-            completedDays={completedDays}
-            onToggleComplete={onToggleComplete}
-            onPrevMonth={handlePrevMonth}
-            onNextMonth={handleNextMonth}
-            isNextDisabled={isNextDisabled}
-          />
+          {isLoadingMonthlyDays ? (
+            <View className="h-64 flex justify-center items-center">
+              <ActivityIndicator
+                size="large"
+                color={theme === "dark" ? "#FFFFFF" : "#0000FF"}
+              />
+            </View>
+          ) : (
+            <MiniCalendar
+              currentDate={currentDate}
+              completedDays={completedMonthlyDays}
+              onToggleComplete={onToggleComplete}
+              onPrevMonth={handlePrevMonth}
+              onNextMonth={handleNextMonth}
+              isNextDisabled={isNextDisabled}
+            />
+          )}
 
           {/* Achievements */}
           <View className="mt-6">
@@ -125,8 +152,11 @@ export default function Streak() {
             </Text>
             <View className="flex-row flex-wrap justify-between gap-4">
               {achievements.map((achievement, index) => {
-                const unlocked = longestStreak >= achievement.days;
-                const progress = Math.min(longestStreak / achievement.days, 1);
+                const unlocked = globalLongestStreak >= achievement.days;
+                const progress = Math.min(
+                  globalLongestStreak / achievement.days,
+                  1
+                );
 
                 return (
                   <View
@@ -184,7 +214,6 @@ export default function Streak() {
               explosionSpeed={300}
               fallSpeed={3000}
               ref={confettiRef}
-              // set on for testing
               autoStart={false}
             />
           </View>

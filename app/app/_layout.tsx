@@ -6,14 +6,17 @@ import { Stack } from "expo-router/stack";
 import "@/lib/global.css";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useStatsStore } from "@/stores/statsStore";
+import useDailyTaskStore from "@/stores/dailyTaskStore";
+import { useTranslation } from "@/lib/language";
 // import * as NavigationBar from "expo-navigation-bar";
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const { theme } = useAppTheme();
+  const { t } = useTranslation();
   const [loaded, error] = useFonts({
     Quicksand: require("../assets/fonts/Quicksand-Variable.ttf"),
   });
@@ -29,7 +32,8 @@ const RootLayout = () => {
 
   useEffect(() => {
     useStatsStore?.getState()?.load();
-  }, []);
+    useDailyTaskStore?.getState()?.initializeTasks(t);
+  }, [t]);
 
   useEffect(() => {
     if (loaded || error) {
