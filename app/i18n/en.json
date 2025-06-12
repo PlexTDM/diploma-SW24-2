@@ -1,7 +1,7 @@
 {
   "start": {
     "start": "Start",
-    "later": "Do another workout"	
+    "later": "Do another workout"
   },
   "dasgal": {
     "gym": "Gym",
@@ -48,7 +48,6 @@
     "more": "More",
     "image": "Scan Image"
   },
-
   "stats": {
     "title": "Calories"
   },
@@ -58,7 +57,8 @@
     "notpost": "No post yet",
     "create": "Create a new post or wait for others to share their thoughts",
     "title": "Social",
-    "search": "Search post"
+    "search": "Search post",
+    "image": "Add an image"
   },
   "login1": {
     "title": "Login",
@@ -145,7 +145,13 @@
   },
   "question1": {
     "tanid": "Do you have any dietary restrictions we should know about?",
-    "suun": ["Lactose Free", "Sugar Free", "Gluten free", "Nut Free", "None"],
+    "suun": [
+      "Lactose Free",
+      "Sugar Free",
+      "Gluten free",
+      "Nut Free",
+      "None"
+    ],
     "daraah": "Continue"
   },
   "question2": {
@@ -163,7 +169,12 @@
   },
   "question3": {
     "ta": "Which meals do you usually have in a day?",
-    "ogloo": ["Breakfast", "Lunch", "Dinner", "Snacks"],
+    "ogloo": [
+      "Breakfast",
+      "Lunch",
+      "Dinner",
+      "Snacks"
+    ],
     "daraah": "Continue"
   },
   "question4": {
@@ -252,13 +263,21 @@
       "meals": {
         "title": "How many meals do you have per day?",
         "desc": "Your choice will affect your workout plan",
-        "choices": ["4 meals or more", "2-3 meals per day", "1 meal per day"]
+        "choices": [
+          "4 meals or more",
+          "2-3 meals per day",
+          "1 meal per day"
+        ]
       },
       "water": {
         "milliliter": "ml",
         "title": "How much water do you drink per day?",
         "desc": "Your choice will affect your workout plan",
-        "choices": ["4 liters or more", "2-3 liters per day", "1 liter per day"]
+        "choices": [
+          "4 liters or more",
+          "2-3 liters per day",
+          "1 liter per day"
+        ]
       },
       "work": {
         "title": "What is your current work schedule?",

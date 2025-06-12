@@ -66,7 +66,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
               onChunk(data.text);
             }
           } catch (err) {
-            console.warn("Failed to parse SSE chunk:", event.data, err);
+            console.log("Failed to parse SSE chunk:", event.data, err);
           }
         });
         es.addEventListener("error", (err) => {

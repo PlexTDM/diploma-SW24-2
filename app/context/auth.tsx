@@ -395,7 +395,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const updateUser = useCallback(
     async (userDataToUpdate: Partial<User>): Promise<boolean> => {
       if (!accessToken) {
-        console.warn("Cannot update user: no access token");
+        console.log("Cannot update user: no access token");
         return false;
       }
       setIsUpdating(true);
@@ -479,7 +479,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const getFoodImage = useCallback(
     async (image: string): Promise<FoodImage | null> => {
       if (!accessToken) {
-        console.warn("getFoodImage: No access token");
+        console.log("getFoodImage: No access token");
         return null;
       }
       setFoodImageLoading(true);
@@ -521,8 +521,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const cacheDate = new Date(parsedCache.timestamp);
         const today = new Date();
         if (cacheDate.toDateString() === today.toDateString()) {
-          setWorkouts(parsedCache.data);
-          return;
+          if (parsedCache.data) {
+            setWorkouts(parsedCache.data);
+            return;
+          }
         }
       }
       if (!accessToken) {
@@ -549,7 +551,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const incrementStreak = useCallback(async (): Promise<boolean> => {
     if (!user) {
-      console.warn("AuthProvider: User not available to increment streak.");
+      console.log("AuthProvider: User not available to increment streak.");
       return false;
     }
     const newStreak = (user.streak || 0) + 1;
@@ -566,7 +568,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         }`
       );
     } else {
-      console.warn(`AuthProvider: Failed to update streak.`);
+      console.log(`AuthProvider: Failed to update streak.`);
     }
     return success;
   }, [user, updateUser]);
@@ -655,6 +657,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (user && loggedIn) {
       getDailyFood();
       getWorkouts();
+      console.log("getting daily stuff");
     }
   }, [user, loggedIn, getDailyFood, getWorkouts]);
 
@@ -683,6 +686,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
     return () => clearInterval(intervalId);
   }, [loggedIn, refreshToken, refreshAccessToken]);
+
+  console.log("rerendered");
 
   return (
     <AuthContext.Provider

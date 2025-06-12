@@ -97,7 +97,7 @@ const genExercisePlan = async (user: IUser) => {
           (ex) => ex.name.toLowerCase() === aiExercise.name.toLowerCase()
         );
         if (!foundExercise) {
-          console.warn(
+          console.log(
             `AI recommended exercise "${aiExercise.name}" not found in the local exercises.json. Skipping.`
           );
           return null;

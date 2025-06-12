@@ -52,7 +52,7 @@ export default function Training() {
 
   return (
     <Animated.View
-      className="dark:bg-black-900 rounded-[26px] flex-1  overflow-hidden"
+      className="dark:bg-black-900 rounded-[26px] flex-1 overflow-hidden"
       style={animatedStyle}
     >
       {/* Background Gradient */}

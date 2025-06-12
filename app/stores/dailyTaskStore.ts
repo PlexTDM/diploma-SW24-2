@@ -412,7 +412,7 @@ const useDailyTaskStore = create<DailyTaskState>((set, get) => ({
             // Also mark the day as completed on the backend
             await markDayAsCompleted(new Date()); // Mark today as completed
           } else {
-            console.warn(
+            console.log(
               "DailyTaskStore: AuthContext reported failure to increment streak. Local status not updated."
             );
           }
@@ -423,7 +423,7 @@ const useDailyTaskStore = create<DailyTaskState>((set, get) => ({
           );
         }
       } else {
-        console.warn(
+        console.log(
           "DailyTaskStore: triggerAuthStreakIncrement not set. Cannot update streak in AuthContext."
         );
       }
@@ -433,7 +433,7 @@ const useDailyTaskStore = create<DailyTaskState>((set, get) => ({
   fetchCompletedDaysForMonth: async (year: number, month: number) => {
     const { accessToken } = get();
     if (!accessToken) {
-      console.warn(
+      console.log(
         "DailyTaskStore: Cannot fetch completed days. Missing accessToken."
       );
       set({ completedMonthlyDays: [], isLoadingMonthlyDays: false });
@@ -482,7 +482,7 @@ const useDailyTaskStore = create<DailyTaskState>((set, get) => ({
   markDayAsCompleted: async (dateToMark: Date) => {
     const { accessToken } = get();
     if (!accessToken) {
-      console.warn(
+      console.log(
         "DailyTaskStore: Cannot mark day as completed. Missing accessToken."
       );
       return;

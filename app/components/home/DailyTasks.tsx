@@ -44,7 +44,7 @@ export default function DailyTasks() {
     if (user) {
       return await incrementStreak();
     } else {
-      console.warn("DailyTasks: User not available for streak increment.");
+      console.log("DailyTasks: User not available for streak increment.");
       return Promise.resolve(false);
     }
   }, [user, incrementStreak]);
@@ -54,7 +54,7 @@ export default function DailyTasks() {
     if (typeof incrementStreak === "function") {
       setTriggerAuthStreakIncrement(triggerFn);
     } else {
-      console.warn(
+      console.log(
         "DailyTasks: incrementStreak function not available from AuthContext or not a function."
       );
     }
@@ -86,10 +86,7 @@ export default function DailyTasks() {
         } else {
         }
       } catch (error) {
-        console.warn(
-          "Error fetching today's step count for daily task:",
-          error
-        );
+        console.log("Error fetching today's step count for daily task:", error);
       }
     }
   }, [tasks, setTaskProgressAction, currentStepCount, stepsTodayTotal]);

@@ -182,7 +182,9 @@ export default function ChatScreen() {
     clearChat();
   };
 
-  const inputDisabled =
+  const inputDisabled = isSending || isLoadingHistory || !user;
+
+  const buttonDisabled =
     !inputText.trim() || isSending || isLoadingHistory || !user;
 
   return (
@@ -265,9 +267,9 @@ export default function ChatScreen() {
           />
           <Pressable
             onPress={handleSend}
-            disabled={inputDisabled}
+            disabled={buttonDisabled}
             className={`w-10 h-10 rounded-full items-center justify-center ${
-              inputDisabled ? "bg-gray-300 dark:bg-gray-700" : "bg-blue-500"
+              buttonDisabled ? "bg-gray-300 dark:bg-gray-700" : "bg-blue-500"
             }`}
           >
             {isSending ? (
@@ -276,13 +278,7 @@ export default function ChatScreen() {
               <Ionicons
                 name="send"
                 size={20}
-                color={
-                  inputDisabled
-                    ? "white"
-                    : theme === "dark"
-                    ? "#4B5563"
-                    : "#9CA3AF"
-                }
+                color={buttonDisabled ? "white" : "white"}
               />
             )}
           </Pressable>

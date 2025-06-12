@@ -10,6 +10,7 @@ import {
 import { WebView } from "react-native-webview";
 import { X } from "lucide-react-native";
 import { useTranslation } from "@/lib/language";
+import { useAppTheme } from "@/lib/theme";
 
 interface WorkoutDetailModalProps {
   isVisible: boolean;
@@ -28,6 +29,7 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
   workout,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useAppTheme();
   if (!workout) return null;
 
   const videoHeight = screenWidth * (9 / 16);
@@ -45,7 +47,11 @@ const WorkoutDetailModal: React.FC<WorkoutDetailModalProps> = ({
             className="absolute top-4 right-4 p-2 z-10"
             onPress={onClose} // Ensure this onPress calls the passed onClose prop
           >
-            <X size={28} className="text-neutral-700 dark:text-neutral-300" />
+            <X
+              size={28}
+              // className="text-neutral-700 dark:text-neutral-300"
+              color={theme === "dark" ? "white" : "black"}
+            />
           </Pressable>
 
           <ScrollView

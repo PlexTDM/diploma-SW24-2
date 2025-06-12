@@ -39,7 +39,7 @@ export function usePedometer() {
             }
           }
         } catch (error) {
-          console.warn("Error getting step count:", error);
+          console.log("Error getting step count:", error);
         }
 
         subscription = Pedometer.watchStepCount((result) => {

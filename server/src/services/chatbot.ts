@@ -48,7 +48,7 @@ Please remain focused on fitness and health topics..`;
       const chat = await Chat.findOne({ userId });
       return chat ? chat.messages : [];
     } catch (error: any) {
-      console.warn("Error getting conversation history:", error.message);
+      console.log("Error getting conversation history:", error.message);
       return [];
     }
   }
@@ -64,7 +64,7 @@ Please remain focused on fitness and health topics..`;
       await chat.save();
       return chat.messages;
     } catch (error: any) {
-      console.warn("Error starting new conversation:", error.message);
+      console.log("Error starting new conversation:", error.message);
       throw error;
     }
   }
@@ -142,7 +142,7 @@ Please remain focused on fitness and health topics..`;
       await Chat.deleteOne({ userId });
       return await this.startNewConversation(userId);
     } catch (error: any) {
-      console.warn("Error clearing conversation:", error.message);
+      console.log("Error clearing conversation:", error.message);
       throw error;
     }
   }
@@ -154,7 +154,7 @@ Please remain focused on fitness and health topics..`;
         .limit(limit)
         .select("messages updatedAt");
     } catch (error: any) {
-      console.warn("Error getting recent conversations:", error.message);
+      console.log("Error getting recent conversations:", error.message);
       return [];
     }
   }
