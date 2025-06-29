@@ -13,7 +13,10 @@ export const uploadProfileImage = async (image: any, user?: any) => {
         await oldFile.delete();
       }
     } catch (error: any) {
-      console.error("Error deleting old image:", error.message);
+      // Ignore 404 errors (file not found) but log other errors
+      if (error.code !== 404) {
+        console.error("Error deleting old image:", error.message);
+      }
     }
   }
 

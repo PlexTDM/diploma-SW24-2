@@ -12,7 +12,7 @@ if (!process.env.FIREBASE_STORAGE_BUCKET) {
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-    storageBucket: "gs://fitness-4d9e3.firebasestorage.app",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   });
 } catch (error) {
   console.error("Error initializing Firebase:", error);

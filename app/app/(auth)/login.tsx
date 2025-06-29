@@ -162,11 +162,16 @@ const Login = () => {
               <View className="flex-row justify-center mb-4 space-x-4 mt-2">
                 <TouchableOpacity
                   onPress={logIn}
+                  disabled={loading}
                   className="bg-black dark:bg-transparent dark:border-2 border-slate-500 rounded-full w-full py-4 items-center"
                 >
-                  <Text className="text-white dark:text-slate-200 font-semibold text-lg">
-                    {t("account.login")}
-                  </Text>
+                  {loading ? (
+                    <ActivityIndicator size="large" color="#fff" />
+                  ) : (
+                    <Text className="text-white dark:text-slate-200 font-semibold text-lg">
+                      {t("account.login")}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
 
@@ -205,9 +210,7 @@ const Login = () => {
             </View>
 
             <View className="flex-row justify-center mt-8">
-              <Text className="dark:text-gray-200">
-                {t("login1.dont")}{" "}
-              </Text>
+              <Text className="dark:text-gray-200">{t("login1.dont")} </Text>
               <Text
                 className="text-blue-700 dark:text-gray-200 font-semibold dark:underline"
                 disabled={loading}
@@ -218,8 +221,6 @@ const Login = () => {
             </View>
           </View>
         </View>
-
-        {loading && <ActivityIndicator size="large" className="mt-4" />}
       </KeyboardAvoidingView>
     </ThemeView>
   );

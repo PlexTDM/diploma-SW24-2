@@ -427,7 +427,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           body: formData,
         });
         if (!res.ok) {
-          console.error("Error updating user:", res.status, await res.json());
+          console.log("Error updating user:", res.status, await res.json());
           return false;
         }
         const data = await res.json();
@@ -436,7 +436,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           await loadGoals(data.user.dailyGoals as DailyGoals);
         return true;
       } catch (e) {
-        console.error("Error updating user (catch):", e);
+        console.log("Error updating user (catch):", e);
         return false;
       } finally {
         setIsUpdating(false);
