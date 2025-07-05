@@ -46,7 +46,7 @@ function Screen1() {
     opacity: interpolate(scrollOffset.value, [0, deedHeight / 2], [1, 0]),
   }));
 
-  const toggleSwitch = ()=>{}
+ 
 
   return (
     <ThemeView className="flex-1 relative pt-[100px]">
