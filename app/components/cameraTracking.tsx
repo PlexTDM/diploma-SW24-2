@@ -1,7 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ActivityIndicator,
+  Animated,
+} from "react-native";
 import WebView from "react-native-webview";
-import { Camera, useCameraPermissions } from "expo-camera";
+import { useCameraPermissions } from "expo-camera";
+import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
+import { useTranslation } from "@/lib/language";
 
 const API_KEY = "29e1ca53-d185-46f8-b8a2-cf97d47ee249";
 const POSETRACKER_API = "https://app.posetracker.com/pose_tracker/tracking";
@@ -11,7 +21,14 @@ export default function CameraTracking() {
   const [poseTrackerInfos, setCurrentPoseTrackerInfos] = useState<any>(null);
   const [repsCounter, setRepsCounter] = useState(0);
   const [permission, requestPermission] = useCameraPermissions();
-  const [isReady, setIsReady] = useState(false);
+  const { t } = useTranslation();
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const successAnim = useRef(new Animated.Value(0)).current;
+  const prevReadyRef = useRef<boolean | null>(null);
+
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const countdownRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!permission?.granted) {
@@ -19,11 +36,99 @@ export default function CameraTracking() {
     }
   }, [requestPermission, permission]);
 
+  const fadeIn = () => {
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const showSuccessAndGoBack = () => {
+    Animated.timing(successAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        router.replace("/home/training"); // return to previous screen
+      }, 2000);
+    });
+  };
+
+  const startCountdown = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setCountdown(60);
+
+    countdownRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev === null) {
+          if (countdownRef.current) clearInterval(countdownRef.current);
+          return null;
+        }
+        if (prev <= 1) {
+          if (countdownRef.current) clearInterval(countdownRef.current);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          showSuccessAndGoBack();
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleInfos = (infos: any) => {
+    setCurrentPoseTrackerInfos(infos);
+
+    const wasReady = prevReadyRef.current;
+    const isNowReady = infos?.ready;
+
+    if (wasReady !== null && wasReady !== isNowReady) {
+      fadeIn();
+
+      if (isNowReady) {
+        startCountdown();
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } else {
+        if (countdownRef.current) clearInterval(countdownRef.current);
+        setCountdown(null);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      }
+    }
+
+    prevReadyRef.current = isNowReady;
+  };
+
+  const handleCounter = (count: number) => {
+    setRepsCounter(count);
+  };
+
+  const webViewCallback = (info: any) => {
+    if (info?.type === "counter") {
+      handleCounter(info.current_count);
+    } else {
+      handleInfos(info);
+    }
+  };
+
+  const onMessage = (event: any) => {
+    try {
+      let parsedData =
+        typeof event.nativeEvent.data === "string"
+          ? JSON.parse(event.nativeEvent.data)
+          : event.nativeEvent.data;
+
+      webViewCallback(parsedData);
+    } catch (error) {
+      console.error("Error processing message:", error);
+    }
+  };
+
   const exercise = "squat";
   const difficulty = "easy";
   const skeleton = "&skeleton=default";
-
-  const posetracker_url = `${POSETRACKER_API}?token=${API_KEY}&exercise=${exercise}&difficulty=${difficulty}&width=${width}&height=${height}&isMobile=${true}${skeleton}`;
+  const posetracker_url = `${POSETRACKER_API}?token=${API_KEY}&exercise=${exercise}&difficulty=${difficulty}&width=${width}&height=${height}&isMobile=true${skeleton}`;
 
   const jsBridge = `
     window.addEventListener('message', function(event) {
@@ -42,90 +147,73 @@ export default function CameraTracking() {
     true;
   `;
 
-  const handleCounter = (count: number) => {
-    setRepsCounter(count);
-  };
-
-  const handleInfos = (infos: any) => {
-    setCurrentPoseTrackerInfos(infos);
-    console.log("Received infos:", infos);
-  };
-
-  const webViewCallback = (info: any) => {
-    if (info?.type === "counter") {
-      handleCounter(info.current_count);
-    } else {
-      handleInfos(info);
-    }
-  };
-
-  const onMessage = (event: any) => {
-    try {
-      let parsedData;
-      if (typeof event.nativeEvent.data === "string") {
-        parsedData = JSON.parse(event.nativeEvent.data);
-      } else {
-        parsedData = event.nativeEvent.data;
-      }
-
-      console.log("Parsed data:", parsedData);
-      webViewCallback(parsedData);
-    } catch (error) {
-      console.error("Error processing message:", error);
-      console.log("Problematic data:", event.nativeEvent.data);
-    }
+  const getBackgroundColor = () => {
+    if (!poseTrackerInfos) return "#ffffffee";
+    return poseTrackerInfos.ready ? "#cce5ff" : "#ffcccc";
   };
 
   return (
     <View style={styles.container}>
-      <WebView
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        allowsInlineMediaPlayback={true}
-        mediaPlaybackRequiresUserAction={false}
-        style={styles.webView}
-        source={{ uri: posetracker_url }}
-        originWhitelist={["*"]}
-        injectedJavaScript={jsBridge}
-        onMessage={onMessage}
-        // Activer le debug pour voir les logs WebView
-        debuggingEnabled={true}
-        // Permettre les communications mixtes HTTP/HTTPS si nécessaire
-        mixedContentMode="compatibility"
-        // Ajouter un gestionnaire d'erreurs
-        onError={(syntheticEvent: any) => {
-          const { nativeEvent } = syntheticEvent;
-          console.warn("WebView error:", nativeEvent);
-        }}
-        // Ajouter un gestionnaire pour les erreurs de chargement
-        onLoadingError={(syntheticEvent: any) => {
-          const { nativeEvent } = syntheticEvent;
-          console.warn("WebView loading error:", nativeEvent);
-        }}
-      />
-      <View style={styles.infoContainer}>
-        <Text>
-          Status : {!poseTrackerInfos ? "loading AI..." : "AI Running"}
-        </Text>
-        <Text>
-          Info type :{" "}
-          {!poseTrackerInfos ? "loading AI..." : poseTrackerInfos.type}
-        </Text>
-        <Text>Counter: {repsCounter}</Text>
-        {poseTrackerInfos?.ready === false ? (
+      <View style={styles.webViewContainer}>
+        <WebView
+          javaScriptEnabled
+          domStorageEnabled
+          allowsInlineMediaPlayback
+          mediaPlaybackRequiresUserAction={false}
+          style={styles.webView}
+          source={{ uri: posetracker_url }}
+          originWhitelist={["*"]}
+          injectedJavaScript={jsBridge}
+          onMessage={onMessage}
+          mixedContentMode="compatibility"
+        />
+      </View>
+
+      <Animated.View
+        style={[
+          styles.infoContainer,
+          { backgroundColor: getBackgroundColor(), opacity: fadeAnim },
+        ]}
+      >
+        {!poseTrackerInfos ? (
           <>
-            <Text>Placement ready: false</Text>
-            <Text>
-              Placement info: Move {poseTrackerInfos?.postureDirection}
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.statusText}>
+              {t("cameraTracking.activatingAI")}
             </Text>
           </>
         ) : (
           <>
-            <Text>Placement ready: true</Text>
-            <Text>Placement info: You can start doing squats 🏋️</Text>
+            <Text style={styles.statusText}>
+              {t("cameraTracking.aiActive")}
+            </Text>
+            <Text style={styles.infoText}>
+              {t("cameraTracking.infoLabel")} {poseTrackerInfos?.type || "-"}
+            </Text>
+            <Text style={styles.readyText}>
+              {poseTrackerInfos?.ready
+                ? t("cameraTracking.positionCorrect")
+                : `${t("cameraTracking.adjustPosition")} ${
+                    poseTrackerInfos?.postureDirection
+                  }`}
+            </Text>
           </>
         )}
+      </Animated.View>
+
+      <View style={styles.counterBadge}>
+        <Text style={styles.counterText}>{repsCounter}</Text>
       </View>
+
+      {countdown !== null && (
+        <View style={styles.countdownContainer}>
+          <Text style={styles.countdownText}>{countdown}</Text>
+        </View>
+      )}
+
+      <Animated.View style={[styles.successOverlay, { opacity: successAnim }]}>
+        <Text style={styles.successText}>{t("cameraTracking.success")}</Text>
+      </Animated.View>
     </View>
   );
 }
@@ -133,21 +221,80 @@ export default function CameraTracking() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
+  },
+  webViewContainer: {
+    flex: 7,
   },
   webView: {
     width: "100%",
     height: "100%",
-    zIndex: 1,
   },
   infoContainer: {
-    position: "absolute",
-    top: 60,
-    left: 0,
-    right: 0,
+    flex: 3,
+    padding: 20,
     alignItems: "center",
-    zIndex: 2,
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    padding: 10,
+    justifyContent: "center",
+  },
+  statusText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  infoText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  readyText: {
+    fontSize: 16,
+    color: "#333",
+    textAlign: "center",
+    marginTop: 10,
+  },
+  counterBadge: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    backgroundColor: "#000",
+    padding: 20,
+    borderRadius: 100,
+    elevation: 5,
+  },
+  counterText: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  countdownContainer: {
+    position: "absolute",
+    top: height / 2 - 60,
+    left: width / 2 - 60,
+    width: 120,
+    height: 120,
+    backgroundColor: "#000000cc",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  countdownText: {
+    color: "white",
+    fontSize: 36,
+    fontWeight: "bold",
+  },
+  successOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: width,
+    height: height,
+    backgroundColor: "#000000cc",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 20,
+  },
+  successText: {
+    color: "#00FF99",
+    fontSize: 40,
+    fontWeight: "bold",
   },
 });

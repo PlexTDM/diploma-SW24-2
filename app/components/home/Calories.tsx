@@ -1,10 +1,8 @@
-import { useLanguage, languages } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { View, Text, Pressable } from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { ThemeText } from "@/components";
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Image } from "expo-image";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -12,12 +10,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import {Zap} from "lucide-react-native";
+import { Zap } from "lucide-react-native";
 import CaloriesModal from "./CaloriesModal";
 export default function Calories() {
-  const router = useRouter();
   const { theme } = useAppTheme();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const pressed = useSharedValue(0);
 
@@ -65,9 +62,9 @@ export default function Calories() {
       >
         <View className="flex-row items-center justify-between">
           <ThemeText className="flex-1 font-bold text-lg  ">
-            {languages[language].calories.calorie}
+            {t("calories.calorie")}
           </ThemeText>
-          <View className="w-[25px] h-[25px]">
+          <View className="w-[25px] h-[25px] px-2">
             <Zap color={theme === "dark" ? "#ffffff" : "#000000"} size={25} />
           </View>
         </View>
@@ -77,7 +74,7 @@ export default function Calories() {
             12
           </Text>
           <Text className="text-sm font-normal text-slate-400">
-            {languages[language].calories.kcal}
+            {t("calories.kcal")}
           </Text>
         </View>
       </Pressable>

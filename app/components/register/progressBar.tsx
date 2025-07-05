@@ -32,7 +32,7 @@ export default function ProgressBar() {
     if (navigaton.canGoBack()) {
       router.back();
     } else {
-      router.push("/(tabs)/home");
+      router.push("/(tabs)");
     }
   };
 

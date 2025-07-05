@@ -1,18 +1,21 @@
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { useRegisterStore } from "@/stores/register";
 import { useAppTheme } from "@/lib/theme";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Icon } from "react-native-paper";
-import { ThemeText } from "..";
-import LottieView from "lottie-react-native";
+import { Text, View } from "react-native";
+import StepHeader from "./StepHeader";
+import ChoiceButton from "./ChoiceButton";
 
 export default function Step5() {
   const { setField } = useRegisterStore();
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
-  const choices = languages[language].register.steps.water.choices;
+  const choices = t("register.steps.water.choices", {
+    returnObjects: true,
+  }) as string[];
+  const waterTitle = t("register.steps.water.title");
+  const waterDesc = t("register.steps.water.desc");
 
   const { theme } = useAppTheme();
   const iconColor = theme === "dark" ? "black" : "white";
@@ -22,53 +25,22 @@ export default function Step5() {
   };
 
   return (
-    <View className="flex-1 gap-auto justify-center items-center">
+    <View className="flex-1 mt-28 items-center">
       <View className="flex items-center">
-        <View className="flex-row px-6 items-center ">
-
-            <View className="w-[55px] h-12">
-              <LottieView
-                source={require("@/assets/icons/gem.json")}
-                autoPlay
-                loop
-                style={{
-                  width: 80,
-                  height: 45,
-                }}
-              />
-            </View>
-          <ThemeText className="text-3xl font-bold text-center">
-            {languages[language].register.steps.water.title}
-          </ThemeText>
-        </View>
-        <Text className="text-gray-300 text-xl w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
-          {languages[language].register.steps.water.desc}
+        <StepHeader title={waterTitle} />
+        <Text className="text-gray-300 text-lg w-[300px] font-semibold dark:text-gray-500 text-center mt-4">
+          {waterDesc}
         </Text>
       </View>
-      <View className="my-4">
+      <View className="space-y-4 my-4 w-full px-14">
         {choices.map((choice, i) => (
-          <Pressable
+          <ChoiceButton
             key={i}
+            choice={choice}
+            isSelected={selectedIndex === i}
             onPress={() => handlePress(i)}
-            className={`dark:bg-gray-900 p-5 mb-5 w-[330px] border-2 rounded-3xl relative ${selectedIndex === i
-                ? "border-black dark:border-white"
-                : "border-gray-200 dark:border-gray-700"
-              }`}
-          >
-            {i === selectedIndex && (
-              <View className="absolute -right-2 -top-2 rounded-full dark:text-black bg-black dark:bg-white p-1 items-center justify-center">
-                <Icon source="check" size={16} color={iconColor} />
-              </View>
-            )}
-            <Text
-              className={`font-semibold text-lg ${selectedIndex === i
-                  ? "text-black dark:text-white"
-                  : "text-slate-500 dark:text-gray-300"
-                }`}
-            >
-              {choice}
-            </Text>
-          </Pressable>
+            iconColor={iconColor}
+          />
         ))}
       </View>
       <View className="mb-4"></View>

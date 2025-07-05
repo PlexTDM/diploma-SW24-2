@@ -1,7 +1,13 @@
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View, Pressable } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Pressable,
+} from "react-native";
 import { useAppTheme } from "@/lib/theme";
 import { BlurEllipse } from "@/components";
 
@@ -26,7 +32,7 @@ export default function PasswordChanged() {
   return (
     <View className="flex-1 bg-white dark:bg-black">
       {/* 🔙 Back button */}
-       <BlurEllipse />
+      <BlurEllipse />
       <View className="flex-row items-center px-4 pt-12">
         <Pressable
           onPress={handleBack}
@@ -72,10 +78,11 @@ export default function PasswordChanged() {
           className="bg-black dark:bg-white px-8 py-4 rounded-full w-full items-center"
           onPress={handleSubmit}
         >
-          <Text className="text-white dark:text-black font-bold">Change Password</Text>
+          <Text className="text-white dark:text-black font-bold">
+            Change Password
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
-

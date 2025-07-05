@@ -1,28 +1,36 @@
 import express, { Request, Response, NextFunction } from "express";
-import { Express } from "express-serve-static-core";
-import cookieParser from "cookie-parser";
-import bp from "body-parser";
 import { redisMiddleware } from "@/middleware/redisMiddleware";
+import { scheduleStreakResetJob } from "@/jobs/streakResetJob";
+import { Express } from "express-serve-static-core";
+import connectToMongoDB from "@/services/mongodb";
 import limiter from "@/middleware/rateLimit";
 import corsConfig from "@/middleware/cors";
+import cookieParser from "cookie-parser";
 import router from "@/routes/route";
-import os from "os";
+import bp from "body-parser";
 import dotenv from "dotenv";
-import connectToMongoDB from "./services/mongodb";
-import "./global.d.ts";
+import path from "path";
+import os from "os";
 
 dotenv.config();
+const __dirname = path.resolve();
 
 const app: Express = express();
 
 // Log requests
 app.use((req: Request, _res: Response, next: NextFunction) => {
-  const ip = req.ip || req.socket.remoteAddress || "";
-  const ipPrefix = ip.split(".").slice(0, 2).join(".");
-  console.log(`Request from IP: ${ipPrefix}.*.* to ${req.method} ${req.url}`);
+  let ip = req.headers["cf-connecting-ip"] || req.ip || "unknown";
+  if (Array.isArray(ip)) ip = ip[0];
+  if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "IPv4 ");
+  // get type of request
+  const requestType = req.method;
+  const location = req.originalUrl;
+  console.log(`Request IP: ${ip} ~ ${requestType}: ${location}`);
+
   next();
 });
-
+app.set("trust proxy", 1);
+app.use(express.static(path.join(__dirname, "public")));
 app.use(bp.urlencoded({ limit: "16mb", extended: true }));
 app.use(redisMiddleware);
 app.use(express.json());
@@ -53,4 +61,5 @@ connectToMongoDB().then(() => {
       console.log(`- Network: http://${addr}:${PORT}`);
     });
   });
+  scheduleStreakResetJob();
 });

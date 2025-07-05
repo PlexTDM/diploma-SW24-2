@@ -1,34 +1,46 @@
 import { create } from "zustand";
 import EventSource from "react-native-sse";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tokenCache } from "@/utils/cache";
 
 interface ChatState {
   messages: Message[];
-  isLoading: boolean;
   isSending: boolean;
+  isLoadingHistory: boolean;
   error: string | null;
-
+  isLoading: boolean;
+  hasShownAuthError: boolean;
   sendMessage: (
     message: string,
     onChunk: (chunk: string) => void
   ) => Promise<string | undefined>;
   clearChat: () => Promise<void>;
   getConversationHistory: () => Promise<void>;
+  clearError: () => void;
 }
 
 const api = process.env.EXPO_PUBLIC_API_URL as string;
 
-export const useChatStore = create<ChatState>((set) => ({
+export const useChatStore = create<ChatState>((set, get) => ({
   messages: [],
-  isLoading: false,
+  isLoadingHistory: false,
   isSending: false,
   error: null,
-
+  isLoading: false,
+  hasShownAuthError: false,
+  clearError: () => set({ error: null, hasShownAuthError: false }),
   sendMessage: async (message: string, onChunk: (chunk: string) => void) => {
-    set({ isSending: true });
+    set({ isSending: true, error: null });
     try {
-      const accessToken = await AsyncStorage.getItem("accessToken");
-
+      const accessToken = await tokenCache?.getToken("accessToken");
+      if (!accessToken) {
+        if (!get().hasShownAuthError) {
+          set({
+            error: "Authentication token not found. Please log in.",
+            hasShownAuthError: true,
+          });
+        }
+        return;
+      }
       return new Promise((resolve, reject) => {
         const es = new EventSource(`${api}/chatbot/message`, {
           method: "POST",
@@ -54,7 +66,7 @@ export const useChatStore = create<ChatState>((set) => ({
               onChunk(data.text);
             }
           } catch (err) {
-            console.warn("Failed to parse SSE chunk:", event.data, err);
+            console.log("Failed to parse SSE chunk:", event.data, err);
           }
         });
         es.addEventListener("error", (err) => {
@@ -84,7 +96,7 @@ export const useChatStore = create<ChatState>((set) => ({
   clearChat: async () => {
     try {
       set({ isLoading: true, error: null });
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
       const response = await fetch(`${api}/chatbot/clear`, {
         method: "DELETE",
         headers: {
@@ -106,26 +118,110 @@ export const useChatStore = create<ChatState>((set) => ({
   },
 
   getConversationHistory: async () => {
+    set({ isLoadingHistory: true, error: null });
     try {
-      set({ isLoading: true, error: null });
-      const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await tokenCache?.getToken("accessToken");
+      if (!accessToken) {
+        if (!get().hasShownAuthError) {
+          set({
+            error: "Authentication token not found. Please log in.",
+            isLoadingHistory: false,
+            hasShownAuthError: true,
+          });
+          // Add a default initial message if no history and no token
+          if (get().messages.length === 0) {
+            set({
+              messages: [
+                {
+                  id: "init-no-auth",
+                  content:
+                    "Hello! I'm your AI assistant. Sign in to see your history.",
+                  role: "model",
+                  timestamp: new Date(),
+                },
+              ],
+            });
+          }
+        }
+        return;
+      }
+
       const response = await fetch(`${api}/chatbot/history`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get conversation history");
+        let errorBody = `Status: ${response.status}`;
+        try {
+          const data = await response.json();
+          errorBody = JSON.stringify(data.detail || data);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+          try {
+            errorBody = (await response.text()) || errorBody;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          } catch (e2) {}
+        }
+        throw new Error(`Failed to get conversation history: ${errorBody}`);
       }
 
       const data = await response.json();
-      set({ messages: data.history as Message[] });
-    } catch (error) {
-      console.error("Error getting conversation history:", error);
-      set({ error: "Failed to get conversation history" });
-    } finally {
-      set({ isLoading: false });
+      if (data && Array.isArray(data.history)) {
+        const historyMessages = (data.history as any[])
+          .filter((msg) => msg.role !== "system") // Filter system messages here
+          .map(
+            (msg): Message => ({
+              id: msg.id || `hist-${Math.random()}`, // Ensure ID
+              content: msg.content || msg.text || "", // Adapt to API response
+              role: msg.role || (msg.sender === "user" ? "user" : "model"), // Adapt
+              timestamp: new Date(msg.timestamp || Date.now()),
+            })
+          );
+        set({ messages: historyMessages, isLoadingHistory: false });
+        if (historyMessages.length === 0) {
+          set({
+            messages: [
+              {
+                id: "init-empty-hist",
+                content: "Hello! I'm your AI assistant. Start chatting!",
+                role: "model",
+                timestamp: new Date(),
+              },
+            ],
+          });
+        }
+      } else {
+        set({ messages: [], isLoadingHistory: false }); // Clear messages if malformed
+        set({
+          messages: [
+            {
+              id: "init-malformed-hist",
+              content:
+                "Hello! I'm your AI assistant. There was an issue loading history.",
+              role: "model",
+              timestamp: new Date(),
+            },
+          ],
+        });
+        throw new Error("Received malformed history data from server.");
+      }
+    } catch (err: any) {
+      set({
+        error: err.message || "Failed to load history.",
+        isLoadingHistory: false,
+      });
+      if (get().messages.length === 0) {
+        set({
+          messages: [
+            {
+              id: "init-load-err",
+              content: `Hello! I'm your AI assistant. Error loading history: ${err.message}`,
+              role: "model",
+              timestamp: new Date(),
+            },
+          ],
+        });
+      }
     }
   },
 }));

@@ -1,16 +1,13 @@
 import React from "react";
-import { View } from "react-native";
-import { Text } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { ThemeView, ThemeText } from "@/components";
 import { Image } from "expo-image";
-import { StyleSheet } from "react-native";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { Pressable } from "react-native";
 
-export default function start() {
-  const { language } = useLanguage();
+export default function Start() {
+  const { t } = useTranslation();
   const router = useRouter();
   return (
     <ThemeView className="p-8">
@@ -27,11 +24,9 @@ export default function start() {
         />
       </View>
       <ThemeText className="font-bold text-4xl mt-5 w-[80%]">
-        {languages[language].training.measure}
+        {t("training.measure")}
       </ThemeText>
-      <ThemeText className="mt-5 text-xl">
-        {languages[language].training.test}
-      </ThemeText>
+      <ThemeText className="mt-5 text-xl">{t("training.test")}</ThemeText>
       <View className="absolute bottom-5 left-5 right-5">
         <Pressable onPress={() => router.push("/home/training/screen2")}>
           <Button
@@ -39,18 +34,18 @@ export default function start() {
             className="rounded-xl"
             contentStyle={{ paddingVertical: 12, backgroundColor: "white" }}
           >
-            <Text className="text-black font-bold">I'll Do it Later</Text>
+            <Text className="text-black font-bold">{t("start.later")}</Text>
           </Button>
         </Pressable>
       </View>
       <View className="absolute bottom-28 left-5 right-5">
-        <Pressable onPress={() => router.push("/home/training/screen2")}>
+        <Pressable onPress={() => router.push("/home/training/test")}>
           <Button
             mode="contained"
             className="rounded-xl"
             contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
           >
-            Start
+            {t("start.start")}
           </Button>
         </Pressable>
       </View>

@@ -126,7 +126,7 @@ export default function MiniCalendar({
             >
               {day ? (
                 <Pressable
-                  onPress={() => onToggleComplete(day)}
+                  // onPress={() => onToggleComplete(day)}
                   className={`
                     w-12 h-12 rounded-full items-center justify-center
                     ${isStreakDay ? "bg-blue-500" : ""}

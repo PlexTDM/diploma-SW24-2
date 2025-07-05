@@ -4,10 +4,12 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "@/lib/language";
 
 export default function Meal() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
+  const { t } = useTranslation();
   const isDark = colorScheme === "dark";
 
   const [selectedTab, setSelectedTab] = useState<"recent" | "favorites">(
@@ -54,9 +56,9 @@ export default function Meal() {
   );
 
   const scannerImages = [
-    { label: "Barcode", source: require("@/assets/barcode.png") },
-    { label: "Menu", source: require("@/assets/Menu.png") },
-    { label: "Fridge", source: require("@/assets/fridge.png") },
+    { label: t("breakfast.barcode"), source: require("@/assets/barcode.png") },
+    { label: t("breakfast.menu"), source: require("@/assets/Menu.png") },
+    { label: t("breakfast.Fridge"), source: require("@/assets/fridge.png") },
   ];
 
   return (
@@ -65,14 +67,20 @@ export default function Meal() {
       <View className="flex-row justify-between items-center">
         <Feather name="plus" size={20} color={isDark ? "white" : "black"} />
         <Text className="font-bold text-xl text-black dark:text-white">
-          Breakfast
+          {t("breakfast.title")}
         </Text>
-        <Pressable
-          onPress={() => router.push("/(tabs)/blogs")}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-800"
-        >
-          <Text className="font-bold text-lg text-[#758FF6]">Done</Text>
-        </Pressable>
+        <View className="overflow-hidden">
+          <Pressable
+            onPress={() => router.back()}
+            android_ripple={{ color: "#DDDDDDD", radius: 30 }}
+            android_disableSound
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden"
+          >
+            <Text className="font-bold text-lg text-[#758FF6]">
+              {t("breakfast.button")}
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Search */}
@@ -82,7 +90,7 @@ export default function Meal() {
             <Feather name="search" size={18} color="#666" />
           </View>
           <TextInput
-            placeholder="Search for food"
+            placeholder={t("breakfast.search")}
             placeholderTextColor={isDark ? "#aaa" : "#888"}
             clearButtonMode="always"
             autoCapitalize="none"
@@ -100,12 +108,12 @@ export default function Meal() {
       <View className="flex-row justify-between items-center mt-5">
         <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
           <Text className="text-base font-bold text-black dark:text-white">
-            Гараар оруулах
+            {t("breakfast.gar")}
           </Text>
         </Pressable>
         <Pressable className="p-3 w-[47%] border border-gray-300 dark:border-gray-600 rounded-full justify-center items-center">
           <Text className="text-base font-bold text-black dark:text-white">
-            Орц оруулах
+            {t("breakfast.orts")}
           </Text>
         </Pressable>
       </View>
@@ -113,14 +121,20 @@ export default function Meal() {
       {/* Scan Button */}
       <Pressable
         className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
+        onPress={() => router.push("/(meal)/imageScan")}
+      >
+        <Text className="text-base text-white">{t("meal.image")}</Text>
+      </Pressable>
+      <Pressable
+        className="w-full p-3 bg-[#136CF1] rounded-full justify-center items-center mt-5"
         onPress={() => router.push("./scan")}
       >
-        <Text className="text-base text-white">Scan your meals</Text>
+        <Text className="text-base text-white">{t("meal.barcode")}</Text>
       </Pressable>
 
       {/* More Scanners */}
       <Text className="text-lg font-bold mt-6 text-black dark:text-white">
-        More Scanners
+        {t("breakfast.more")}
       </Text>
       <View className="flex-row items-center mt-5 gap-4">
         {scannerImages.map((item, i) => (
@@ -140,7 +154,7 @@ export default function Meal() {
 
       {/* Tabs */}
       <View className="flex-row justify-center mt-8 mb-2 space-x-8">
-        {["Сүүлд нэмэгдсэн", "Таалагдсан"].map((tab, index) => {
+        {[t("breakfast.recent"), t("breakfast.favorites")].map((tab, index) => {
           const active =
             (selectedTab === "recent" && index === 0) ||
             (selectedTab === "favorites" && index === 1);
@@ -179,7 +193,11 @@ export default function Meal() {
           return visibleMeals.length ? (
             <View key={day} className="mt-4">
               <Text className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
-                {day}
+                {day === "Өнөөдөр"
+                  ? "Today"
+                  : day === "Өчигдөр"
+                  ? "Yesterday"
+                  : ""}
               </Text>
               {visibleMeals.map((meal) =>
                 renderMealCard(meal.title, meal.calories)

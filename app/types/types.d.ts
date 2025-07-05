@@ -1,14 +1,3 @@
-interface LanguageProviderProps {
-  children: React.ReactNode;
-}
-
-type Language = "en" | "mn";
-
-type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-};
-
 interface RegisterState {
   username: string;
   gender: string;
@@ -57,8 +46,12 @@ type DataType = {
 };
 
 type User = {
+  // id is from accessToken
+  id: string;
+  _id: string;
   username: string;
   email: string;
+  streak: number;
   stats?: Record<string, any>;
   gender: Gender;
   birthday: Date;
@@ -80,11 +73,46 @@ type User = {
   emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  dailyGoals?: DailyGoals;
+  highestStreak?: number;
 };
 
-type Message = {
+type DailyGoals = {
+  stepsGoal: number;
+  waterGoal: number;
+  caloriesGoal: number;
+  proteinGoal: number;
+  carbsGoal: number;
+  fatGoal: number;
+  sleepGoal: number;
+  rdcGoal: number;
+};
+
+interface Message {
   id: string;
   content: string;
   role: "user" | "model" | "system";
-  timestamp: Date;
+  timestamp: Date | string; // Allow string from API, convert to Date
+  isStreaming?: boolean;
+}
+
+type FoodImage = {
+  food_name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
 };
+
+interface IExercise {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  duration_minutes: number;
+  repetitions?: number;
+  sets?: number;
+  equipment: string;
+  level: string;
+  video?: string;
+}

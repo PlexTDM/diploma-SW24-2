@@ -1,4 +1,4 @@
-# Project Name
+# Bluvi Fitness
 
 React Native fitness application with ai recommended exercises
 
@@ -40,10 +40,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Gmail - [unnamed0631@gmail.com](mailto:unnamed0631@gmail.com)
 
 Discord - unnamed0631
-
-
-npm i react-native-skia
-npm install @shopify/react-native-skia
-npm i react-native-redash
-npm i d3
-npm i @types/d3

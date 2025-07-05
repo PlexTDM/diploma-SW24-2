@@ -10,29 +10,6 @@ export async function login(
   password?: string
 ): Promise<LoginResponse | null> {
   try {
-    const accessToken = await AsyncStorage.getItem("accessToken");
-
-    if (accessToken) {
-      const sessionRes = await fetch(`${api}/auth/login`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (sessionRes.ok) {
-        const data = await sessionRes.json();
-        const { accessToken, refreshToken, user } = data;
-
-        if (accessToken && refreshToken) {
-          await AsyncStorage.setItem("accessToken", accessToken);
-          await AsyncStorage.setItem("refreshToken", refreshToken);
-          return { accessToken, refreshToken, user };
-        }
-      }
-    }
-
-    // Fallback to email/password login
     if (email && password) {
       const res = await fetch(`${api}/auth/login`, {
         method: "POST",
@@ -42,7 +19,8 @@ export async function login(
 
       if (!res.ok) {
         console.log(await res.text());
-        throw new Error("Login failed");
+        // throw new Error("Login failed");
+        return null;
       }
       const data = await res.json();
       console.log(data);

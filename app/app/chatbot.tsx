@@ -8,7 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useAppTheme } from "@/lib/theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -19,6 +19,8 @@ import { useChatStore } from "@/stores/chatStore";
 import MessageBubble from "@/components/chat/messageBubble";
 import Header from "@/components/chat/Header";
 import { StatusBar } from "expo-status-bar";
+import ListFooterElement from "@/components/chat/ListFooterElement";
+import { AuthContext } from "@/context/auth";
 // import CameraTracking from "@/components/cameraTracking";
 
 const LoadingIndicator = () => {
@@ -37,6 +39,7 @@ const LoadingIndicator = () => {
 };
 
 export default function ChatScreen() {
+  const { user } = use(AuthContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
@@ -46,18 +49,26 @@ export default function ChatScreen() {
   const insets = useSafeAreaInsets();
   const {
     sendMessage,
-    getConversationHistory,
     clearChat,
     isSending,
-    isLoading,
+    isLoadingHistory,
     error,
     messages: storeMessages,
+    clearError,
   } = useChatStore();
 
+  // Clear error when component unmounts
   useEffect(() => {
-    getConversationHistory();
-  }, [getConversationHistory]);
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
+  useEffect(() => {
+    useChatStore.getState().getConversationHistory();
+  }, []);
+
+  // GET HISTORY
   useEffect(() => {
     if (storeMessages?.length > 0) {
       const convertedMessages = storeMessages?.filter(
@@ -76,6 +87,21 @@ export default function ChatScreen() {
     }
   }, [storeMessages]);
 
+  // INITIAL MESSAGE
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: "init-1",
+          content: "Hello! I'm your AI assistant.",
+          role: "model",
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  }, [messages]);
+
+  // SEND MESSAGE
   const handleSend = async () => {
     if (!inputText.trim()) return;
 
@@ -121,7 +147,7 @@ export default function ChatScreen() {
       setStreamingMessageId(null);
     }
   };
-
+  // ERROR HANDLING
   useEffect(() => {
     if (error && messages.length > 0) {
       const currentStreamingMessage = messages.find(
@@ -133,21 +159,36 @@ export default function ChatScreen() {
             msg.id === streamingMessageId ? { ...msg, content: error } : msg
           )
         );
-      } else if (error && !streamingMessageId) {
-        console.warn("Chat store general error:", error);
+      } else if (
+        error &&
+        !streamingMessageId &&
+        !messages.some((m) => m.id === "error-1")
+      ) {
+        setMessages((prev) => [
+          {
+            id: "error-1",
+            content: error,
+            role: "model",
+            timestamp: new Date(),
+          },
+          ...prev,
+        ]);
       }
     }
   }, [error, messages, streamingMessageId]);
 
+  // CLEAR CHAT
   const handleClearChat = () => {
     clearChat();
   };
 
+  const inputDisabled = isSending || isLoadingHistory || !user;
+
+  const buttonDisabled =
+    !inputText.trim() || isSending || isLoadingHistory || !user;
+
   return (
-    <SafeAreaView
-      className="dark:bg-[#1A202C] bg-white flex-1"
-      edges={["top", "bottom"]}
-    >
+    <SafeAreaView className="dark:bg-[#1A202C] bg-white flex-1" edges={["top"]}>
       {/* <CameraTracking /> */}
       <StatusBar style={theme === "dark" ? "light" : "dark"} hidden={false} />
       <Header title="Chatbot" />
@@ -159,19 +200,30 @@ export default function ChatScreen() {
         <FlatList
           inverted={true}
           data={messages}
+          ListFooterComponent={<ListFooterElement />}
           renderItem={({ item }) => (
             <MessageBubble
               key={item.id}
               message={item}
               isCurrentlyStreaming={item.id === streamingMessageId}
               setCurrentStreamingMessageId={setStreamingMessageId}
+              isSending={isSending && item.id === streamingMessageId}
             />
           )}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center">
+              <Text className="text-gray-500 dark:text-gray-400">
+                No messages yet
+              </Text>
+            </View>
+          }
           keyExtractor={(item) => item.id}
           className="flex-1 px-4 pb-12"
           contentContainerClassName="pb-4"
-          ListFooterComponent={
-            isLoading && messages.length === 0 ? <LoadingIndicator /> : null
+          ListHeaderComponent={
+            isLoadingHistory && messages.length <= 1 ? (
+              <LoadingIndicator />
+            ) : null
           }
         />
 
@@ -182,14 +234,14 @@ export default function ChatScreen() {
         >
           <Pressable
             onPress={handleClearChat}
-            disabled={isSending || isLoading}
+            disabled={isSending || isLoadingHistory}
             className="p-2 mr-2"
           >
             <Ionicons
               name="trash-outline"
               size={24}
               color={
-                isSending || isLoading
+                isSending || isLoadingHistory
                   ? theme === "dark"
                     ? "#4B5563"
                     : "#D1D5DB"
@@ -210,16 +262,14 @@ export default function ChatScreen() {
             submitBehavior="blurAndSubmit"
             returnKeyType="send"
             onSubmitEditing={handleSend}
-            editable={!isSending && !isLoading}
+            editable={!inputDisabled}
             style={{ textAlignVertical: "top" }}
           />
           <Pressable
             onPress={handleSend}
-            disabled={!inputText.trim() || isSending || isLoading}
+            disabled={buttonDisabled}
             className={`w-10 h-10 rounded-full items-center justify-center ${
-              inputText.trim() && !isSending && !isLoading
-                ? "bg-blue-500"
-                : "bg-gray-300 dark:bg-gray-700"
+              buttonDisabled ? "bg-gray-300 dark:bg-gray-700" : "bg-blue-500"
             }`}
           >
             {isSending ? (
@@ -228,13 +278,7 @@ export default function ChatScreen() {
               <Ionicons
                 name="send"
                 size={20}
-                color={
-                  inputText.trim() && !isSending && !isLoading
-                    ? "white"
-                    : theme === "dark"
-                    ? "#4B5563"
-                    : "#9CA3AF"
-                }
+                color={buttonDisabled ? "white" : "white"}
               />
             )}
           </Pressable>

@@ -1,7 +1,7 @@
 import { ThemeText, ThemeView } from "@/components";
 import { ScrollView, View, Text, Pressable } from "react-native";
 import { useState } from "react";
-import { languages, useLanguage } from "@/lib/language";
+import { useTranslation } from "@/lib/language";
 import { ChevronRight } from "lucide-react-native";
 import { Button } from "react-native-paper";
 
@@ -47,7 +47,7 @@ const muscleMap: Record<MuscleGroup, string[]> = {
 const intensityOptions = ["Basic", "Moderate", "High"];
 
 export default function Screen1() {
-  const { language } = useLanguage();
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState<Option>("Gym");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [selectedWType, setSelectedWType] = useState<string>("");
@@ -61,15 +61,13 @@ export default function Screen1() {
       <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
         <ThemeView className="p-8">
           <ThemeText className="text-4xl font-bold">
-            {languages[language].training.custom}
+            {t("training.custom")}
           </ThemeText>
 
-          <ThemeText className="mt-3">
-            {languages[language].training.custom1}
-          </ThemeText>
+          <ThemeText className="mt-3">{t("training.custom1")}</ThemeText>
 
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.location}
+            {t("training.location")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2">
             {options.map((option, index) => {
@@ -95,7 +93,7 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.wtype}
+            {t("training.wtype")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {wtypeOptions.map((option, index) => {
@@ -125,7 +123,7 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.time}
+            {t("training.time")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {timeOptions[selectedOption].map((option, index) => {
@@ -151,10 +149,10 @@ export default function Screen1() {
             })}
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.muscle}
+            {t("training.muscle")}
           </ThemeText>
           <ThemeText className="mt-3 text-gray-600">
-            {languages[language].training.muscle1}
+            {t("training.muscle1")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {muscleOptions.map((option, index) => {
@@ -212,7 +210,7 @@ export default function Screen1() {
             </View>
           </View>
           <ThemeText className="text-3xl font-bold mt-8">
-            {languages[language].training.inten}
+            {t("training.inten")}
           </ThemeText>
           <View className="flex-row mt-3 gap-2 w-full flex-wrap">
             {intensityOptions.map((option, index) => {
@@ -237,20 +235,19 @@ export default function Screen1() {
               );
             })}
           </View>
-          <ThemeText className="text-xl font-bold mt-8">Super Sets</ThemeText>
+          <ThemeText className="text-xl font-bold mt-8">{t("dasgal.super")}</ThemeText>
           <ThemeText className="text-gray-600 mt-3">
-            Exercises performed consecutively without rest targetiing different
-            muscle groups.
+            {t("dasgal.text")}
           </ThemeText>
           <View className="border-y border-gray-200 py-4 mt-5 flex-row items-center justify-between">
-            <ThemeText className="text-xl font-bold">Cardio Training</ThemeText>
+            <ThemeText className="text-xl font-bold">{t("dasgal.blah")}</ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0 of 6</ThemeText>
               <ChevronRight size={20} color="black" />
             </View>
           </View>
           <View className="border-y border-gray-200 py-4 flex-row items-center justify-between">
-            <ThemeText className="text-xl font-bold">Equipment</ThemeText>
+            <ThemeText className="text-xl font-bold">{t("dasgal.equipment")}</ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0 of 42</ThemeText>
               <ChevronRight size={20} color="black" />
@@ -258,7 +255,7 @@ export default function Screen1() {
           </View>
           <View className="border-y border-gray-200 py-4 flex-row items-center justify-between">
             <ThemeText className="text-xl font-bold">
-              Health Restrictions
+              {t("dasgal.health")}
             </ThemeText>
             <View className="flex-row gap-2 items-center">
               <ThemeText className="text-xl font-bold">0</ThemeText>
@@ -273,7 +270,7 @@ export default function Screen1() {
           className="rounded-xl"
           contentStyle={{ paddingVertical: 12, backgroundColor: "black" }}
         >
-          Create New Session
+          {t("dasgal.button")}
         </Button>
       </View>
     </ThemeView>

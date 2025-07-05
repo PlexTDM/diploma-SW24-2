@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema, model } from "mongoose";
 
 export type MessageRole = "system" | "user" | "model";
 
@@ -36,7 +36,7 @@ const chatMessageSchema = new Schema<ChatMessage>(
       default: Date.now,
     },
   },
-  { _id: false } // avoid nested _id fields for messages
+  { _id: false }
 );
 
 const chatSchema = new Schema<IChat>(
@@ -85,6 +85,6 @@ chatSchema.statics.findOrCreate = async function (
   return chat;
 };
 
-const Chat = mongoose.model<IChat, ChatModel>("ChatBotHistory", chatSchema);
+const Chat = model<IChat, ChatModel>("ChatBotHistory", chatSchema);
 
 export default Chat;

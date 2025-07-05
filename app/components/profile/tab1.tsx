@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import moment from "moment";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/lib/theme";
-import { ThemeView, ThemeText } from "@/components";
+import { ThemeText } from "@/components";
 
 const HorizontalDateSelector = () => {
   const { theme } = useAppTheme();
@@ -46,7 +46,9 @@ const HorizontalDateSelector = () => {
             >
               <Text
                 className={`text-sm ${
-                  isSelected ? "text-black font-bold" : "text-gray-500 dark:text-gray-400"
+                  isSelected
+                    ? "text-black font-bold"
+                    : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 {isToday
@@ -63,15 +65,27 @@ const HorizontalDateSelector = () => {
             <Icon source="run-fast" size={25} color="white" />
           </View>
           <View className="ml-4">
-            <ThemeText className="text-lg font-semibold dark:text-white">Indoor Run</ThemeText>
-            <Text className="text-base text-gray-500 dark:text-gray-400">24 min</Text>
+            <ThemeText className="text-lg font-semibold dark:text-white">
+              Indoor Run
+            </ThemeText>
+            <Text className="text-base text-gray-500 dark:text-gray-400">
+              24 min
+            </Text>
           </View>
         </View>
         <View className="flex-end mr-4">
-          <ThemeText className="text-lg font-semibold ml-2 dark:text-white">5.56 km</ThemeText>
+          <ThemeText className="text-lg font-semibold ml-2 dark:text-white">
+            5.56 km
+          </ThemeText>
           <View className="flex-row items-center justify-center">
-            <Icon source="fire" size={20} color={theme === "dark" ? "#fff" : "#000"} />
-            <ThemeText className="text-base dark:text-white">333 kcal</ThemeText>
+            <Icon
+              source="fire"
+              size={20}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
+            <ThemeText className="text-base dark:text-white">
+              333 kcal
+            </ThemeText>
           </View>
         </View>
       </View>
@@ -79,17 +93,29 @@ const HorizontalDateSelector = () => {
       <View className="flex-row justify-between items-center border-2 border-gray-200 dark:border-gray-700 rounded-full mt-5 w-full p-2">
         <View className="flex-row items-center justify-center">
           <View className="items-center justify-center p-5 rounded-full bg-black dark:bg-white shadow-sm shadow-gray-500 ">
-            <Icon source="bike" size={25} color={theme === "dark" ? "#000" : "#fff"} />
+            <Icon
+              source="bike"
+              size={25}
+              color={theme === "dark" ? "#000" : "#fff"}
+            />
           </View>
           <View className="ml-4">
-            <ThemeText className="text-lg font-semibold dark:text-white">Outdoor Cycle</ThemeText>
-            <Text className="text-base text-gray-500 dark:text-gray-400">24 min</Text>
+            <ThemeText className="text-lg font-semibold dark:text-white">
+              Outdoor Cycle
+            </ThemeText>
+            <Text className="text-base text-gray-500 dark:text-gray-400">
+              24 min
+            </Text>
           </View>
         </View>
         <View className="flex-end mr-4">
           <ThemeText className="text-lg font-semibold ml-2">5.56 km</ThemeText>
           <View className="flex-row items-center justify-center">
-            <Icon source="fire" size={20} color={theme === "dark" ? "#fff" : "#000"} />
+            <Icon
+              source="fire"
+              size={20}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
             <ThemeText className="text-base">333 kcal</ThemeText>
           </View>
         </View>

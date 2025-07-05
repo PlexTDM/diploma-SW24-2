@@ -1,34 +1,71 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import bcryptjs from "bcryptjs";
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import RefreshToken from "@/models/refreshToken";
 import { IUser } from "@/models/user";
+import { redisService } from "@/services/redis";
 
 config();
+
+export interface UserPayload {
+  id: string;
+  role: "ADMIN" | "USER";
+  username: string;
+  email: string;
+  image: string;
+  hasOnboarded: boolean;
+}
+
+export type AuthenticatedRequest = Request & {
+  user: UserPayload;
+  redis: typeof redisService;
+};
 
 export const generateAccessToken = (user: IUser): string => {
   const secret = process.env.SECRET_ACCESS_TOKEN as string;
   if (!secret) throw new Error("SECRET_ACCESS_TOKEN is not defined");
 
-  return jwt.sign({ id: user.id, role: user.role }, secret, {
-    expiresIn: "1d",
-  });
+  return jwt.sign(
+    {
+      id: user.id || user._id,
+      role: user.role,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      hasOnboarded: user.hasOnboarded,
+    },
+    secret,
+    {
+      expiresIn: "3h",
+    }
+  );
 };
 
 export const generateRefreshToken = async (user: IUser): Promise<string> => {
   const secret = process.env.SECRET_REFRESH_TOKEN as string;
   if (!secret) throw new Error("SECRET_REFRESH_TOKEN is not defined");
 
-  const refreshToken = jwt.sign({ id: user.id, role: user.role }, secret, {
-    expiresIn: "7d",
-  });
+  const refreshToken = jwt.sign(
+    {
+      id: user._id || user.id,
+      role: user.role,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      hasOnboarded: user.hasOnboarded,
+    },
+    secret,
+    {
+      expiresIn: "30d",
+    }
+  );
   const hashedToken = await bcryptjs.hash(refreshToken, 10);
 
   await RefreshToken.create({
     tokenHash: hashedToken,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    userId: user.id,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    userId: user._id || user.id,
   });
 
   return refreshToken;

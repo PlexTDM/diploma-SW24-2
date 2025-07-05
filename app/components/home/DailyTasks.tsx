@@ -1,110 +1,213 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import React, { useEffect, useCallback, useRef, useContext } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  AppState,
+} from "react-native";
 import { CheckCircle2, Circle } from "lucide-react-native";
-import { useColorScheme } from "react-native";
+import { useTranslation } from "@/lib/language";
+import { ThemeText } from "@/components";
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
+import { useAppTheme } from "@/lib/theme";
+import useDailyTaskStore, { Task } from "@/stores/dailyTaskStore";
+import { usePedometer } from "@/hooks/usePedometer";
+import { AuthContext } from "@/context/auth";
 
-type Task = {
-    id: number;
-    title: string;
-    target: string;
-    current: number;
-    max: number;
-    completed: boolean;
-    icon: string;
-    unit: string;
-};
-
-const initialTasks: Task[] = [
-    { id: 1, title: "Drink water", target: "3 glasses", current: 2, max: 3, completed: false, icon: "💧", unit: "glasses" },
-    { id: 2, title: "Walk", target: "1000 steps", current: 750, max: 1000, completed: false, icon: "👣", unit: "steps" },
-    { id: 3, title: "Log meal", target: "3 meals", current: 1, max: 3, completed: false, icon: "🍽️", unit: "meals" },
-    { id: 4, title: "Workout", target: "20 minutes", current: 20, max: 20, completed: true, icon: "💪", unit: "min" },
-    { id: 5, title: "Sleep", target: "7 hours", current: 6, max: 7, completed: false, icon: "😴", unit: "hrs" },
-    { id: 6, title: "Stretch", target: "5 minutes", current: 0, max: 5, completed: false, icon: "🧘", unit: "min" },
-    { id: 7, title: "Meditate", target: "5 minutes", current: 3, max: 5, completed: false, icon: "🧠", unit: "min" },
-];
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: true,
+});
 
 export default function DailyTasks() {
-    const [tasks, setTasks] = useState(initialTasks);
-    const theme = useColorScheme();
-    const incrementProgress = (id: number) => {
-        setTasks((prev) =>
-            prev.map((task) => {
-                if (task.id === id) {
-                    const newCurrent = task.current < task.max ? task.current + 1 : 0;
-                    const newCompleted = newCurrent >= task.max;
-                    return { ...task, current: newCurrent, completed: newCompleted };
-                }
-                return task;
-            })
-        );
-    };
+  const { t, i18n } = useTranslation();
+  const { theme } = useAppTheme();
+  const { user, incrementStreak } = useContext(AuthContext);
 
-    const completedCount = tasks.filter((t) => t.completed).length;
+  const { tasks, isLoading, initializeTasks } = useDailyTaskStore();
+  const incrementTaskProgressAction = useDailyTaskStore(
+    (state) => state.incrementTaskProgress
+  );
+  const setTaskProgressAction = useDailyTaskStore(
+    (state) => state.setTaskProgress
+  );
+  const setTriggerAuthStreakIncrement = useDailyTaskStore(
+    (state) => state.setTriggerAuthStreakIncrement
+  );
 
-    return (
-        <View className="px-1 mt-6">
-            <View className="flex-row justify-between mb-4 items-center">
-                <Text className="text-xl font-bold font-quicksand dark:text-white">Today's Tasks</Text>
-                <Text className="text-sm text-gray-500 dark:text-gray-400 ">
-                    {completedCount}/{tasks.length} completed
-                </Text>
-            </View>
+  // Memoize triggerFn to stabilize its reference
+  const triggerFn = useCallback(async () => {
+    if (user) {
+      return await incrementStreak();
+    } else {
+      console.log("DailyTasks: User not available for streak increment.");
+      return Promise.resolve(false);
+    }
+  }, [user, incrementStreak]);
 
-            <View className="space-y-3 gap-3">
-                {tasks.map((task) => {
-                    const containerClasses = `
-            p-4 rounded-3xl  flex-col border-1 transition-all duration-300
-            ${task.completed
-                            ? " border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
-                            : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"}
+  useEffect(() => {
+    // Check if incrementStreak is a valid function before using it
+    if (typeof incrementStreak === "function") {
+      setTriggerAuthStreakIncrement(triggerFn);
+    } else {
+      console.log(
+        "DailyTasks: incrementStreak function not available from AuthContext or not a function."
+      );
+    }
+    // Dependencies for this effect:
+    // - triggerFn: Now memoized, changes only if user or incrementStreak changes.
+    // - incrementStreak: Memoized in AuthContext, changes if its own dependencies (like user) change.
+    // - setTriggerAuthStreakIncrement: Stable from Zustand store.
+  }, [triggerFn, incrementStreak, setTriggerAuthStreakIncrement]);
 
-          `;
-                    return (
-                        <Pressable
-                            key={task.id}
-                            onPress={() => incrementProgress(task.id)}
-                            className={containerClasses}
-                        >
-                            <View className="flex-row items-center justify-between">
-                                <View>
-                                    <View className="flex-row items-center space-x-2 mb-1 gap-2">
-                                        <Text className="text-sm font-semibold text-black dark:text-white">{task.title}</Text>
-                                        <Text className="text-xl">{task.icon}</Text>
+  const { currentStepCount, pastStepCount: stepsTodayTotal } = usePedometer();
+  const appState = useRef(AppState.currentState);
 
-                                    </View>
-                                    <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">{task.target}</Text>
+  useEffect(() => {
+    initializeTasks(t);
+  }, [initializeTasks, t, i18n.language]);
 
-                                    <View className="h-1.5 bg-gray-200 dark:bg-zinc-600 rounded-full mb-2 w-full">
-                                        <View
-                                            className={`h-full rounded-full ${task.completed ? "bg-blue-500" : "bg-cyan-200 dark:bg-cyan-300"}`}
-                                            style={{ width: `${(task.current / task.max) * 100}%` }}
-                                        />
-                                    </View>
-
-                                    <Text className="text-xs text-gray-500 dark:text-gray-400">
-                                        {task.current}/{task.max} {task.unit}
-                                    </Text>
-                                </View>
-
-                                <View className="items-center justify-center">
-                                    {task.completed ? (
-                                        <View className="rounded-full p-1 bg-blue-100 dark:bg-blue-600/40">
-                                            <CheckCircle2
-                                                size={18}
-                                                color={theme === "dark" ? "#5FBFFF" : "#136CF1"}
-                                            />
-                                        </View>
-                                    ) : (
-                                        <Circle size={18} color="#d1d5db" />
-                                    )}
-                                </View>
-
-                            </View>
-                        </Pressable>
-                    );
-                })}
-            </View>
-        </View>
+  const updateStepTaskProgress = useCallback(async () => {
+    const walkTask = tasks.find(
+      (task) => task.templateId.startsWith("walk_steps_") && !task.completed
     );
+
+    if (walkTask) {
+      try {
+        if (stepsTodayTotal !== walkTask.current) {
+          await setTaskProgressAction(
+            walkTask.id,
+            stepsTodayTotal > 0 ? stepsTodayTotal : currentStepCount
+          );
+        } else {
+        }
+      } catch (error) {
+        console.log("Error fetching today's step count for daily task:", error);
+      }
+    }
+  }, [tasks, setTaskProgressAction, currentStepCount, stepsTodayTotal]);
+
+  useEffect(() => {
+    updateStepTaskProgress();
+
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        updateStepTaskProgress();
+      }
+      appState.current = nextAppState;
+    });
+
+    const intervalId = setInterval(() => {
+      if (AppState.currentState === "active") {
+        updateStepTaskProgress();
+      }
+    }, 60000);
+
+    return () => {
+      subscription.remove();
+      clearInterval(intervalId);
+    };
+  }, [updateStepTaskProgress]);
+
+  const completedCount = tasks.filter((task) => task.completed).length;
+
+  if (isLoading && tasks.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator
+          size="large"
+          color={theme === "dark" ? "#FFFFFF" : "#000000"}
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View className="px-1 mt-6 pb-40">
+      <View className="flex-row justify-between mb-4 items-center">
+        <ThemeText className="text-xl font-bold dark:text-white">
+          {t("home.task")}
+        </ThemeText>
+        <Text className="text-sm text-gray-500 dark:text-gray-400">
+          {t("dailyTasks.completedFraction", {
+            completedCount,
+            totalTasks: tasks.length,
+          })}
+        </Text>
+      </View>
+
+      <View className="space-y-3 gap-3">
+        {tasks.map((task: Task) => {
+          const containerClasses = `
+  p-4 rounded-3xl flex-col border-1
+  ${
+    task.completed
+      ? "border-blue-400 border border-l-[3px] border-gray-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-800/20"
+      : "border-gray-200 border border-l-[3px] dark:border-zinc-700 bg-white dark:bg-zinc-600/20"
+  }
+`;
+          return (
+            <Pressable
+              key={task.id}
+              onPress={() => {
+                if (!task.templateId.startsWith("walk_steps_")) {
+                  incrementTaskProgressAction(task.id);
+                }
+              }}
+              className={containerClasses}
+            >
+              <View className="flex-row items-center justify-between">
+                <View>
+                  <View className="flex-row items-center space-x-2 mb-1 gap-2">
+                    <Text className="text-sm font-semibold text-black dark:text-white">
+                      {task.title}
+                    </Text>
+                    <Text className="text-xl">{task.icon}</Text>
+                  </View>
+                  <Text className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                    {task.target}
+                  </Text>
+
+                  <View className="h-1.5 bg-gray-200 dark:bg-zinc-600 rounded-full mb-2 w-full">
+                    <View
+                      className={`h-full rounded-full ${
+                        task.completed
+                          ? "bg-blue-500"
+                          : "bg-cyan-200 dark:bg-cyan-300"
+                      }`}
+                      style={{ width: `${(task.current / task.max) * 100}%` }}
+                    />
+                  </View>
+
+                  <Text className="text-xs text-gray-500 dark:text-gray-400">
+                    {task.current}/{task.max} {task.unit}
+                  </Text>
+                </View>
+
+                <View className="items-center justify-center">
+                  {task.completed ? (
+                    <View className="rounded-full p-1 bg-blue-100 dark:bg-blue-600/40">
+                      <CheckCircle2
+                        size={18}
+                        color={theme === "dark" ? "#5FBFFF" : "#136CF1"}
+                      />
+                    </View>
+                  ) : (
+                    <Circle size={18} color="#d1d5db" />
+                  )}
+                </View>
+              </View>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
 }

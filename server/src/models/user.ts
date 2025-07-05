@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model, ObjectId } from "mongoose";
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -11,6 +11,7 @@ export enum Gender {
 }
 
 export interface IUser extends Document {
+  _id: ObjectId;
   username: string;
   email: string;
   stats?: Record<string, any>;
@@ -28,12 +29,17 @@ export interface IUser extends Document {
   role: Role;
   bio?: string;
   image?: string | null;
-  posts?: string[];
+  posts?: ObjectId[];
   isEmailVerified: boolean;
+  hasOnboarded: boolean;
   emailVerificationToken?: string;
   emailVerificationTokenExpiry?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  streak?: number;
+  highestStreak?: number;
+  totalCalories?: number;
+  lastStreakUpdate?: Date;
 }
 
 // Define the schema
@@ -91,7 +97,26 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
       type: String,
       required: true,
     },
-
+    streak: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    highestStreak: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    totalCalories: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    lastStreakUpdate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     password: {
       type: String,
       required: true,
@@ -114,11 +139,12 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
     },
     posts: {
       type: [Schema.Types.ObjectId],
-      ref: "Post",
+      ref: "Blog",
       required: false,
       default: [],
     },
     isEmailVerified: { type: Boolean, default: false, required: false },
+    hasOnboarded: { type: Boolean, default: false, required: false },
     emailVerificationToken: { type: String, required: false, default: null },
     emailVerificationTokenExpiry: {
       type: Date,
@@ -133,7 +159,7 @@ const userSchema: Schema<IUser> = new Schema<IUser>(
   {
     timestamps: true,
   }
-);
+).index({ email: 1 }, { unique: true });
 
 const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 export default User;

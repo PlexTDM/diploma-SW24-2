@@ -1,9 +1,25 @@
 import { TabBar, ThemeView } from "@/components";
 import { useAppTheme } from "@/lib/theme";
 import { Tabs } from "expo-router";
+import { AuthContext } from "@/context/auth";
+import { useContext, useEffect } from "react";
+import useDailyTaskStore from "@/stores/dailyTaskStore";
+import { useTranslation } from "@/lib/language";
 
 export default function TabLayout() {
+  const { t } = useTranslation();
   const { theme } = useAppTheme();
+
+  const { setAuthDetails } = useDailyTaskStore();
+  const { user, accessToken } = useContext(AuthContext);
+
+  useEffect(() => {
+    if ((user?._id || user?.id) && accessToken) {
+      setAuthDetails(user._id || user.id, accessToken);
+    } else {
+      setAuthDetails(null, null);
+    }
+  }, [user, accessToken, setAuthDetails]);
 
   return (
     <ThemeView>
@@ -37,7 +53,7 @@ export default function TabLayout() {
           options={{
             tabBarLabel: "stats",
             lazy: false,
-            animation:'fade'
+            animation: "fade",
           }}
         />
         <Tabs.Screen
